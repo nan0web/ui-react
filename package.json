@@ -9,6 +9,7 @@
 		"test": "npm run test:js && npm run test:jsx",
 		"test:jsx": "vitest run",
 		"test:js": "node --test \"src/**/*.test.js\"",
+		"test:debug": "vitest --inspect --no-file-parallelism",
 		"dev": "vite",
 		"build": "tsc && vite build",
 		"preview": "vite preview"

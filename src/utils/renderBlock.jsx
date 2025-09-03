@@ -1,36 +1,35 @@
-import React from 'react'
-import { processI18n } from "@nan0web/ui-core"
-import Element from '../Element.js'
+export function renderBlock(block, key, context) {
+	const { components, renderers } = context
 
-export function renderBlock(block, key, context = {}) {
-	const element = Element.from(block)
-	const { type, content, props } = element
-	const { data = {}, actions = {}, t, components, renderers } = context
+	// Один ключ — тип компонента
+	const [type, value] = Object.entries(block)[0]
 
-	// Custom renderer
-	const Renderer = renderers.get?.(type)
-	if (Renderer) {
-		return Renderer({ element, key, context })
-	}
+	// Якщо тип — це компонент, використовуй рендерери або components
+	const Component = renderers[type] || components[type] || type
 
-	// Standard component
-	const Component = components.get?.(type)
-	if (Component) {
-		let children = processI18n(content, t, data)
-		if (Array.isArray(children)) {
-			children = children.map((child, i) =>
-				renderBlock(child, `${key}-${i}`, context)
-			)
-		}
-		return <Component key={key} {...props}>{children}</Component>
-	}
+	// Якщо value — масив, обробляй кожен елемент
+	let children = []
 
-	// HTML tag fallback
-	let children = processI18n(content, t, data)
-	if (Array.isArray(children)) {
-		children = children.map((child, i) =>
-			renderBlock(child, `${key}-${i}`, context)
+	if (Array.isArray(value)) {
+		children = value.map((item, index) =>
+			typeof item === 'object' && item !== null
+				? renderBlock(item, `${key}-${index}`, context) // вкладений блок
+				: item // ✅ просто текст
 		)
+	} else if (typeof value === 'string' || typeof value === 'number') {
+		children = value
+	} else {
+		children = null
 	}
-	return React.createElement(type, { key, ...props }, children)
+
+	// Пропси: поля, що починаються з $
+	const props = {}
+	for (const [k, v] of Object.entries(block)) {
+		if (k.startsWith('$')) {
+			props[k.slice(1)] = v
+		}
+	}
+
+	// Повертаємо React-елемент
+	return React.createElement(Component, { key, ...props }, children)
 }

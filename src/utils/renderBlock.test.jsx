@@ -1,22 +1,23 @@
-/**
- * @vitest-environment happy-dom
- */
 import React from 'react'
 import { describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
 import { renderBlock } from './renderBlock.jsx'
+import components from '../components/index.jsx'
+import renderers from '../renderers/index.jsx'
 
 describe('renderBlock', () => {
+	const testContext = { components, renderers }
+
 	it('renders text content', () => {
-		const block = { span: ['Hello'] }
-		const result = renderBlock(block, 'test')
+		const block = { span: 'Hello' }
+		const result = renderBlock(block, 'test', testContext)
 		const { getByText } = render(result)
 		expect(getByText('Hello')).toBeInTheDocument()
 	})
 
 	it('renders with props', () => {
-		const block = { button: ['Click'], $onClick: () => { } }
-		const result = renderBlock(block, 'test')
+		const block = { button: 'Click', $onClick: () => { } }
+		const result = renderBlock(block, 'test', testContext)
 		const { container } = render(result)
 		expect(container.querySelector('button')).toBeInTheDocument()
 	})
@@ -25,11 +26,11 @@ describe('renderBlock', () => {
 		const block = {
 			div: [
 				"Outer",
-				{ span: ["Inner"] }
+				{ span: "Inner" }
 			]
 		}
-		const { getByText } = render(renderBlock(block, 'test'))
-		expect(getByText('Outer')).toBeInTheDocument()
-		expect(getByText('Inner')).toBeInTheDocument()
+		const dom = render(renderBlock(block, 'test', testContext))
+		expect(dom.getByText('Outer')).toBeInTheDocument()
+		expect(dom.getByText('Inner')).toBeInTheDocument()
 	})
 })
