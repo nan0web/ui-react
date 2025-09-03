@@ -1,0 +1,47 @@
+{
+	"$content": [
+		{
+			"h1": "Button Component"
+		},
+		{
+			"p": "Buttons trigger actions. Supports different variants and sizes."
+		},
+		{
+			"h2": "Primary Button"
+		},
+		{
+			"Button": true,
+			"$children": "Primary Action"
+		},
+		{
+			"h2": "Secondary Button"
+		},
+		{
+			"Button": true,
+			"$variant": "secondary",
+			"$children": "Secondary Action"
+		},
+		{
+			"h2": "Small Button"
+		},
+		{
+			"Button": true,
+			"$size": "sm",
+			"$children": "Small"
+		},
+		{
+			"h2": "Disabled Button"
+		},
+		{
+			"Button": true,
+			"$disabled": true,
+			"$children": "Cannot click"
+		},
+		{
+			"a": {
+				"$href": "/playground/index.json",
+				"$children": "← All Components"
+			}
+		}
+	]
+}
