@@ -7,15 +7,15 @@ export default function Modal({ isOpen, onClose, children, ...props }) {
 
 	const config = Theme.organisms.Modal
 	const overlayStyle = {
-		position: 'fixed',
+		position: /** @type {import('csstype').Property.Position} */ ('fixed'),
 		top: 0,
 		left: 0,
 		right: 0,
 		bottom: 0,
 		backgroundColor: config.overlayBackground,
-		display: 'flex',
-		justifyContent: 'center',
-		alignItems: 'center',
+		display: /** @type {import('csstype').Property.Display} */ ('flex'),
+		justifyContent: /** @type {import('csstype').Property.JustifyContent} */ ('center'),
+		alignItems: /** @type {import('csstype').Property.AlignItems} */ ('center'),
 		zIndex: 1000,
 	}
 
@@ -24,7 +24,7 @@ export default function Modal({ isOpen, onClose, children, ...props }) {
 		boxShadow: config.boxShadow,
 		padding: config.padding,
 		backgroundColor: config.backgroundColor,
-		position: 'relative',
+		position: /** @type {import('csstype').Property.Position} */ ('relative'),
 		...props.style,
 	}
 

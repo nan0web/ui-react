@@ -1,7 +1,7 @@
-export function extractProps(block: any, keep$?: boolean): {
-    [k: string]: any;
-};
-export function extractTags(block: any): {
-    [k: string]: any;
-};
+/**
+ * Parses a block into an element with type, content and props
+ *
+ * @param {Object} block - The block to parse
+ * @returns {Object} - Parsed element with type, content and props
+ */
 export function parseBlock(block: any): any;

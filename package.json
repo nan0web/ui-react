@@ -2,7 +2,7 @@
 	"name": "@nan0web/ui-react",
 	"version": "1.0.0",
 	"description": "React UI components for nan0web with SSG and SSR support",
-	"main": "./src/index.js",
+	"main": "./src/index.jsx",
 	"types": "./types/index.d.ts",
 	"type": "module",
 	"scripts": {

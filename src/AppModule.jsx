@@ -1,4 +1,5 @@
 import { renderBlock } from './utils/renderBlock.jsx'
+import DB from "@nan0web/db-browser"
 
 export default class AppModule {
 	/** @type {string} */
@@ -18,6 +19,7 @@ export default class AppModule {
 
 	/**
 	 * @param {string} uri - e.g., "app/currency-calculator"
+	 * @param {DB} db
 	 */
 	constructor(uri, db) {
 		this.uri = uri
@@ -34,7 +36,7 @@ export default class AppModule {
 		if (action === 'convert') {
 			const result = await this.convert(this.data.value, this.data.from, 'USD')
 			this.data.result = result
-			await this.db.save(`${this.uri}/data`, this.data)
+			await this.db.saveDocument(`${this.uri}/data`, this.data)
 		}
 	}
 

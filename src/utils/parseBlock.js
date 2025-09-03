@@ -1,5 +1,11 @@
-import { Element } from '../index.js'
+import Element from '../Element.js'
 
+/**
+ * Parses a block into an element with type, content and props
+ *
+ * @param {Object} block - The block to parse
+ * @returns {Object} - Parsed element with type, content and props
+ */
 export function parseBlock(block) {
 	const tagEntries = Element.extractTags(block)
 	if (tagEntries.length === 0) {
@@ -8,11 +14,11 @@ export function parseBlock(block) {
 	const [tag, content] = tagEntries[0]
 	const props = Element.extractProps(block)
 
-	// Простий тег (div, h2, input...)
+	// Simple tag (div, h2, input...)
 	if (typeof content === 'string' || Array.isArray(content)) {
 		return { [tag]: content, ...props }
 	}
 
-	// Об’єкт зі вкладеннями (button, form...)
+	// Object with nested content (button, form...)
 	return { [tag]: content, ...props }
 }
