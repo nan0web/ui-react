@@ -2,7 +2,7 @@
  * @component
  * @param {Object} props
  * @param {React.ReactNode} props.children
- * @param {Object} [props.value] - Additional context values
+ * @param {Object} [props.value] - Additional context values (theme, reducedMotion, etc.)
  */
 export function UIProvider({ children, value }: {
     children: React.ReactNode;

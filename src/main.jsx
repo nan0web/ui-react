@@ -16,7 +16,7 @@ import Element from './Element.js'
  * @param {Object} props
  * @param {DB} props.db
  * @param {string} [props.documentPath="index.json"]
- * @param {Object} [props.context] - Additional context (theme, etc)
+ * @param {Object} [props.context] - Additional context (theme, reducedMotion, etc)
  */
 export default function UIReact({ db, documentPath = 'index.json', context = {} }) {
 	/** @type {[any[], React.Dispatch<React.SetStateAction<any[]>>]} */
@@ -40,18 +40,19 @@ export default function UIReact({ db, documentPath = 'index.json', context = {} 
 		load()
 	}, [db, documentPath])
 
-	if (loading) {
-		return <div className="ui-loading">Loading...</div>
-	}
+	if (loading) return <div className="ui-loading">Loading...</div>
 
-	const mergedContext = { db, components, renderers, ...context }
+	const mergedContext = {
+		db,
+		components,
+		renderers,
+		...context,
+	}
 
 	return (
 		<UIProvider value={mergedContext}>
 			<div className="ui-react-root" role="main">
-				{content.map((block, i) =>
-					renderBlock(block, i, mergedContext)
-				)}
+				{content.map((block, i) => renderBlock(block, i, mergedContext))}
 			</div>
 		</UIProvider>
 	)

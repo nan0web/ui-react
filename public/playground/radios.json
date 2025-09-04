@@ -1,0 +1,35 @@
+{
+	"$content": [
+		{
+			"h1": "Radio Component"
+		},
+		{
+			"p": "Radios allow users to select only one option from a group."
+		},
+		{
+			"h2": "Unchecked Radio"
+		},
+		{
+			"Radio": true,
+			"$defaultChecked": false
+		},
+		{
+			"h2": "Checked Radio"
+		},
+		{
+			"Radio": true,
+			"$defaultChecked": true
+		},
+		{
+			"h2": "Disabled Radio"
+		},
+		{
+			"Radio": true,
+			"$disabled": true
+		},
+		{
+			"a": "← All Components",
+			"$href": "/playground/index.json"
+		}
+	]
+}

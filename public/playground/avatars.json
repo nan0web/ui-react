@@ -13,7 +13,7 @@
 			"p": "Default avatar — requires src and alt."
 		},
 		{
-			"Avatar": true,
+			"Avatar": [],
 			"$src": "/pic.webp",
 			"$alt": "User Picture"
 		},
@@ -24,7 +24,7 @@
 			"p": "Size is not yet implemented via prop, but can be extended in theme."
 		},
 		{
-			"Avatar": true,
+			"Avatar": [],
 			"$src": "/pic.webp",
 			"$alt": "Small",
 			"$style": {
@@ -33,7 +33,7 @@
 			}
 		},
 		{
-			"Avatar": true,
+			"Avatar": [],
 			"$src": "/pic.webp",
 			"$alt": "Large",
 			"$style": {
@@ -48,7 +48,7 @@
 			"p": "Future: support fallback initials when no image."
 		},
 		{
-			"div": true,
+			"div": "AB",
 			"$style": {
 				"width": "2.5rem",
 				"height": "2.5rem",
@@ -57,8 +57,7 @@
 				"display": "flex",
 				"alignItems": "center",
 				"justifyContent": "center"
-			},
-			"$children": "AB"
+			}
 		},
 		{
 			"h2": "Grouped Avatars"
@@ -67,9 +66,9 @@
 			"p": "Overlap multiple avatars for group displays."
 		},
 		{
-			"$content": [
+			"div": [
 				{
-					"Avatar": true,
+					"Avatar": [],
 					"$src": "/pic.webp",
 					"$alt": "User 1",
 					"$style": {
@@ -78,7 +77,7 @@
 					}
 				},
 				{
-					"Avatar": true,
+					"Avatar": [],
 					"$src": "/pic.webp",
 					"$alt": "User 2",
 					"$style": {
@@ -88,7 +87,7 @@
 					}
 				},
 				{
-					"Avatar": true,
+					"Avatar": [],
 					"$src": "/pic.webp",
 					"$alt": "User 3",
 					"$style": {
@@ -103,10 +102,8 @@
 			"h2": "Back to Playground"
 		},
 		{
-			"a": {
-				"$href": "/playground/index.json",
-				"$children": "← All Components"
-			}
+			"a": "← All Components",
+			"$href": "/playground/index.json"
 		}
 	]
 }

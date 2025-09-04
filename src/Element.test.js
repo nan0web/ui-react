@@ -22,7 +22,7 @@ describe('Element', () => {
 		const block = { div: ['Hello'], $className: 'text-lg', $onClick: () => { } }
 		const el = Element.from(block)
 		assert.equal(el.props.className, 'text-lg')
-		assert.equal(typeof el.props.onclick, "function")
+		assert.equal(typeof el.props.onClick, "function")
 	})
 
 	it('returns child elements', () => {

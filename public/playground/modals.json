@@ -1,0 +1,37 @@
+{
+	"$content": [
+		{
+			"h1": "Modal Component"
+		},
+		{
+			"p": "Modals display content in a focused overlay on top of the main page."
+		},
+		{
+			"h2": "Modal Example"
+		},
+		{
+			"p": "Click the button below to open the modal."
+		},
+		{
+			"button": "Open Modal",
+			"$onClick": "() => { window.dispatchEvent(new CustomEvent('openModal')) }"
+		},
+		{
+			"div": [
+				{
+					"h3": "Modal Title"
+				},
+				{
+					"p": "This is the modal content. Click outside to close it."
+				}
+			],
+			"$style": {
+				"display": "none"
+			}
+		},
+		{
+			"a": "← All Components",
+			"$href": "/playground/index.json"
+		}
+	]
+}

@@ -7,3 +7,4 @@
  * @returns {JSX.Element} - Rendered React element
  */
 export function renderBlock(block: any, key: string | number, context: any): JSX.Element;
+import Element from '../Element.js';

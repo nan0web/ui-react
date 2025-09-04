@@ -3,7 +3,7 @@
  * @param {Object} props
  * @param {DB} props.db
  * @param {string} [props.documentPath="index.json"]
- * @param {Object} [props.context] - Additional context (theme, etc)
+ * @param {Object} [props.context] - Additional context (theme, reducedMotion, etc)
  */
 export default function UIReact({ db, documentPath, context }: {
     db: DB;

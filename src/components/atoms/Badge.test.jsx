@@ -11,4 +11,12 @@ describe('Badge', () => {
 		const { getByText } = render(<Badge>Test Badge</Badge>)
 		expect(getByText('Test Badge')).toBeInTheDocument()
 	})
+
+	it('applies variant background with white text', () => {
+		const { getByText } = render(<Badge variant="danger">Danger</Badge>)
+		const span = getByText('Danger')
+		const style = span.getAttribute('style')
+		expect(style).toContain('background-color: #dc3545')
+		expect(style).toContain('color: #fff')
+	})
 })

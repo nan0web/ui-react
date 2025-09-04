@@ -1,8 +1,18 @@
 import React from 'react'
+import Element from '../Element.js'
+
+// List of void elements </>
+const voidElements = new Set([
+	'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
+	'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'
+])
+
+// Elements that have only <li> children, so in document we can omit li.
+const listElements = new Set(['ul', 'ol'])
 
 /**
  * Renders a block into a React element
- * 
+ *
  * @param {Object} block - The block to render
  * @param {string | number} key - React key
  * @param {Object} context - Rendering context with components and renderers
@@ -11,36 +21,101 @@ import React from 'react'
 export function renderBlock(block, key, context) {
 	const { components, renderers } = context
 
-	// One key - component type
-	const [type, value] = Object.entries(block)[0]
+	// Extract tag and content
+	const [type, value] = Element.extractTags(block)[0] ?? ["div", ""]
 
-	// If type is a component, use renderers or components
-	const Component = renderers[type] || components[type] || type
+	// Determine if it's a void element
+	const isVoidElement = voidElements.has(type.toLowerCase())
 
-	// If value is an array, process each element
-	/** @type {React.ReactNode[]} */
-	let children = []
-
-	if (Array.isArray(value)) {
-		children = value.map((item, index) =>
-			typeof item === 'object' && item !== null
-				? renderBlock(item, `${key}-${index}`, context) // nested block
-				: item // ✅ plain text
-		)
-	} else if (typeof value === 'string' || typeof value === 'number') {
-		children = [value]
+	// Resolve component - search for component by PascalCase name in components map
+	let Component = null
+	if (renderers?.has(type)) {
+		Component = renderers.get(type)
+	} else if (components?.has(type)) {
+		Component = components.get(type)
 	} else {
-		children = []
+		Component = type
 	}
 
-	// Props: fields starting with $
+	// Extract props (fields starting with $)
+	const rawProps = Element.extractProps(block)
 	const props = {}
-	for (const [k, v] of Object.entries(block)) {
-		if (k.startsWith('$')) {
-			props[k.slice(1)] = v
+
+	for (const [name, value] of Object.entries(rawProps)) {
+		if (name.startsWith('on')) {
+			// If it is action
+			if (typeof value === 'string' && context?.app?.actions?.[value]) {
+				props[name] = context.app.actions[value]
+				continue
+			}
+			// It is a function
+			if (typeof value === 'function') {
+				props[name] = value
+				continue
+			}
+			// If value is string but, let's test if it is a valid function
+			if (typeof value === 'string' && /^\s*\(.+?\)\s*=>/.test(value)) {
+				try {
+					/* eslint no-new-func: "off" */
+					const fn = new Function(`return ${value}`)()
+					if (typeof fn === 'function') {
+						props[name] = fn
+						continue
+					}
+				} catch (_) {
+					/* ignore */
+				}
+			}
+			// if nothing happened leave value as it is.
+			props[name] = value
+			continue
+		}
+		props[name] = value
+	}
+
+	const propsWithKey = { key, ...props }
+
+	// Handle children only for non-void elements
+	let children = null
+
+	if (!isVoidElement) {
+		if (Array.isArray(value)) {
+			// For list elements (ul, ol), wrap direct children in <li>
+			if (listElements.has(type.toLowerCase())) {
+				// Wrap into <li> if it is a list element
+				children = value.map((item, i) => {
+					// If item is already an li element, render as is
+					if (typeof item === 'object' && item !== null) {
+						const tagEntries = Element.extractTags(item)
+						if (tagEntries.length && tagEntries[0][0].toLowerCase() === 'li') {
+							return renderBlock(item, `${key}-${i}`, context)
+						}
+					}
+					// Otherwise wrap in <li>
+					const li = { li: Array.isArray(item) ? item : [item] }
+					return renderBlock(li, `${key}-${i}`, context)
+				})
+			} else {
+				children = value.map((item, i) =>
+					typeof item === 'object' && item !== null
+						? renderBlock(item, `${key}-${i}`, context)
+						: item
+				)
+			}
+		} else if (typeof value === 'string' || typeof value === 'number') {
+			// For list elements with string/number content, wrap in <li>
+			if (listElements.has(type.toLowerCase())) {
+				const li = { li: value }
+				children = [renderBlock(li, `${key}-0`, context)]
+			} else {
+				children = [value]
+			}
 		}
 	}
 
-	// Return React element
-	return React.createElement(Component, { key, ...props }, children)
+	// For void elements, ensure children is null
+	if (isVoidElement) {
+		return React.createElement(Component, propsWithKey, null)
+	}
+	return React.createElement(Component, propsWithKey, children)
 }
