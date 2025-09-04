@@ -1,3 +1,3 @@
 export default components;
-/** @type {Iterable<readonly [string, any]>} */
-declare const components: Iterable<readonly [string, any]>;
+/** @type {Map<string, React.Component<any, any, any>>} */
+declare const components: Map<string, React.Component<any, any, any>>;

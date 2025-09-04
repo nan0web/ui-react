@@ -1,3 +1,2 @@
-declare const _default: Map<string, typeof renderForm>;
+declare const _default: Map<string, React.Component<any, any, any>>;
 export default _default;
-import renderForm from './renderForm.jsx';

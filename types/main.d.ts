@@ -13,6 +13,6 @@ export default function UIReact({ db, documentPath, context }: {
 import DB from "@nan0web/db-browser";
 import components from './components/index.jsx';
 import renderers from './renderers/index.jsx';
-import Element from './Element.js';
+import Element from './Element.jsx';
 import { useUI } from './context/UIContext.jsx';
 export { components, renderers, Element, useUI };

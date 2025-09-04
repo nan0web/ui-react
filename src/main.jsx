@@ -2,14 +2,13 @@
  * @file Main UIReact component.
  */
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, StrictMode } from 'react'
 import DB from "@nan0web/db-browser"
 import { UIProvider, useUI } from './context/UIContext.jsx'
-import { renderBlock } from './utils/renderBlock.jsx'
 import components from './components/index.jsx'
 import renderers from './renderers/index.jsx'
 import Document from './models/Document.js'
-import Element from './Element.js'
+import Element from './Element.jsx'
 
 /**
  * @component
@@ -26,6 +25,7 @@ export default function UIReact({ db, documentPath = 'index.json', context = {} 
 
 	useEffect(() => {
 		const load = async () => {
+			console.log("loading...")
 			try {
 				setLoading(true)
 				const data = await db.fetch(documentPath)
@@ -42,19 +42,21 @@ export default function UIReact({ db, documentPath = 'index.json', context = {} 
 
 	if (loading) return <div className="ui-loading">Loading...</div>
 
+	/** @type {import('./Element.jsx').UIContext} */
 	const mergedContext = {
-		db,
 		components,
 		renderers,
 		...context,
 	}
 
 	return (
-		<UIProvider value={mergedContext}>
-			<div className="ui-react-root" role="main">
-				{content.map((block, i) => renderBlock(block, i, mergedContext))}
-			</div>
-		</UIProvider>
+		<StrictMode>
+			<UIProvider value={mergedContext}>
+				<div className="ui-react-root" role="main">
+					{content.map((block, i) => Element.render(block, i, mergedContext))}
+				</div>
+			</UIProvider>
+		</StrictMode>
 	)
 }
 

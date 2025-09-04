@@ -1,14 +1,20 @@
+import Navigation from "./Navigation.js"
+
 export default class Document {
 	/** @type {Array<object>} */
 	$content = []
+	/** @type {Navigation} */
+	nav
 
 	/**
 	 * @param {object} [input]
 	 * @param {Array<object>} [input.$content=[]]
+	 * @param {any} [input.nav={}]
 	 */
 	constructor(input = {}) {
-		const { $content = [] } = input
+		const { $content = [], nav = {} } = input
 		this.$content = $content
+		this.nav = Navigation.from(nav)
 	}
 
 	/**

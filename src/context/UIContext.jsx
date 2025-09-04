@@ -1,18 +1,27 @@
 /**
  * @file UI Context for theme, db, language, and accessibility flags.
  */
-
 import React, { createContext, useContext, useState } from 'react'
+import DB from "@nan0web/db-browser"
 import Theme from '../Theme.js'
-import { NightTheme } from '@nan0web/ui-core'
 
 const UIContext = createContext({
 	theme: Theme,
 	lang: 'en',
-	db: null,
+	db: new DB(),
 	/** Respect reduced motion for a11y */
 	reducedMotion: false,
-	setTheme: () => {}, // placeholder
+	/**
+	 * Set theme function – will be overridden by UIProvider.
+	 * If called before UIProvider is mounted, logs a warning.
+	 *
+	 * @param {Function|Object} updater - New theme or updater function.
+	 */
+	setTheme: (updater) => {
+		// Real implementation is supplied by UIProvider.
+		// This placeholder logs a warning to help debugging.
+		console.warn('setTheme called outside of UIProvider – no effect.')
+	},
 })
 
 /**

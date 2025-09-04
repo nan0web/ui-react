@@ -31,7 +31,7 @@
 		},
 		{
 			"a": "← All Components",
-			"$href": "/playground/index.json"
+			"$href": "/playground/index.html"
 		}
 	]
 }

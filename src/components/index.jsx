@@ -10,7 +10,7 @@ import TextArea from './atoms/TextArea.jsx'
 import Card from './molecules/Card.jsx'
 import Modal from './organisms/Modal.jsx'
 
-/** @type {Iterable<readonly [string, any]>} */
+/** @type {Map<string, React.Component<any, any, any>>} */
 // @ts-ignore @todo fix if you able to
 const components = new Map([
 	['Button', Button],

@@ -7,15 +7,20 @@ export default class Document {
     /**
      * @param {object} [input]
      * @param {Array<object>} [input.$content=[]]
+     * @param {any} [input.nav={}]
      */
     constructor(input?: {
         $content?: any[] | undefined;
+        nav?: any;
     } | undefined);
     /** @type {Array<object>} */
     $content: Array<object>;
+    /** @type {Navigation} */
+    nav: Navigation;
     /**
      * @param {string} type
      * @returns {Array<object>}
      */
     getBlocksByType(type: string): Array<object>;
 }
+import Navigation from "./Navigation.js";

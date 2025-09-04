@@ -1,7 +1,6 @@
-import Element from "./Element.js"
+import Element from "./Element.jsx"
 import { tokens } from "./tokens.js"
 import Theme from "./Theme.js"
-import { renderBlock } from "./utils/renderBlock.jsx"
 import { parseBlock } from "./utils/parseBlock.js"
 
 export {
@@ -9,5 +8,4 @@ export {
 	Element,
 	Theme,
 	parseBlock,
-	renderBlock,
 }

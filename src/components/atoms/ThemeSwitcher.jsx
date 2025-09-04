@@ -13,6 +13,7 @@ export default function ThemeSwitcher({ label = 'Theme' }) {
 	const { setTheme } = useUI() || {}
 
 	const toggle = () => {
+		console.log("toggling")
 		if (!setTheme) return
 		setTheme(prev => (prev === Theme ? NightTheme : Theme))
 	}

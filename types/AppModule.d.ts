@@ -18,8 +18,9 @@ export default class AppModule {
     run(action: any): Promise<void>;
     convert(value: any, from: any, to: any): Promise<string>;
     /**
-     * @returns {JSX.Element}
+     * @returns {JSX.Element | null}
      */
-    render(key: any, context: any): JSX.Element;
+    render(key: any, context: any): JSX.Element | null;
 }
 import DB from "@nan0web/db-browser";
+import Element from "./Element.jsx";

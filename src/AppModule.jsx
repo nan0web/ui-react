@@ -1,5 +1,5 @@
-import { renderBlock } from './utils/renderBlock.jsx'
 import DB from "@nan0web/db-browser"
+import Element from "./Element.jsx"
 
 export default class AppModule {
 	/** @type {string} */
@@ -27,6 +27,7 @@ export default class AppModule {
 	}
 
 	async load() {
+		console.error("LOAD MUST BE FIXED")
 		this.config = await this.db.fetch(`${this.uri}/config.json`)
 		this.ui = await this.db.fetch(`${this.uri}/main.json`)
 		this.data = await this.db.extract(`${this.uri}/data`) || {}
@@ -46,10 +47,10 @@ export default class AppModule {
 	}
 
 	/**
-	 * @returns {JSX.Element}
+	 * @returns {JSX.Element | null}
 	 */
 	render(key, context) {
-		return renderBlock(this.ui, key, {
+		return Element.render(this.ui, key, {
 			...context,
 			app: this,
 			bind: (field) => (ev) => {
