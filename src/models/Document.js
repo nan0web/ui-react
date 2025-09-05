@@ -11,8 +11,8 @@ export default class Document {
 	/**
 	 * @param {object} [input]
 	 * @param {Array<object>} [input.$content=[]]
-	 * @param {string} [input.$lang=[]]
-	 * @param {any} [input.nav={}]
+	 * @param {string} [input.$lang="en"]
+	 * @param {any} [input.nav=new Navigation()]
 	 */
 	constructor(input = {}) {
 		const {

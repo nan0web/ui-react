@@ -18,13 +18,4 @@ import renderers from './renderers/index.jsx';
 import Element from './Element.jsx';
 import { useUI } from './context/UIContext.jsx';
 import { UIProvider } from './context/UIContext.jsx';
-/**
- * Core block rendering function
- *
- * @param {Object} block - Document block with type and content
- * @param {number} key - React key
- * @param {UIContextValue} context - Current UI context
- * @returns {JSX.Element|null}
- */
-export function renderBlock(block: any, key: number, context: UIContextValue): JSX.Element | null;
 export { components, renderers, Element, useUI, UIProvider, UIContextValue };

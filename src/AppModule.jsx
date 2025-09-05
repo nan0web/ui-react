@@ -23,14 +23,13 @@ export default class AppModule {
 	 */
 	constructor(uri, db) {
 		this.uri = uri
-		this.db = db
+		this.db = db.extract(uri)
 	}
 
 	async load() {
-		console.error("LOAD MUST BE FIXED")
-		this.config = await this.db.fetch(`${this.uri}/config.json`)
-		this.ui = await this.db.fetch(`${this.uri}/main.json`)
-		this.data = await this.db.extract(`${this.uri}/data`) || {}
+		this.config = await this.db.fetch("config.json") || {}
+		this.ui = await this.db.fetch("main.json") || { $content: [] }
+		this.data = await this.db.fetch("data.json") || {}
 	}
 
 	async run(action) {
@@ -47,6 +46,7 @@ export default class AppModule {
 	}
 
 	/**
+	 *
 	 * @returns {JSX.Element | null}
 	 */
 	render(key, context) {

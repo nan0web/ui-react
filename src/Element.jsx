@@ -1,8 +1,6 @@
 import { Element, Theme } from "@nan0web/ui-core"
-import { AppCore } from "@nan0web/core"
-import DB from "@nan0web/db-browser"
 import React from 'react'
-import { UIContextValue } from "./main"
+import { UIContextValue } from "./main.jsx"
 
 // List of void elements </>
 const voidElements = new Set([
@@ -15,15 +13,18 @@ const listElements = new Set(['ul', 'ol'])
 
 export default class ReactElement extends Element {
 	/**
-	 * @param {any} input
-	 * @param {string|number} key
+	 * @param {any} input Input data
+	 * @param {string|number} key Key prop.
 	 * @param {UIContextValue} context
 	 * @returns {JSX.Element | null}
 	 */
 	static render(input, key, context) {
+		if (!input) {
+			throw new TypeError("Provide UI input to render")
+		}
 		const {
-			components = new Map(),
 			renderers = new Map(),
+			components = new Map(),
 			actions = {}
 		} = context
 
@@ -41,14 +42,18 @@ export default class ReactElement extends Element {
 			value = arr[1]
 		}
 
+		// Check if type exists in renderers map
+		if (renderers.has(type)) {
+			const Renderer = renderers.get(type)
+			return <Renderer element={input} context={context} key={key} />
+		}
+
 		// Determine if it's a void element
 		const isVoidElement = voidElements.has(type.toLowerCase())
 
 		// Resolve component - search for component by PascalCase name in components map
 		let Component = null
-		if (renderers?.has(type)) {
-			Component = renderers.get(type)
-		} else if (components?.has(type)) {
+		if (components.has(type)) {
 			Component = components.get(type)
 		} else {
 			Component = type

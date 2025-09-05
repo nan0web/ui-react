@@ -55,7 +55,7 @@ export function UIReact({ db, documentPath = 'index.json', context = {} }) {
 	const mergedContext = UIContextValue.from({
 		components,
 		renderers,
-		apps: context.apps ?? [],
+		apps: context.apps ?? new Map(),
 		lang: document.$lang ?? 'en',
 		db,
 		...context,
@@ -80,147 +80,11 @@ export function UIReact({ db, documentPath = 'index.json', context = {} }) {
 			<UIProvider value={mergedContext}>
 				<div className="ui-react-root" role="main">
 					{document.$content.map((block, idx) => (
-						renderBlock(block, idx, mergedContext)
+						Element.render(block, idx, mergedContext)
 					))}
 				</div>
 			</UIProvider>
 		</StrictMode>
-	)
-}
-
-/**
- * Core block rendering function
- *
- * @param {Object} block - Document block with type and content
- * @param {number} key - React key
- * @param {UIContextValue} context - Current UI context
- * @returns {JSX.Element|null}
- */
-function renderBlock(block, key, context) {
-	// Check for app entry - a block with App property
-	if (block.App) {
-		return <AppBlock key={key} appKey={block.App} block={block} context={context} />
-	}
-
-	// Regular element rendering
-	return Element.render(block, key, context)
-}
-
-/**
- * Application block - renders isolated application
- * @param {object} input
- * @param {string} input.appKey
- * @param {object} input.block
- * @param {UIContextValue} input.context
- */
-function AppBlock({ appKey, block, context }) {
-	const [state, setState] = useState({
-		db: context.db.extract(`apps/${appKey}/`),
-		loading: true,
-		error: /** @type {Error | null} */ (null),
-		app: /** @type {any} */ (null),
-	})
-
-	// Initialize application
-	useEffect(() => {
-		async function initApp() {
-			try {
-				// Check if app is registered
-				const appCreator = context.apps.get(appKey)
-				if (!appCreator) {
-					throw new Error(`Application "${appKey}" is not registered`)
-				}
-
-				// Connect to isolated database
-				await state.db.connect()
-
-				// Load application configuration
-				const config = await state.db.fetch('main.json')
-				if (!config) {
-					throw new Error('main.json not found in application directory')
-				}
-
-				// Create new application instance
-				const { default: App } = await appCreator()
-				const app = App.from({
-					db: state.db,
-					locale: context.lang || 'uk',
-					data: config,
-					props: {
-						renderFn: (blk, key, ctx) => {
-							return Element.render(blk, key, { ...ctx, ...context });
-						},
-						...Element.extractProps(block, true),
-					}
-				})
-
-				// Run initialization if available
-				if (app.run && typeof app.run === 'function') {
-					await app.run()
-				}
-
-				setState(prev => ({
-					...prev,
-					app,
-					loading: false,
-				}))
-			} catch (/** @type {any} */ err) {
-				setState(prev => ({
-					...prev,
-					error: /** @type {Error} */ (err),
-					loading: false,
-				}))
-			}
-		}
-
-		initApp()
-	}, [appKey])
-
-	// Loading state
-	if (state.loading) {
-		return (
-			<div className="app-loading" key={`loader-${appKey}`}>
-				Loading "{appKey}"...
-			</div>
-		)
-	}
-
-	// Error state
-	if (state.error) {
-		return (
-			<div className="app-error" key={`error-${appKey}`} role="alert">
-				Error in "{appKey}": {state.error?.message || String(state.error)}
-			</div>
-		)
-	}
-
-	if (!state.app) {
-		return (
-			<div className="app-error" key={`error-${appKey}`} role="alert">
-				Error in "{appKey}": Could not create an App
-			</div>
-		)
-	}
-
-	if (!Array.isArray(state.app.data?.$content) || !state.app.data.$content.length) {
-		return (
-			<div className="app-error" key={`error-${appKey}`} role="alert">
-				Error in "{appKey}": Empty $content in application data
-			</div>
-		)
-	}
-
-	// Render application content
-	return (
-		<div className={`app-container app-${appKey}`} key={`app-${appKey}`}>
-			{state.app.data.$content.map((blk, idx) =>
-				state.app.renderFn(blk, idx, {
-					data: state.app.data,
-					actions: state.app.actions,
-					t: state.app.t,
-				})
-			)}
-		</div>
 	)
 }
 
@@ -232,5 +96,4 @@ export {
 	useUI,
 	UIProvider,
 	UIContextValue,
-	renderBlock,
 }

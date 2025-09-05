@@ -18,6 +18,7 @@ export default class AppModule {
     run(action: any): Promise<void>;
     convert(value: any, from: any, to: any): Promise<string>;
     /**
+     *
      * @returns {JSX.Element | null}
      */
     render(key: any, context: any): JSX.Element | null;
