@@ -1,11 +1,20 @@
 import Element from "./Element.jsx"
 import { tokens } from "./tokens.js"
 import Theme from "./Theme.js"
-import { parseBlock } from "./utils/parseBlock.js"
+
+export {
+	components,
+	renderers,
+	UIReact,
+	useUI,
+	UIProvider,
+	UIContextValue,
+} from "./main.jsx"
 
 export {
 	tokens,
 	Element,
 	Theme,
-	parseBlock,
 }
+
+export default Element

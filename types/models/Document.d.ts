@@ -7,14 +7,18 @@ export default class Document {
     /**
      * @param {object} [input]
      * @param {Array<object>} [input.$content=[]]
+     * @param {string} [input.$lang=[]]
      * @param {any} [input.nav={}]
      */
     constructor(input?: {
         $content?: any[] | undefined;
+        $lang?: string | undefined;
         nav?: any;
     } | undefined);
     /** @type {Array<object>} */
     $content: Array<object>;
+    /** @type {string} */
+    $lang: string;
     /** @type {Navigation} */
     nav: Navigation;
     /**

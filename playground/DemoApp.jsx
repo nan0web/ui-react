@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import DB from '@nan0web/db-browser'
 import { NightTheme, Theme } from '@nan0web/ui-core'
-import UIReact from '../src/main.jsx'
+import { UIReact } from '../src/main.jsx'
 import ThemeSwitcher from '../src/components/atoms/ThemeSwitcher.jsx'
 
 /**

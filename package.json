@@ -28,6 +28,7 @@
 		"@nan0web/auth-core": "workspace:*",
 		"@nan0web/db": "workspace:*",
 		"@nan0web/db-browser": "workspace:*",
+		"@nan0web/core": "workspace:*",
 		"@nan0web/ui-core": "workspace:*",
 		"@testing-library/jest-dom": "^6.8.0",
 		"@testing-library/react": "^16.3.0",
@@ -40,6 +41,7 @@
 	},
 	"peerDependencies": {
 		"@nan0web/auth-core": "^1.0.0",
+		"@nan0web/core": "^1.0.0",
 		"@nan0web/db": "^1.0.0",
 		"@nan0web/db-browser": "^1.0.0",
 		"@nan0web/ui-core": "^1.0.0",

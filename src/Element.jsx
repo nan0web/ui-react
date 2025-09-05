@@ -1,14 +1,8 @@
-import { Element } from "@nan0web/ui-core"
+import { Element, Theme } from "@nan0web/ui-core"
+import { AppCore } from "@nan0web/core"
+import DB from "@nan0web/db-browser"
 import React from 'react'
-
-/**
- * @typedef {Object} UIContext
- * @property {Map<string, React.Component>} [components]
- * @property {Map<string, React.Component>} [renderers]
- * @property {Object} [data] - App data
- * @property {Object<string, Function>} [actions] - UI actions
- * @property {Function} [t] - i18n translator
- */
+import { UIContextValue } from "./main"
 
 // List of void elements </>
 const voidElements = new Set([
@@ -23,13 +17,14 @@ export default class ReactElement extends Element {
 	/**
 	 * @param {any} input
 	 * @param {string|number} key
-	 * @param {UIContext} context
+	 * @param {UIContextValue} context
 	 * @returns {JSX.Element | null}
 	 */
 	static render(input, key, context) {
 		const {
 			components = new Map(),
 			renderers = new Map(),
+			actions = {}
 		} = context
 
 		// Extract tag and content
@@ -65,8 +60,8 @@ export default class ReactElement extends Element {
 		for (const [name, value] of Object.entries(rawProps)) {
 			if (name.startsWith('on')) {
 				// If it is action
-				if (typeof value === 'string' && context.actions?.[value]) {
-					props[name] = context.actions[value]
+				if (typeof value === 'string' && actions[value]) {
+					props[name] = actions[value]
 					continue
 				}
 				// It is a function
