@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import DB from '@nan0web/db-browser'
 import { NightTheme, Theme } from '@nan0web/ui-core'
-import { UIReact } from '../src/main.jsx'
+import UIReact from '../src/UIReact.jsx'
 import ThemeSwitcher from '../src/components/atoms/ThemeSwitcher.jsx'
 
 /**
@@ -23,10 +23,15 @@ export default function DemoApp({ db }) {
 	// Initialise path + listen to history changes
 	useEffect(() => {
 		setCurrentPath(getPathFromUrl())
-		const handlePopState = () => setCurrentPath(getPathFromUrl())
+		const handlePopState = () => {
+			console.log("POPState", getPathFromUrl())
+			setCurrentPath(getPathFromUrl())
+		}
+		console.log("POPState started")
 		window.addEventListener('popstate', handlePopState)
 		return () => window.removeEventListener('popstate', handlePopState)
 	}, [])
+	console.log("DemoApp")
 
 	// Navigation handler
 	const handleNavigation = (path) => (e) => {

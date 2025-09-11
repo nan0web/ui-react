@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Theme from '../../Theme.js'
+import { useUI } from '../../context/UIContext.jsx'
 
 export default function Radio({ checked, onChange, ...props }) {
-	const config = Theme.atoms.Radio
+	const { theme } = useUI()
+	const config = theme.atoms.Radio
 	const style = {
 		width: config.size,
 		height: config.size,

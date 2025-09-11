@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Theme from '../../Theme.js'
+import { useUI } from '../../context/UIContext.jsx'
 
 export default function Card({ children, ...props }) {
-	const config = Theme.molecules.Card
+	const { theme } = useUI()
+	const config = theme.molecules.Card
 	const style = {
 		borderRadius: config.borderRadius,
 		boxShadow: config.boxShadow,

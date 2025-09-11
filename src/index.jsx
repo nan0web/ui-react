@@ -1,6 +1,11 @@
 import Element from "./Element.jsx"
 import { tokens } from "./tokens.js"
 import Theme from "./Theme.js"
+import components from "./components/index.jsx"
+import renderers from "./renderers/index.jsx"
+import UIReact from "./UIReact.jsx"
+import { useUI, UIProvider } from "./context/UIContext.jsx"
+import UIContextValue from "./context/UIContextValue.jsx"
 
 export {
 	components,
@@ -9,9 +14,6 @@ export {
 	useUI,
 	UIProvider,
 	UIContextValue,
-} from "./main.jsx"
-
-export {
 	tokens,
 	Element,
 	Theme,

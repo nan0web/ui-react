@@ -1,2 +1,2 @@
-declare const _default: Map<string, React.Component<any, any, any>>;
+declare const _default: Map<string, Function>;
 export default _default;

@@ -1,6 +1,6 @@
 import { Element, Theme } from "@nan0web/ui-core"
 import React from 'react'
-import { UIContextValue } from "./main.jsx"
+import UIContextValue from "./context/UIContextValue.jsx"
 
 // List of void elements </>
 const voidElements = new Set([
@@ -25,6 +25,7 @@ export default class ReactElement extends Element {
 		const {
 			renderers = new Map(),
 			components = new Map(),
+			apps = new Map(),
 			actions = {}
 		} = context
 
@@ -43,6 +44,22 @@ export default class ReactElement extends Element {
 		}
 
 		// Check if type exists in renderers map
+		if ("App" === type) {
+			const name = input[type] ?? ""
+			if (!name) {
+				throw new Error("App name must be provided withing input object { App: <name> }")
+			}
+			type = "div"
+			// const AppRenderer = apps.get(name)
+			// if (!AppRenderer) {
+			// 	throw new Error([
+			// 		["App not found in apps", name].join(": "),
+			// 		"Available apps:",
+			// 		...Array.from(apps.keys()),
+			// 	].join("\n"))
+			// }
+			// return <AppRenderer element={input} context={context} key={key} />
+		}
 		if (renderers.has(type)) {
 			const Renderer = renderers.get(type)
 			return <Renderer element={input} context={context} key={key} />

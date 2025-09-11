@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Theme from '../../Theme.js'
+import { useUI } from '../../context/UIContext.jsx'
 
 export default function Input({ type = 'text', ...props }) {
-	const config = Theme.atoms.Input
+	const { theme } = useUI()
+	const config = theme.atoms.Input
 	const style = {
 		borderRadius: config.borderRadius,
 		borderWidth: config.borderWidth,

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Theme from '../../Theme.js'
+import { useUI } from '../../context/UIContext.jsx'
 
 /**
  * Badge component with Bootstrap‑like variant colors and white text.
@@ -11,7 +11,8 @@ import Theme from '../../Theme.js'
  * @param {Object} [props.style] - Additional inline styles
  */
 export default function Badge({ children, variant = 'primary', ...props }) {
-	const config = Theme.atoms.Badge
+	const { theme } = useUI()
+	const config = theme.atoms.Badge
 
 	const variantBackground = {
 		primary:   '#0d6efd',

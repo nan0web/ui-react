@@ -9,6 +9,7 @@ import Select from './atoms/Select.jsx'
 import TextArea from './atoms/TextArea.jsx'
 import Card from './molecules/Card.jsx'
 import Modal from './organisms/Modal.jsx'
+import ThemeSwitcher from './atoms/ThemeSwitcher.jsx'
 
 /** @type {Map<string, React.Component<any, any, any>>} */
 // @ts-ignore @todo fix if you able to
@@ -24,6 +25,7 @@ const components = new Map([
 	['TextArea', TextArea],
 	['Card', Card],
 	['Modal', Modal],
+	['ThemeSwitcher', ThemeSwitcher]
 ])
 
 export default components

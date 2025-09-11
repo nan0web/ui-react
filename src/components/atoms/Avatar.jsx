@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Theme from '../../Theme.js'
+import { useUI } from '../../context/UIContext.jsx'
 
 export default function Avatar({ src, alt, size = 'md', ...props }) {
-	const config = Theme.atoms.Avatar
+	const { theme } = useUI()
+	const config = theme.atoms.Avatar
 	const style = {
 		width: config.size,
 		height: config.size,

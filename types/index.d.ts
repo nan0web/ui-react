@@ -1,6 +1,11 @@
 export default Element;
+import components from "./components/index.jsx";
+import renderers from "./renderers/index.jsx";
+import UIReact from "./UIReact.jsx";
+import { useUI } from "./context/UIContext.jsx";
+import { UIProvider } from "./context/UIContext.jsx";
+import UIContextValue from "./context/UIContextValue.jsx";
 import { tokens } from "./tokens.js";
 import Element from "./Element.jsx";
 import Theme from "./Theme.js";
-export { tokens, Element, Theme };
-export { components, renderers, UIReact, useUI, UIProvider, UIContextValue } from "./main.jsx";
+export { components, renderers, UIReact, useUI, UIProvider, UIContextValue, tokens, Element, Theme };

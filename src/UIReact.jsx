@@ -17,16 +17,19 @@ import components from './components/index.jsx'
 import renderers from './renderers/index.jsx'
 import Document from './models/Document.js'
 import Element from './Element.jsx'
+import { LogConsole } from '@nan0web/log'
 
 /**
  * Main UIReact component for rendering structured documents
  *
  * @param {Object} props
  * @param {DB} props.db - Database instance for content
- * @param {string} [props.documentPath="index.json"] - Path to document
+ * @param {string} [props.uri=""] - Path to document
+ * @param {Partial<Document>} [props.content={}] - Document in case of server side rendering
  * @param {Partial<UIContextValue>} [props.context] - Additional context (apps, lang, etc)
+ * @param {Console | LogConsole} [props.console] - Console for output
  */
-export function UIReact({ db, documentPath = 'index.json', context = {} }) {
+export default function UIReact({ db, uri = '', content = {}, context = {}, console = window.console || new LogConsole() }) {
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState(/** @type {Error | null} */(null))
 	const [document, setDocument] = useState(new Document())
@@ -35,11 +38,31 @@ export function UIReact({ db, documentPath = 'index.json', context = {} }) {
 		const loadDocument = async () => {
 			try {
 				setLoading(true)
-				const uri = documentPath.replace(/\.html$/, ".json")
-				const data = await db.fetch(uri)
-				const doc = Document.from(data)
+				if (typeof window !== 'undefined') {
+					// @ts-ignore
+					window.nan0 ??= {}
+				}
+				let doc
+				if (uri) {
+					console.debug("UIReact: Loading document from", uri)
+					const url = uri.replace(/\.html$/, ".json")
+					const data = await db.fetch(url)
+					if (typeof window !== 'undefined') {
+						// @ts-ignore
+						window.nan0.data = data
+					}
+					console.debug("UIReact: Loaded data", data)
+					doc = Document.from(data)
+				} else {
+					doc = Document.from(content)
+				}
+				if (typeof window !== 'undefined') {
+					// @ts-ignore
+					window.nan0.doc = doc
+				}
 				setDocument(doc)
 				setError(null)
+				console.debug("UIReact: Document loaded successfully", doc)
 			} catch (/** @type {any} */ err) {
 				console.error('UIReact: Failed to load document:', err)
 				setError(/** @type {Error} */(err))
@@ -49,7 +72,7 @@ export function UIReact({ db, documentPath = 'index.json', context = {} }) {
 		}
 
 		loadDocument()
-	}, [db, documentPath])
+	}, [uri])
 
 	// Create context with all necessary tools
 	const mergedContext = UIContextValue.from({
@@ -61,8 +84,11 @@ export function UIReact({ db, documentPath = 'index.json', context = {} }) {
 		...context,
 	})
 
+	console.debug("UIReact: Rendering with context", mergedContext)
+
 	// Display error state if needed
 	if (error) {
+		console.debug("UIReact: Rendering error state", error)
 		return (
 			<div className="ui-error" role="alert">
 				Failed to load document: {error.message || String(error)}
@@ -72,8 +98,11 @@ export function UIReact({ db, documentPath = 'index.json', context = {} }) {
 
 	// Loading state
 	if (loading) {
+		console.debug("UIReact: Rendering loading state")
 		return <div className="ui-loading">Loading...</div>
 	}
+
+	console.debug("UIReact: Rendering document content", document.$content)
 
 	return (
 		<StrictMode>
@@ -86,14 +115,4 @@ export function UIReact({ db, documentPath = 'index.json', context = {} }) {
 			</UIProvider>
 		</StrictMode>
 	)
-}
-
-// Export core functionality for extensions
-export {
-	components,
-	renderers,
-	Element,
-	useUI,
-	UIProvider,
-	UIContextValue,
 }

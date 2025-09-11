@@ -1,11 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Theme from '../../Theme.js'
+import { useUI } from '../../context/UIContext.jsx'
 
 export default function Modal({ isOpen, onClose, children, ...props }) {
 	if (!isOpen) return null
 
-	const config = Theme.organisms.Modal
+	const { theme } = useUI()
+	const config = theme.organisms.Modal
 	const overlayStyle = {
 		position: /** @type {import('csstype').Property.Position} */ ('fixed'),
 		top: 0,

@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Theme from '../../Theme.js'
+import { useUI } from '../../context/UIContext.jsx'
 
 export default function Select({ options = [], ...props }) {
-	const config = Theme.atoms.Select
+	const { theme } = useUI()
+	const config = theme.atoms.Select
 	const style = {
 		borderRadius: config.borderRadius,
 		borderWidth: config.borderWidth,

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Theme from '../../Theme.js'
+import { useUI } from '../../context/UIContext.jsx'
 
 const variantMap = {
 	h1: 'h1',
@@ -15,7 +15,8 @@ const variantMap = {
 }
 
 export default function Typography({ variant = 'body', children, ...props }) {
-	const config = Theme.atoms.Typography
+	const { theme } = useUI()
+	const config = theme.atoms.Typography
 	const Component = variantMap[variant] || 'p'
 	const style = {
 		fontSize: config.variants[variant]?.fontSize || config.variants.body.fontSize,

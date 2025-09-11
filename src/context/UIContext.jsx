@@ -21,6 +21,36 @@ export const useUI = () => useContext(UIContext)
  */
 export function UIProvider({ children, value: initValue = {} }) {
 	const [theme, setTheme] = useState(() => initValue.theme || Theme)
-	const value = UIContextValue.from({ initValue, theme, setTheme })
+	const [lang, setLang] = useState(() => initValue.lang || 'en')
+	const [db, setDb] = useState(() => initValue.db)
+	const [reducedMotion, setReducedMotion] = useState(() => Boolean(initValue.reducedMotion))
+	const [apps, setApps] = useState(() => initValue.apps || new Map())
+	const [components, setComponents] = useState(() => initValue.components || new Map())
+	const [renderers, setRenderers] = useState(() => initValue.renderers || new Map())
+	const [actions, setActions] = useState(() => initValue.actions || {})
+	const [data, setData] = useState(() => initValue.data || {})
+
+	const value = UIContextValue.from({
+		initValue,
+		theme,
+		setTheme,
+		lang,
+		setLang,
+		db,
+		setDb,
+		reducedMotion,
+		setReducedMotion,
+		apps,
+		setApps,
+		components,
+		setComponents,
+		renderers,
+		setRenderers,
+		actions,
+		setActions,
+		data,
+		setData
+	})
+
 	return <UIContext.Provider value={value}>{children}</UIContext.Provider>
 }

@@ -24,7 +24,7 @@ declare class UIContextValue {
      * @param {Record<string, Function>} [input.actions] - UI actions
      */
     constructor(input?: {
-        theme?: typeof Theme | undefined;
+        theme?: import("@nan0web/ui-core/types/theme/Theme").ThemeConfig | undefined;
         lang?: string | undefined;
         db?: DB | undefined;
         reducedMotion?: boolean | undefined;
@@ -39,11 +39,11 @@ declare class UIContextValue {
         renderers?: Map<string, import("react").Component<any, any, any>> | undefined;
         actions?: Record<string, Function> | undefined;
     } | undefined);
-    theme: typeof Theme;
+    theme: import("@nan0web/ui-core/types/theme/Theme").ThemeConfig;
     lang: string;
     db: DB;
     reducedMotion: boolean;
-    setTheme: Function;
+    setTheme: (...args: any[]) => any;
     renderFn: Function;
     components: Map<any, any>;
     renderers: Map<any, any>;
@@ -56,7 +56,7 @@ declare class UIContextValue {
      * @returns {UIContextValue}
      */
     extend(overrides?: any): UIContextValue;
+    #private;
 }
-import { Theme } from "@nan0web/ui-core";
 import DB from "@nan0web/db-browser";
 import AppCore from "@nan0web/core";

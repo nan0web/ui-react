@@ -42,7 +42,7 @@ class UIContextValue {
 		this.lang = lang
 		this.db = db
 		this.reducedMotion = Boolean(reducedMotion)
-		this.setTheme = typeof setTheme === 'function' ? setTheme : () => { }
+		this.setTheme = this.#proxy("setTheme", typeof setTheme === 'function' ? setTheme : () => { })
 		this.renderFn = renderFn
 		this.components = components instanceof Map
 			? components
@@ -70,12 +70,20 @@ class UIContextValue {
 		Object.assign(this, rest)
 	}
 
+	#proxy(target, fn) {
+		return (...args) => {
+			console.debug(target, ...args)
+			return fn(...args)
+		}
+	}
+
 	/**
 	 * Extend current context and returns new context value.
 	 * @param {Object} overrides
 	 * @returns {UIContextValue}
 	 */
 	extend(overrides = {}) {
+		console.debug("UIContextValue.extend", overrides)
 		return new UIContextValue({
 			...this,
 			...overrides,
@@ -88,6 +96,7 @@ class UIContextValue {
 	 */
 	static from(input) {
 		if (input instanceof UIContextValue) return input
+		console.debug("UIContextValue.from", input)
 		return new UIContextValue(input)
 	}
 }

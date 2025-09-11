@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Theme from '../../Theme.js'
+import { useUI } from '../../context/UIContext.jsx'
 
 export default function Checkbox({ checked, onChange, ...props }) {
-	const config = Theme.atoms.Checkbox
+	const { theme } = useUI()
+	const config = theme.atoms.Checkbox
 	const style = {
 		width: config.size,
 		height: config.size,
