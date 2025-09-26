@@ -9,18 +9,25 @@ export default class Document {
      * @param {Array<object>} [input.$content=[]]
      * @param {string} [input.$lang="en"]
      * @param {any} [input.nav=new Navigation()]
+     * @param {any} [input.t=new Map()]
      */
     constructor(input?: {
         $content?: any[] | undefined;
         $lang?: string | undefined;
         nav?: any;
+        t?: any;
     } | undefined);
-    /** @type {Array<object>} */
-    $content: Array<object>;
+    /**
+     * Content configuration for the document page.
+     * @type {Array<Object>}
+     */
+    $content: Array<any>;
     /** @type {string} */
     $lang: string;
     /** @type {Navigation} */
     nav: Navigation;
+    /** @type {Map<string, string>} */
+    t: Map<string, string>;
     /**
      * @param {string} type
      * @returns {Array<object>}

@@ -9,7 +9,7 @@
  * - The separation is made explicit through type and path
  */
 
-import React, { useEffect, useState, StrictMode } from 'react'
+import React, { useEffect, useState, StrictMode, useCallback } from 'react'
 import DB from "@nan0web/db-browser"
 import { UIProvider, useUI } from './context/UIContext.jsx'
 import UIContextValue from "./context/UIContextValue.jsx"
@@ -18,6 +18,7 @@ import renderers from './renderers/index.jsx'
 import Document from './models/Document.js'
 import Element from './Element.jsx'
 import { LogConsole } from '@nan0web/log'
+import { createT } from "@nan0web/i18n"
 
 /**
  * Main UIReact component for rendering structured documents
@@ -32,7 +33,9 @@ import { LogConsole } from '@nan0web/log'
 export default function UIReact({ db, uri = '', content = {}, context = {}, console = window.console || new LogConsole() }) {
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState(/** @type {Error | null} */(null))
+	const [vocab, setVocab] = useState({})
 	const [document, setDocument] = useState(new Document())
+	const t = useCallback(createT(vocab), [vocab])
 
 	useEffect(() => {
 		const loadDocument = async () => {
@@ -43,9 +46,10 @@ export default function UIReact({ db, uri = '', content = {}, context = {}, cons
 					window.nan0 ??= {}
 				}
 				let doc
-				if (uri) {
-					console.debug("UIReact: Loading document from", uri)
-					const url = uri.replace(/\.html$/, ".json")
+				const href = uri || "/index.html"
+				if (href) {
+					const url = href.replace(/\.html$/, ".json")
+					console.debug("UIReact: Loading document from", url)
 					const data = await db.fetch(url)
 					if (typeof window !== 'undefined') {
 						// @ts-ignore
@@ -56,6 +60,9 @@ export default function UIReact({ db, uri = '', content = {}, context = {}, cons
 				} else {
 					doc = Document.from(content)
 				}
+				if (doc.t.size) {
+					setVocab(doc.t)
+				}
 				if (typeof window !== 'undefined') {
 					// @ts-ignore
 					window.nan0.doc = doc
@@ -65,6 +72,7 @@ export default function UIReact({ db, uri = '', content = {}, context = {}, cons
 				console.debug("UIReact: Document loaded successfully", doc)
 			} catch (/** @type {any} */ err) {
 				console.error('UIReact: Failed to load document:', err)
+				console.debug(err.stack)
 				setError(/** @type {Error} */(err))
 			} finally {
 				setLoading(false)
@@ -78,9 +86,11 @@ export default function UIReact({ db, uri = '', content = {}, context = {}, cons
 	const mergedContext = UIContextValue.from({
 		components,
 		renderers,
+		console,
 		apps: context.apps ?? new Map(),
 		lang: document.$lang ?? 'en',
 		db,
+		t,
 		...context,
 	})
 

@@ -1,0 +1,16 @@
+$content:
+  - h1: Card Component
+  - p: Card components provide a container for related content with consistent
+      styling.
+  - h2: Basic Card
+  - Card:
+      - h3: Card title
+      - p: Card content goes here.
+  - h2: Card with Image
+  - Card:
+      - img: true
+        $src: /pic.webp
+        $alt: Sample image
+      - p: Card with an image.
+  - a: ← All Components
+    $href: /playground/index.html

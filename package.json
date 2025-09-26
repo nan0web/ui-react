@@ -5,15 +5,43 @@
 	"main": "./src/index.jsx",
 	"types": "./types/index.d.ts",
 	"type": "module",
+	"exports": {
+		".": {
+			"types": "./types/index.d.ts",
+			"default": "./src/index.jsx"
+		},
+		"./components/atoms/*": {
+			"types": "./types/components/atoms/*.d.ts",
+			"default": "./src/components/atoms/*.jsx"
+		},
+		"./components/molecules/*": {
+			"types": "./types/components/molecules/*.d.ts",
+			"default": "./src/components/molecules/*.jsx"
+		},
+		"./components/organisms/*": {
+			"types": "./types/components/organisms/*.d.ts",
+			"default": "./src/components/organisms/*.jsx"
+		},
+		"./context": {
+			"types": "./types/context/*.d.ts",
+			"default": "./src/context/*.jsx"
+		},
+		"./vite": {
+			"types": "./types/vite/index.d.ts",
+			"default": "./src/vite/index.js"
+		},
+		"./main": "./src/main.jsx"
+	},
 	"scripts": {
+		"build": "tsc && vite build",
+		"clean": "rm -rf dist",
+		"dev": "vite",
+		"playground": "vite --port 4242",
+		"preview": "vite preview",
 		"test": "npm run test:js && npm run test:jsx",
 		"test:jsx": "vitest run",
 		"test:js": "node --test \"src/**/*.test.js\"",
-		"test:debug": "vitest --inspect --no-file-parallelism",
-		"playground": "vite --port 4242",
-		"dev": "vite",
-		"build": "tsc && vite build",
-		"preview": "vite preview"
+		"test:debug": "vitest --inspect --no-file-parallelism"
 	},
 	"keywords": [
 		"react",
@@ -27,17 +55,15 @@
 	"packageManager": "pnpm@10.11.0",
 	"devDependencies": {
 		"@nan0web/auth-core": "workspace:*",
+		"@nan0web/core": "workspace:*",
 		"@nan0web/db": "workspace:*",
 		"@nan0web/db-browser": "workspace:*",
-		"@nan0web/core": "workspace:*",
 		"@nan0web/ui-core": "workspace:*",
 		"@testing-library/jest-dom": "^6.8.0",
 		"@testing-library/react": "^16.3.0",
 		"@vitejs/plugin-react": "^5.0.2",
 		"prop-types": "^15.8.1",
-		"react": "^19.1.1",
-		"react-dom": "^19.1.1",
-		"vite": "^7.1.4",
+		"vite": "^7.1.5",
 		"vitest": "^3.2.4"
 	},
 	"peerDependencies": {

@@ -18,6 +18,7 @@ declare class UIContextValue {
      * @param {Function} [input.setTheme]
      * @param {Function} [input.t]
      * @param {Function} [input.renderFn]
+     * @param {Console} [input.console]
      * @param {Map<string, () => Promise<{default: typeof AppCore}>>} [input.apps]
      * @param {Map<string, React.Component>} [input.components]
      * @param {Map<string, React.Component>} [input.renderers]
@@ -32,6 +33,7 @@ declare class UIContextValue {
         setTheme?: Function | undefined;
         t?: Function | undefined;
         renderFn?: Function | undefined;
+        console?: Console | undefined;
         apps?: Map<string, () => Promise<{
             default: typeof AppCore;
         }>> | undefined;
@@ -44,6 +46,8 @@ declare class UIContextValue {
     db: DB;
     reducedMotion: boolean;
     setTheme: (...args: any[]) => any;
+    console: Console;
+    t: (...args: any[]) => any;
     renderFn: Function;
     components: Map<any, any>;
     renderers: Map<any, any>;

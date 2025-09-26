@@ -16,6 +16,7 @@ class UIContextValue {
 	 * @param {Function} [input.setTheme]
 	 * @param {Function} [input.t]
 	 * @param {Function} [input.renderFn]
+	 * @param {Console} [input.console]
 	 * @param {Map<string, () => Promise<{default: typeof AppCore}>>} [input.apps]
 	 * @param {Map<string, React.Component>} [input.components]
 	 * @param {Map<string, React.Component>} [input.renderers]
@@ -31,6 +32,7 @@ class UIContextValue {
 			t = k => k,
 			data = {},
 			renderFn = () => null,
+			console: consoleInitial = console,
 			components = new Map(),
 			renderers = new Map(),
 			apps = new Map(),
@@ -43,6 +45,8 @@ class UIContextValue {
 		this.db = db
 		this.reducedMotion = Boolean(reducedMotion)
 		this.setTheme = this.#proxy("setTheme", typeof setTheme === 'function' ? setTheme : () => { })
+		this.console = consoleInitial
+		this.t = this.#proxy("t", typeof t === 'function' ? t : (k => k))
 		this.renderFn = renderFn
 		this.components = components instanceof Map
 			? components
@@ -72,7 +76,7 @@ class UIContextValue {
 
 	#proxy(target, fn) {
 		return (...args) => {
-			console.debug(target, ...args)
+			this.console.debug(target, ...args)
 			return fn(...args)
 		}
 	}
@@ -83,7 +87,7 @@ class UIContextValue {
 	 * @returns {UIContextValue}
 	 */
 	extend(overrides = {}) {
-		console.debug("UIContextValue.extend", overrides)
+		this.console.debug("UIContextValue.extend", overrides)
 		return new UIContextValue({
 			...this,
 			...overrides,
@@ -96,7 +100,6 @@ class UIContextValue {
 	 */
 	static from(input) {
 		if (input instanceof UIContextValue) return input
-		console.debug("UIContextValue.from", input)
 		return new UIContextValue(input)
 	}
 }

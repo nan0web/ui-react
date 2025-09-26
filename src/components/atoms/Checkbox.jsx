@@ -4,13 +4,21 @@ import { useUI } from '../../context/UIContext.jsx'
 
 export default function Checkbox({ checked, onChange, ...props }) {
 	const { theme } = useUI()
-	const config = theme.atoms.Checkbox
+	const {
+		size = '16px',
+		borderWidth = '1px',
+		borderColor = '#cccccc',
+		borderRadius = '3px',
+		backgroundColor = '#ffffff',
+		checkedColor = '#0d6efd',
+	} = theme.atoms?.Checkbox ?? {}
+	
 	const style = {
-		width: config.size,
-		height: config.size,
-		border: `${config.borderWidth} solid ${config.borderColor}`,
-		borderRadius: config.borderRadius,
-		backgroundColor: config.backgroundColor,
+		width: size,
+		height: size,
+		border: `${borderWidth} solid ${borderColor}`,
+		borderRadius,
+		backgroundColor,
 		appearance: 'none',
 		position: 'relative',
 		cursor: 'pointer',
@@ -18,7 +26,7 @@ export default function Checkbox({ checked, onChange, ...props }) {
 	}
 
 	const checkedStyle = checked ? {
-		backgroundColor: config.checkedColor,
+		backgroundColor: checkedColor,
 		...style,
 	} : style
 

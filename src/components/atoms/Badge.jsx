@@ -12,7 +12,14 @@ import { useUI } from '../../context/UIContext.jsx'
  */
 export default function Badge({ children, variant = 'primary', ...props }) {
 	const { theme } = useUI()
-	const config = theme.atoms.Badge
+	const {
+		borderRadius = '4px',
+		fontSize = '12px',
+		paddingX = '8px',
+		paddingY = '4px',
+		fontWeight = 'bold',
+		backgroundColor = '#0d6efd',
+	} = theme.atoms?.Badge ?? {}
 
 	const variantBackground = {
 		primary:   '#0d6efd',
@@ -23,16 +30,16 @@ export default function Badge({ children, variant = 'primary', ...props }) {
 		info:      '#0dcaf0',
 		light:     '#f8f9fa',
 		dark:      '#212529',
-	}[variant] ?? config.backgroundColor
+	}[variant] ?? backgroundColor
 
 	const style = {
-		borderRadius: config.borderRadius,
-		fontSize: config.fontSize,
-		paddingLeft: config.paddingX,
-		paddingRight: config.paddingX,
-		paddingTop: config.paddingY,
-		paddingBottom: config.paddingY,
-		fontWeight: config.fontWeight,
+		borderRadius,
+		fontSize,
+		paddingLeft: paddingX,
+		paddingRight: paddingX,
+		paddingTop: paddingY,
+		paddingBottom: paddingY,
+		fontWeight,
 		backgroundColor: variantBackground,
 		color: '#fff',
 		display: 'inline-block',

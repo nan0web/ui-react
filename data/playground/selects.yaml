@@ -1,0 +1,14 @@
+$content:
+  - h1: Select Component
+  - p: Select components allow users to choose from a list of options.
+  - h2: Basic Select
+  - Select: true
+    $options:
+      - value: option1
+        label: Option 1
+      - value: option2
+        label: Option 2
+      - value: option3
+        label: Option 3
+  - a: ← All Components
+    $href: /playground/index.html

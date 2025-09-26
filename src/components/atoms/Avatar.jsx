@@ -2,14 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useUI } from '../../context/UIContext.jsx'
 
-export default function Avatar({ src, alt, size = 'md', ...props }) {
+export default function Avatar({ src, alt, ...props }) {
 	const { theme } = useUI()
-	const config = theme.atoms.Avatar
+	const {
+		size = "40px",
+		borderRadius = "50%",
+		border = "none",
+	} = theme.atoms?.Avatar ?? {}
 	const style = {
-		width: config.size,
-		height: config.size,
-		borderRadius: config.borderRadius,
-		border: config.border,
+		width: size,
+		height: size,
+		borderRadius,
+		border,
 		...props.style,
 	}
 

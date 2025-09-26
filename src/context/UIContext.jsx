@@ -9,7 +9,7 @@ const UIContext = createContext(new UIContextValue())
 
 /**
  * Hook to access UI context.
- * @returns {Object} context
+ * @returns {UIContextValue} context
  */
 export const useUI = () => useContext(UIContext)
 
@@ -29,6 +29,7 @@ export function UIProvider({ children, value: initValue = {} }) {
 	const [renderers, setRenderers] = useState(() => initValue.renderers || new Map())
 	const [actions, setActions] = useState(() => initValue.actions || {})
 	const [data, setData] = useState(() => initValue.data || {})
+	const [t, setT] = useState(() => initValue.t ?? (k => k))
 
 	const value = UIContextValue.from({
 		initValue,
@@ -49,7 +50,9 @@ export function UIProvider({ children, value: initValue = {} }) {
 		actions,
 		setActions,
 		data,
-		setData
+		setData,
+		t,
+		setT,
 	})
 
 	return <UIContext.Provider value={value}>{children}</UIContext.Provider>

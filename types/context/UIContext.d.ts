@@ -8,6 +8,6 @@ export function UIProvider({ children, value: initValue }: {
     children: React.ReactNode;
     value: Partial<UIContextValue>;
 }): import("react/jsx-runtime").JSX.Element;
-export function useUI(): any;
+export function useUI(): UIContextValue;
 import React from 'react';
 import UIContextValue from './UIContextValue.jsx';

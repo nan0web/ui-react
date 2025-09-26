@@ -41,7 +41,25 @@ export default function Button({
 	...props
 }) {
 	const { theme, reducedMotion } = useUI()
-	const config = theme.atoms.Button
+	const config = theme.atoms.Button ?? {
+		outline: {},
+		solid: {},
+		size: {},
+		animation: {},
+		background: "",
+		shadow: "",
+		color: "",
+		borderRadius: "",
+		borderWidth: "",
+		borderColor: "",
+		fontSize: "",
+		paddingLeft: "",
+		paddingRight: "",
+		paddingTop: "",
+		paddingBottom: "",
+		paddingX: "",
+		paddingY: "",
+	}
 
 	const isOutline = Boolean(outline)
 	const baseName = variant.toLowerCase()

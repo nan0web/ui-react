@@ -1,0 +1,14 @@
+$content:
+  - h1: Checkbox Component
+  - p: Checkboxes allow users to select one or multiple options from a group.
+  - h2: Unchecked Checkbox
+  - Checkbox: true
+    $defaultChecked: false
+  - h2: Checked Checkbox
+  - Checkbox: true
+    $defaultChecked: true
+  - h2: Disabled Checkbox
+  - Checkbox: true
+    $disabled: true
+  - a: ← All Components
+    $href: /playground/index.html

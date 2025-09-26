@@ -26,7 +26,8 @@ export default class ReactElement extends Element {
 			renderers = new Map(),
 			components = new Map(),
 			apps = new Map(),
-			actions = {}
+			actions = {},
+			console = window.console,
 		} = context
 
 		// Extract tag and content
@@ -62,7 +63,7 @@ export default class ReactElement extends Element {
 		}
 		if (renderers.has(type)) {
 			const Renderer = renderers.get(type)
-			return <Renderer element={input} context={context} key={key} />
+			return <Renderer element={input} context={context} key={key} {...rawProps} />
 		}
 
 		// Determine if it's a void element

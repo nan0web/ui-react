@@ -4,17 +4,26 @@ import { useUI } from '../../context/UIContext.jsx'
 
 export default function Select({ options = [], ...props }) {
 	const { theme } = useUI()
-	const config = theme.atoms.Select
+	const {
+		borderRadius = '4px',
+		borderWidth = '1px',
+		borderColor = '#cccccc',
+		fontSize = '14px',
+		paddingX = '12px',
+		paddingY = '8px',
+		fontFamily = 'sans-serif',
+	} = theme.atoms?.Select ?? {}
+	
 	const style = {
-		borderRadius: config.borderRadius,
-		borderWidth: config.borderWidth,
-		borderColor: config.borderColor,
-		fontSize: config.fontSize,
-		paddingLeft: config.paddingX,
-		paddingRight: config.paddingX,
-		paddingTop: config.paddingY,
-		paddingBottom: config.paddingY,
-		fontFamily: config.fontFamily,
+		borderRadius,
+		borderWidth,
+		borderColor,
+		fontSize,
+		paddingLeft: paddingX,
+		paddingRight: paddingX,
+		paddingTop: paddingY,
+		paddingBottom: paddingY,
+		fontFamily,
 		...props.style,
 	}
 

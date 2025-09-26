@@ -6,13 +6,16 @@
  * @param {string} [props.uri=""] - Path to document
  * @param {Partial<Document>} [props.content={}] - Document in case of server side rendering
  * @param {Partial<UIContextValue>} [props.context] - Additional context (apps, lang, etc)
+ * @param {Console | LogConsole} [props.console] - Console for output
  */
-export default function UIReact({ db, uri, content, context }: {
+export default function UIReact({ db, uri, content, context, console }: {
     db: DB;
     uri?: string | undefined;
     content?: Partial<Document> | undefined;
     context?: Partial<UIContextValue> | undefined;
+    console?: Console | LogConsole | undefined;
 }): import("react/jsx-runtime").JSX.Element;
 import DB from "@nan0web/db-browser";
 import Document from './models/Document.js';
 import UIContextValue from "./context/UIContextValue.jsx";
+import { LogConsole } from '@nan0web/log';

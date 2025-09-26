@@ -1,8 +1,7 @@
-declare function Avatar({ src, alt, size, ...props }: {
+declare function Avatar({ src, alt, ...props }: {
     [x: string]: any;
     src: any;
     alt: any;
-    size?: string | undefined;
 }): import("react/jsx-runtime").JSX.Element;
 declare namespace Avatar {
     namespace propTypes {

@@ -16,11 +16,21 @@ const variantMap = {
 
 export default function Typography({ variant = 'body', children, ...props }) {
 	const { theme } = useUI()
-	const config = theme.atoms.Typography
+	const { variants = {} } = theme.atoms?.Typography ?? {}
+	
+	const defaultBody = { 
+		fontSize: '16px', 
+		fontWeight: 'normal' 
+	}
+	const { 
+		fontSize = defaultBody.fontSize, 
+		fontWeight = defaultBody.fontWeight 
+	} = variants[variant] ?? variants.body ?? defaultBody
+	
 	const Component = variantMap[variant] || 'p'
 	const style = {
-		fontSize: config.variants[variant]?.fontSize || config.variants.body.fontSize,
-		fontWeight: config.variants[variant]?.fontWeight || config.variants.body.fontWeight,
+		fontSize,
+		fontWeight,
 		...props.style,
 	}
 
