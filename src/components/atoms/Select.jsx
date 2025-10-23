@@ -15,9 +15,8 @@ export default function Select({ options = [], ...props }) {
 	} = theme.atoms?.Select ?? {}
 	
 	const style = {
+		border: `${borderWidth} solid ${borderColor}`,
 		borderRadius,
-		borderWidth,
-		borderColor,
 		fontSize,
 		paddingLeft: paddingX,
 		paddingRight: paddingX,
@@ -27,23 +26,25 @@ export default function Select({ options = [], ...props }) {
 		...props.style,
 	}
 
-	return (
-		<select style={style} {...props}>
-			{options.map((option, i) => (
-				<option key={i} value={option.value}>
-					{option.label}
-				</option>
-			))}
-		</select>
-	)
+	const selectOptions = options.map((option, i) => {
+		if (typeof option === 'string') {
+			return React.createElement('option', { key: i, value: option }, option)
+		}
+		return React.createElement('option', { key: i, value: option.value }, option.label)
+	})
+
+	return React.createElement('select', { style, ...props }, selectOptions)
 }
 
 Select.propTypes = {
 	options: PropTypes.arrayOf(
-		PropTypes.shape({
-			value: PropTypes.string.isRequired,
-			label: PropTypes.string.isRequired,
-		})
+		PropTypes.oneOfType([
+			PropTypes.string,
+			PropTypes.shape({
+				value: PropTypes.string.isRequired,
+				label: PropTypes.string.isRequired,
+			})
+		])
 	),
 	style: PropTypes.object,
 }

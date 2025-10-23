@@ -23,26 +23,33 @@ $content:
   - Button: Link
     $variant: link
   - h2: Outline Primary
-  - Button: Outline Primary
-    $variant: outlinePrimary
+  - Button: Primary
+    $variant: primary
+    $outline: true
   - h2: Outline Secondary
-  - Button: Outline Secondary
-    $variant: outlineSecondary
+  - Button: Secondary
+    $variant: secondary
+    $outline: true
   - h2: Outline Success
-  - Button: Outline Success
-    $variant: outlineSuccess
+  - Button: Success
+    $variant: success
+    $outline: true
   - h2: Outline Warning
-  - Button: Outline Warning
-    $variant: outlineWarning
+  - Button: Warning
+    $variant: warning
+    $outline: true
   - h2: Outline Danger
   - Button: Outline Danger
-    $variant: outlineDanger
+    $variant: danger
+    $outline: true
   - h2: Outline Info
   - Button: Outline Info
-    $variant: outlineInfo
+    $variant: info
+    $outline: true
   - h2: Small Button
   - Button: Small
     $size: sm
+    $outline: true
   - h2: Disabled Button
   - Button: Cannot click
     $disabled: true

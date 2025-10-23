@@ -96,7 +96,7 @@ export default function nan0webVitePlugin({
 			}
 		},
 
-		configureServer(server) {
+		async configureServer(server) {
 			// connect to database
 			input.connect().catch(err =>
 				logger.error(`Failed to connect to input DB: ${err.message}`, { timestamp: true })
@@ -114,6 +114,8 @@ export default function nan0webVitePlugin({
 			// 		logger.error(`Error updating ${uri}: ${error.message}`, { timestamp: true })
 			// 	}
 			// })
+
+			await buildSite(input, output, logger)
 
 			// Додаємо наш middleware
 			server.middlewares.use(handleRequest)

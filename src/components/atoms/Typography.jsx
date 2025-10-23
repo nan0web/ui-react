@@ -14,31 +14,34 @@ const variantMap = {
 	caption: 'span',
 }
 
+/**
+ * @param {Object} props
+ * @param {'h1'|'h2'|'h3'|'h4'|'h5'|'h6'|'body'|'small'|'caption'} [props.variant='body']
+ * @param {React.ReactNode} props.children
+ */
 export default function Typography({ variant = 'body', children, ...props }) {
 	const { theme } = useUI()
-	const { variants = {} } = theme.atoms?.Typography ?? {}
-	
-	const defaultBody = { 
-		fontSize: '16px', 
-		fontWeight: 'normal' 
-	}
-	const { 
-		fontSize = defaultBody.fontSize, 
-		fontWeight = defaultBody.fontWeight 
-	} = variants[variant] ?? variants.body ?? defaultBody
-	
-	const Component = variantMap[variant] || 'p'
-	const style = {
-		fontSize,
-		fontWeight,
-		...props.style,
+	const typographyConfig = theme?.atoms?.Typography || {}
+	// @ts-ignore – TS cannot infer that `variants` may exist on the config object.
+	const variants = typographyConfig.variants ?? {}
+
+	const defaultStyles = {
+		margin: '0 0 1rem 0',
+		fontWeight: '400',
+		lineHeight: '1.5'
 	}
 
-	return (
-		<Component style={style} {...props}>
-			{children}
-		</Component>
-	)
+	const variantStyles = variants[variant] ?? variants.body ?? {}
+	const allStyles = {
+		...defaultStyles,
+		...variantStyles,
+		// @ts-ignore
+		...props.style, // `props.style` may be undefined; spreading works at runtime.
+	}
+
+	const Component = variantMap[variant] || 'p'
+
+	return React.createElement(Component, { style: allStyles, ...props }, children)
 }
 
 Typography.propTypes = {

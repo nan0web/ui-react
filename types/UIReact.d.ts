@@ -1,21 +1,16 @@
 /**
- * Main UIReact component for rendering structured documents
- *
  * @param {Object} props
- * @param {DB} props.db - Database instance for content
- * @param {string} [props.uri=""] - Path to document
- * @param {Partial<Document>} [props.content={}] - Document in case of server side rendering
- * @param {Partial<UIContextValue>} [props.context] - Additional context (apps, lang, etc)
- * @param {Console | LogConsole} [props.console] - Console for output
+ * @param {DB} props.db                             database instance
+ * @param {string} [props.uri='']                   document URI (e.g. “uk/index”)
+ * @param {Partial<UIContextValue>} [props.context] extra context (apps, actions,…)
+ * @param {Console|LogConsole} [props.console]      logger (default: window.console)
  */
-export default function UIReact({ db, uri, content, context, console }: {
+export default function UIReact({ db, uri, context, console, }: {
     db: DB;
     uri?: string | undefined;
-    content?: Partial<Document> | undefined;
     context?: Partial<UIContextValue> | undefined;
     console?: Console | LogConsole | undefined;
 }): import("react/jsx-runtime").JSX.Element;
-import DB from "@nan0web/db-browser";
-import Document from './models/Document.js';
-import UIContextValue from "./context/UIContextValue.jsx";
+import DB from '@nan0web/db-browser';
+import UIContextValue from './context/UIContextValue.jsx';
 import { LogConsole } from '@nan0web/log';

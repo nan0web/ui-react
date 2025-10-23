@@ -1,0 +1,27 @@
+{
+  "$content": [
+    {
+      "div": [
+        {
+          "Typography": [
+            "Playground: Apps з Renderers"
+          ],
+          "$variant": "h1",
+          "$style": "margin-bottom: 1rem;"
+        },
+        {
+          "App": "DemoApp",
+          "$uri": "/playground"
+        },
+        {
+          "HelloWorld": true,
+          "$name": "Custom Component",
+          "$style": {
+            "backgroundColor": "#28a745"
+          }
+        }
+      ],
+      "$style": "padding: 2rem; max-width: 800px; margin: 0 auto;"
+    }
+  ]
+}

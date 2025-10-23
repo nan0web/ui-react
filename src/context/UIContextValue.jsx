@@ -3,6 +3,23 @@ import { Theme } from "@nan0web/ui-core"
 import DB from "@nan0web/db-browser"
 
 /**
+ * @typedef {Function} SyncImport
+ * @template T
+ * @description () => T
+ */
+
+/**
+ * @typedef {Function} AsyncImport
+ * @template T
+ * @description () => Promise<{ default: T } | T>
+ */
+
+/**
+ * @typedef {T | SyncImport<T> | AsyncImport<T>} Loadable
+ * @template T
+ */
+
+/**
  * Tiny context UI for all components.
  */
 class UIContextValue {
@@ -17,9 +34,9 @@ class UIContextValue {
 	 * @param {Function} [input.t]
 	 * @param {Function} [input.renderFn]
 	 * @param {Console} [input.console]
-	 * @param {Map<string, () => Promise<{default: typeof AppCore}>>} [input.apps]
-	 * @param {Map<string, React.Component>} [input.components]
-	 * @param {Map<string, React.Component>} [input.renderers]
+	 * @param {Map<string, Loadable<React.ComponentType>>} [input.components]
+	 * @param {Map<string, Loadable<Function>>} [input.renderers]
+	 * @param {Map<string, Loadable<typeof AppCore>>} [input.apps]
 	 * @param {Record<string, Function>} [input.actions] - UI actions
 	 */
 	constructor(input = {}) {

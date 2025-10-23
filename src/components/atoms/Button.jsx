@@ -2,144 +2,95 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useUI } from '../../context/UIContext.jsx'
 
-/**
- * Lighten or darken a hex colour.
- *
- * @param {string} hex – colour in #rrggbb format.
- * @param {number} amount – positive to lighten, negative to darken (0‑255).
- * @returns {string} Adjusted colour in #rrggbb.
- */
-function adjustHex(hex, amount) {
-	const num = parseInt(hex.replace('#', ''), 16)
-	const r = Math.min(255, Math.max(0, (num >> 16) + amount))
-	const g = Math.min(255, Math.max(0, ((num >> 8) & 0x00ff) + amount))
-	const b = Math.min(255, Math.max(0, (num & 0x0000ff) + amount))
-	return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`
-}
-
-/**
- * Button component with Bootstrap‑like variants, optional outline,
- * animation that respects the a11y “reduced motion” flag and dark theme.
- *
- * @param {Object} props
- * @param {React.ReactNode} props.children
- * @param {string} [props.variant='primary']
- *        One of: primary, secondary, success, warning, danger,
- *        info, light, dark, link
- * @param {boolean} [props.outline=false] If `true` use outline variant.
- * @param {string} [props.size='md'] 'md' (default) or 'sm'.
- * @param {Object} [props.style] additional inline styles.
- * @param {boolean} [props.disabled] disables the button.
- * @param {function} [props.onKeyDown] optional keyDown handler.
- * @param {function} [props.onKeyUp] optional keyUp handler.
- */
-export default function Button({
-	children,
-	variant = 'primary',
-	outline = false,
-	size = 'md',
-	...props
-}) {
+export default function Button({ children, variant = 'primary', outline = false, size = 'md', ...props }) {
 	const { theme, reducedMotion } = useUI()
-	const config = theme.atoms.Button ?? {
-		outline: {},
-		solid: {},
-		size: {},
-		animation: {},
-		background: "",
-		shadow: "",
-		color: "",
-		borderRadius: "",
-		borderWidth: "",
-		borderColor: "",
-		fontSize: "",
-		paddingLeft: "",
-		paddingRight: "",
-		paddingTop: "",
-		paddingBottom: "",
-		paddingX: "",
-		paddingY: "",
+	const baseConfig = {
+		sizes: {
+			sm: { fontSize: '0.875rem', padding: '0.25rem 0.5rem' },
+			md: { fontSize: '1rem', padding: '0.5rem 1rem' },
+		},
+		variants: {
+			primary: { backgroundColor: '#0d6efd', color: '#ffffff' },
+			secondary: { backgroundColor: '#6c757d', color: '#ffffff' },
+			success: { backgroundColor: '#198754', color: '#ffffff' },
+			warning: { backgroundColor: '#ffc107', color: '#000000' },
+			danger: { backgroundColor: '#dc3545', color: '#ffffff' },
+			info: { backgroundColor: '#0dcaf0', color: '#000000' },
+			link: { backgroundColor: 'transparent', color: '#0d6efd', textDecoration: 'underline' },
+		},
+		outlines: {
+			primary: { backgroundColor: 'transparent', color: '#0d6efd', border: '1px solid #0d6efd' },
+			secondary: { backgroundColor: 'transparent', color: '#6c757d', border: '1px solid #6c757d' },
+			success: { backgroundColor: 'transparent', color: '#198754', border: '1px solid #198754' },
+			warning: { backgroundColor: 'transparent', color: '#ffc107', border: '1px solid #ffc107' },
+			danger: { backgroundColor: 'transparent', color: '#dc3545', border: '1px solid #dc3545' },
+			info: { backgroundColor: 'transparent', color: '#0dcaf0', border: '1px solid #0dcaf0' },
+		},
+		shared: {
+			borderRadius: '0.375rem',
+			fontWeight: '500',
+			cursor: 'pointer',
+			transition: 'all 0.15s ease-in-out',
+			border: 'none',
+		},
+		disabled: {
+			opacity: 0.65,
+			cursor: 'not-allowed',
+		},
 	}
 
 	const isOutline = Boolean(outline)
+	const isLink = variant === 'link'
 	const baseName = variant.toLowerCase()
+	const sizeStyle = baseConfig.sizes[size] ?? baseConfig.sizes.md
+	const variantStyle = isLink
+		? baseConfig.variants.link
+		: isOutline
+			? baseConfig.outlines[baseName]
+			: baseConfig.variants[baseName] ?? baseConfig.variants.primary
 
-	const variantStyle = isOutline
-		? config.outline[baseName] ?? {}
-		: config.solid[baseName] ?? {}
-
-	const sizeStyle = size === 'sm' ? config.size?.sm ?? {} : {}
-
-	const [hover, setHover] = useState(false)
-	const [active, setActive] = useState(false)
-	const [focus, setFocus] = useState(false)
-
-	const baseBg = variantStyle.background || config.background
-	const hoverBg = baseBg.startsWith('#')
-		? adjustHex(baseBg, config.animation.hoverAdjust)
-		: baseBg
-	const activeBg = baseBg.startsWith('#')
-		? adjustHex(baseBg, config.animation.activeAdjust)
-		: baseBg
-
-	const background = props.disabled
-		? variantStyle.background || config.background
-		: active
-			? activeBg
-			: hover
-				? hoverBg
-				: baseBg
+	const [isHovered, setIsHovered] = useState(false)
+	const [isActive, setIsActive] = useState(false)
+	const [isFocused, setIsFocused] = useState(false)
 
 	const style = {
-		borderRadius: config.borderRadius,
-		borderWidth: config.borderWidth,
-		borderColor: variantStyle.border ?? config.borderColor,
-		fontSize: sizeStyle.fontSize ?? config.fontSize,
-		paddingLeft: sizeStyle.paddingX ?? config.paddingX,
-		paddingRight: sizeStyle.paddingX ?? config.paddingX,
-		paddingTop: sizeStyle.paddingY ?? config.paddingY,
-		paddingBottom: sizeStyle.paddingY ?? config.paddingY,
-		color: variantStyle.color ?? config.color,
-		background,
-		boxShadow: config.shadow,
-		cursor: props.disabled ? 'not-allowed' : 'pointer',
-		opacity: props.disabled ? config.animation.disabledOpacity : 1,
-		transition: reducedMotion ? 'none' : config.animation.transition,
-		transform: active
-			? `scale(${config.animation.activeScale})`
-			: focus
-				? `scale(${config.animation.focusScale})`
-				: 'scale(1)',
+		...sizeStyle,
+		...baseConfig.shared,
+		...variantStyle,
+		opacity: props.disabled ? baseConfig.disabled.opacity : 1,
+		cursor: props.disabled ? baseConfig.disabled.cursor : 'pointer',
+		transform: isActive ? 'scale(0.98)' : isFocused ? 'scale(1.02)' : 'scale(1)',
+		transition: reducedMotion ? 'none' : baseConfig.shared.transition,
 		...props.style,
 	}
 
-	/* keyboard handling – mimic click animation on Enter */
 	const handleKeyDown = (e) => {
-		if (e.key === 'Enter') setActive(true)
-		if (props.onKeyDown) props.onKeyDown(e)
+		if (e.key === 'Enter' && !props.disabled) setIsActive(true)
+		props.onKeyDown?.(e)
 	}
+
 	const handleKeyUp = (e) => {
 		if (e.key === 'Enter') {
-			setActive(false)
-			setFocus(false)
+			setIsActive(false)
+			setIsFocused(false)
 		}
-		if (props.onKeyUp) props.onKeyUp(e)
+		props.onKeyUp?.(e)
 	}
 
 	return (
 		<button
-			style={style}
 			{...props}
+			style={style}
 			disabled={props.disabled}
-			onMouseEnter={() => setHover(true)}
+			onMouseEnter={() => !props.disabled && setIsHovered(true)}
 			onMouseLeave={() => {
-				setHover(false)
-				setActive(false)
+				setIsHovered(false)
+				setIsActive(false)
 			}}
-			onMouseDown={() => setActive(true)}
-			onMouseUp={() => setActive(false)}
-			onFocus={() => setFocus(true)}
-			onBlur={() => setFocus(false)}
+			onMouseDown={() => !props.disabled && setIsActive(true)}
+			onMouseUp={() => setIsActive(false)}
+			onFocus={() => !props.disabled && setIsFocused(true)}
+			onBlur={() => setIsFocused(false)}
 			onKeyDown={handleKeyDown}
 			onKeyUp={handleKeyUp}
 		>
@@ -150,21 +101,15 @@ export default function Button({
 
 Button.propTypes = {
 	children: PropTypes.node.isRequired,
-	variant: PropTypes.oneOf([
-		'primary',
-		'secondary',
-		'success',
-		'warning',
-		'danger',
-		'info',
-		'light',
-		'dark',
-		'link',
-	]),
+	variant: PropTypes.oneOf(['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'link']),
 	outline: PropTypes.bool,
 	size: PropTypes.oneOf(['md', 'sm']),
 	style: PropTypes.object,
 	disabled: PropTypes.bool,
 	onKeyDown: PropTypes.func,
 	onKeyUp: PropTypes.func,
+}
+
+Button.defaultProps = {
+	style: {},
 }

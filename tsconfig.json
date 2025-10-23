@@ -1,29 +1,29 @@
 {
-  "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "lib": ["esnext", "dom"],
-    "declaration": true,
-    "declarationMap": false,
-    "emitDeclarationOnly": true,
-    "outDir": "./types",
-    "rootDir": "./src",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "noImplicitAny": false,
-    "allowJs": true,
-    "checkJs": true,
-    "jsx": "react-jsx"
-  },
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/index.jsx"],
-  "exclude": [
-    "node_modules",
-    "src/**/*.test.js",
-    "src/**/*.test.jsx",
-    "src/README.md.js"
-  ]
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "esnext",
+		"lib": ["esnext", "dom"],
+		"declaration": true,
+		"declarationMap": false,
+		"emitDeclarationOnly": true,
+		"outDir": "./types",
+		"rootDir": "./src",
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true,
+		"noImplicitAny": false,
+		"allowJs": true,
+		"checkJs": true,
+		"jsx": "react-jsx"
+	},
+	"include": ["src/**/*.js", "src/**/*.jsx", "src/index.jsx"],
+	"exclude": [
+		"node_modules",
+		"src/**/*.test.js",
+		"src/**/*.test.jsx",
+		"src/README.md.js"
+	]
 }

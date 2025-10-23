@@ -10,10 +10,16 @@ const NAV_ITEMS = [
 	// Додай інші точки
 ]
 
+/**
+ * @typedef {Object} NavigationAppProps
+ * @property {string} title - App title
+ * @property {string} uri - App URI
+ */
+
 export default class NavigationApp extends AppCore {
 	/**
 	 * @param {Object} input
-	 * @param {DB} input.db
+	 * @param {import('@nan0web/db-browser').default} input.db
 	 * @param {Function} input.navigate
 	 * @param {string} [input.currentPath='home']
 	 * @param {string} [input.locale='en']
@@ -22,6 +28,8 @@ export default class NavigationApp extends AppCore {
 		super({ db, locale })
 		this.navigate = navigate
 		this.currentPath = currentPath
+		this.title = ''
+		this.uri = ''
 	}
 
 	/**
@@ -39,7 +47,7 @@ export default class NavigationApp extends AppCore {
 		}
 
 		return {
-			$content: [
+			content: [
 				{
 					Typography: [
 						{ "$t": "navigation.title" }

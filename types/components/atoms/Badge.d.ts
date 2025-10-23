@@ -1,5 +1,5 @@
 /**
- * Badge component with Bootstrap‑like variant colors and white text.
+ * Badge component with Bootstrap‑like variant colors and appropriate text color.
  *
  * @param {Object} props
  * @param {React.ReactNode} props.children
@@ -10,7 +10,9 @@ declare function Badge({ children, variant, ...props }: {
     children: React.ReactNode;
     variant?: string | undefined;
     style?: any;
-}): import("react/jsx-runtime").JSX.Element;
+}): React.DetailedReactHTMLElement<{
+    style: any;
+}, HTMLElement>;
 declare namespace Badge {
     namespace propTypes {
         let children: PropTypes.Validator<NonNullable<PropTypes.ReactNodeLike>>;

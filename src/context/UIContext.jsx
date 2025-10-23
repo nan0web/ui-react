@@ -5,7 +5,7 @@ import React, { createContext, useContext, useState } from 'react'
 import Theme from '../Theme.js'
 import UIContextValue from './UIContextValue.jsx'
 
-const UIContext = createContext(new UIContextValue())
+export const UIContext = createContext(new UIContextValue())
 
 /**
  * Hook to access UI context.

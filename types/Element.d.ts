@@ -1,4 +1,4 @@
-export default class ReactElement extends Element {
+export default class ReactElement extends CoreElement {
     /**
      * @param {any} input Input data
      * @param {string|number} key Key prop.
@@ -7,5 +7,5 @@ export default class ReactElement extends Element {
      */
     static render(input: any, key: string | number, context: UIContextValue): JSX.Element | null;
 }
-import { Element } from "@nan0web/ui-core";
+import { Element as CoreElement } from "@nan0web/ui-core";
 import UIContextValue from "./context/UIContextValue.jsx";

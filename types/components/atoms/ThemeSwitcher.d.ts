@@ -6,7 +6,7 @@
  * @param {Object} [props.style] - Additional styles.
  * @param {Function} [props.onClick] - Additional click handler.
  */
-declare function ThemeSwitcher({ label, style, onClick }: {
+declare function ThemeSwitcher({ label, style, onClick }?: {
     label?: string | undefined;
     style?: any;
     onClick?: Function | undefined;

@@ -34,14 +34,21 @@
 	},
 	"scripts": {
 		"build": "tsc && vite build",
-		"clean": "rm -rf dist",
 		"dev": "vite",
-		"playground": "vite --port 4242",
+		"play": "vite --port 4242",
 		"preview": "vite preview",
 		"test": "npm run test:js && npm run test:jsx",
+		"test:docs": "node --test src/README.md.js",
 		"test:jsx": "vitest run",
-		"test:js": "node --test \"src/**/*.test.js\"",
-		"test:debug": "vitest --inspect --no-file-parallelism"
+		"test:js": "node --test --test-timeout=9999 \"src/**/*.test.js\" | nan0test parse --fail",
+		"test:debug": "vitest --inspect --no-file-parallelism",
+		"test:status": "nan0test status --hide-name --debug",
+		"precommit": "npm test",
+		"prepush": "npm test",
+		"prepare": "husky",
+		"release": "nan0release publish",
+		"clean": "rm -rf .cache/ && rm -rf dist/",
+		"clean:modules": "rm -rf node_modules"
 	},
 	"keywords": [
 		"react",
@@ -50,7 +57,7 @@
 		"ssr",
 		"nan0web"
 	],
-	"author": "nan0web",
+	"author": "YaRaSLove (ЯRаСлав) <support@yaro.page>",
 	"license": "ISC",
 	"packageManager": "pnpm@10.11.0",
 	"devDependencies": {
@@ -61,9 +68,9 @@
 		"@nan0web/ui-core": "workspace:*",
 		"@testing-library/jest-dom": "^6.8.0",
 		"@testing-library/react": "^16.3.0",
-		"@vitejs/plugin-react": "^5.0.2",
+		"@vitejs/plugin-react": "^5.0.3",
 		"prop-types": "^15.8.1",
-		"vite": "^7.1.5",
+		"vite": "^7.1.7",
 		"vitest": "^3.2.4"
 	},
 	"peerDependencies": {

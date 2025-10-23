@@ -23,3 +23,5 @@ nav:
     title: Card
   - href: /playground/modals.html
     title: Modal
+theme:
+  current: light  # 'light' or 'night' - controlled via data, toggled by ThemeSwitcher

@@ -1,4 +1,21 @@
 export default UIContextValue;
+export type SyncImport<T> = Function;
+export type AsyncImport<T> = Function;
+export type Loadable<T> = T | SyncImport<T> | AsyncImport<T>;
+/**
+ * @typedef {Function} SyncImport
+ * @template T
+ * @description () => T
+ */
+/**
+ * @typedef {Function} AsyncImport
+ * @template T
+ * @description () => Promise<{ default: T } | T>
+ */
+/**
+ * @typedef {T | SyncImport<T> | AsyncImport<T>} Loadable
+ * @template T
+ */
 /**
  * Tiny context UI for all components.
  */
@@ -19,9 +36,9 @@ declare class UIContextValue {
      * @param {Function} [input.t]
      * @param {Function} [input.renderFn]
      * @param {Console} [input.console]
-     * @param {Map<string, () => Promise<{default: typeof AppCore}>>} [input.apps]
-     * @param {Map<string, React.Component>} [input.components]
-     * @param {Map<string, React.Component>} [input.renderers]
+     * @param {Map<string, Loadable<React.ComponentType>>} [input.components]
+     * @param {Map<string, Loadable<Function>>} [input.renderers]
+     * @param {Map<string, Loadable<typeof AppCore>>} [input.apps]
      * @param {Record<string, Function>} [input.actions] - UI actions
      */
     constructor(input?: {
@@ -34,13 +51,11 @@ declare class UIContextValue {
         t?: Function | undefined;
         renderFn?: Function | undefined;
         console?: Console | undefined;
-        apps?: Map<string, () => Promise<{
-            default: typeof AppCore;
-        }>> | undefined;
-        components?: Map<string, import("react").Component<any, any, any>> | undefined;
-        renderers?: Map<string, import("react").Component<any, any, any>> | undefined;
+        components?: Map<string, Loadable<import("react").ComponentType<{}>>> | undefined;
+        renderers?: Map<string, Function> | undefined;
+        apps?: Map<string, Loadable<typeof AppCore>> | undefined;
         actions?: Record<string, Function> | undefined;
-    } | undefined);
+    });
     theme: import("@nan0web/ui-core/types/theme/Theme").ThemeConfig;
     lang: string;
     db: DB;

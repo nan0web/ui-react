@@ -2,8 +2,9 @@
 import React from 'react'
 import { vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
-import { NoConsole } from '@nan0web/log'
+import { NoConsole, Logger } from '@nan0web/log'
 
+global.logger = new Logger({ console })
 global.console = new NoConsole()
 // Mock for React.createElement to support testing
 global.React = React

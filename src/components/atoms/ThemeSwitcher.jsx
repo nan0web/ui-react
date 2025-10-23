@@ -11,7 +11,7 @@ import { useUI } from '../../context/UIContext.jsx'
  * @param {Object} [props.style] - Additional styles.
  * @param {Function} [props.onClick] - Additional click handler.
  */
-export default function ThemeSwitcher({ label = 'Theme', style, onClick }) {
+export default function ThemeSwitcher({ label = 'Theme', style, onClick } = {}) {
 	const { theme, setTheme } = useUI() || {}
 
 	console.debug("ThemeSwitcher rendered with label:", label)

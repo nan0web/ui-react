@@ -6,6 +6,10 @@
  * const result = await app.run()
  */
 export default class DemoApp extends AppCore {
+    /**
+     * @param {any} input
+     * @returns {DemoApp}
+     */
     static from(input: any): DemoApp;
     /**
      * @param {Object} input
@@ -13,22 +17,25 @@ export default class DemoApp extends AppCore {
      * @param {Object} input.theme
      * @param {Function} input.setTheme
      * @param {Function} input.navigate
-     * @param {string} [input.currentPath='home']
+     * @param {string} [input.uri='index.html']
      * @param {string} [input.locale='en']
      */
-    constructor({ db, theme, setTheme, navigate, currentPath, locale }: {
+    constructor({ db, theme, setTheme, navigate, uri, locale }: {
         db: DB;
         theme: any;
         setTheme: Function;
         navigate: Function;
-        currentPath?: string | undefined;
+        uri?: string | undefined;
         locale?: string | undefined;
     });
     theme: any;
     setTheme: Function;
     navigate: Function;
-    currentPath: string;
-    apps: Map<string, Function>;
+    uri: string;
+    /**
+     * @type {Map<string, () => Promise<AppCore>>}
+     */
+    apps: Map<string, () => Promise<AppCore>>;
     /**
      * @override
      * @returns {Promise<Object>}

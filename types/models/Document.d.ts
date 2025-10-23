@@ -16,7 +16,7 @@ export default class Document {
         $lang?: string | undefined;
         nav?: any;
         t?: any;
-    } | undefined);
+    });
     /**
      * Content configuration for the document page.
      * @type {Array<Object>}

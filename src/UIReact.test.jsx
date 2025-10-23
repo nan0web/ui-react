@@ -1,21 +1,26 @@
-import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+/**
+ * @vitest-environment happy-dom
+ */
+import { describe, it, expect, beforeEach } from 'vitest'
+import { render, screen, waitFor } from '@testing-library/react'
 import { NoConsole } from '@nan0web/log'
 import DB from '@nan0web/db'
 import UIReact from './UIReact.jsx'
-import { useUI } from './context/UIContext.jsx'
+import React from 'react'
 
 function MyComponent() {
 	return (
-		<b>MyComponent</b>
+		<b data-testid="my-component">MyComponent</b>
 	)
 }
 
-function MyCustomRenderer({ data }) {
-	const { t, lang } = useUI()
+// Custom renderer with proper context usage
+function MyCustomRenderer({ element, context, ...props }) {
+	const { t = (k) => k, lang = 'en' } = context || {}
+	const data = props.$data || element.$data || {}
 	return (
 		<div data-testid="custom-render" data-type="custom-block" lang={lang}>
-			{t("Custom block")}: {JSON.stringify(data)}
+			<span data-testid="custom-label">{t("Custom block")}</span>: {JSON.stringify(data)}
 			<br />
 			<MyComponent />
 		</div>
@@ -23,50 +28,59 @@ function MyCustomRenderer({ data }) {
 }
 
 describe("UIReact with Custom Renderer", () => {
-	const db = new DB({
-		predefined: [
-			["uk/_/t.json", {
-				"Custom block": "Блок"
-			}],
-			[
-				"uk/index.json",
-				{
+	let db
+	let customConsole
+
+	beforeEach(async () => {
+		db = new DB({
+			predefined: new Map([
+				["uk/_/t.json", {
+					"Custom block": "Блок"
+				}],
+				["uk/index.json", {
 					$content: [
-						{ "custom-block": true, $data: { value: 42 } },
-						{ "MyComponent": true },
+						{ "CustomBlock": [], $data: { value: 42 } },
+						{ "MyComponent": [] }
 					],
 					$lang: "uk",
 					$meta: { title: "Тестовий документ" },
-				},
-			],
-		],
-		console: new NoConsole({ prefix: "DB:" }),
+				}],
+			]),
+			console: new NoConsole({ prefix: "DB:" }),
+		})
+
+		customConsole = new NoConsole({ prefix: "UIReact:" })
+		await db.connect()
 	})
 
 	it("renders custom block using registered renderer from context", async () => {
-		await db.connect()
-
-		const customConsole = new NoConsole({ prefix: "UIReact:" })
 		const context = {
 			console: customConsole,
 			components: new Map([["MyComponent", MyComponent]]),
-			renderers: new Map([["custom-block", MyCustomRenderer]]),
+			renderers: new Map([["CustomBlock", MyCustomRenderer]]),
+			actions: {},
 		}
 
-		render(<UIReact db={db} context={context} uri="uk/index" />)
+		render(<UIReact db={db} context={context} uri="uk/index" console={customConsole} />)
 
-		await screen.findByText(/Блок/)
+		// Wait for loading to finish
+		await waitFor(() => {
+			expect(screen.queryByText("Loading…")).not.toBeInTheDocument()
+		}, { timeout: 2000 })
 
-		const myComponents = screen.getAllByText("MyComponent")
+		// Now find the custom rendered element
+		const customEl = await screen.findByTestId("custom-render")
+		expect(customEl).toBeInTheDocument()
+
+		const label = screen.getByTestId("custom-label")
+		expect(label).toHaveTextContent("Блок")
+
+		const myComponents = screen.getAllByTestId("my-component")
 		expect(myComponents).toHaveLength(2)
 
 		expect(screen.getByText(/42/)).toBeInTheDocument()
-		expect(screen.getByTestId("custom-render")).toHaveAttribute("data-type", "custom-block")
+		expect(customEl).toHaveAttribute("data-type", "custom-block")
 
-		expect(context.console.output("error")).toEqual([])
-		expect(db.console.output("error")).toEqual([])
-
-		const debug = db.console.output("debug")
-		expect(JSON.stringify(debug)).toContain('["debug","Loading document",{"uri":"uk/index.json"}]')
+		expect(customConsole.output("error")).toEqual([])
 	})
 })

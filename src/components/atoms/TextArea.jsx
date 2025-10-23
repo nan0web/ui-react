@@ -16,9 +16,8 @@ export default function TextArea({ ...props }) {
 	} = theme.atoms?.TextArea ?? {}
 	
 	const style = {
+		border: `${borderWidth} solid ${borderColor}`,
 		borderRadius,
-		borderWidth,
-		borderColor,
 		fontSize,
 		paddingLeft: paddingX,
 		paddingRight: paddingX,
@@ -26,12 +25,11 @@ export default function TextArea({ ...props }) {
 		paddingBottom: paddingY,
 		fontFamily,
 		height,
+		resize: 'vertical',
 		...props.style,
 	}
 
-	return (
-		<textarea style={style} {...props} />
-	)
+	return React.createElement('textarea', { style, ...props })
 }
 
 TextArea.propTypes = {
