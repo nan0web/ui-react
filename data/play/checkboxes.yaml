@@ -11,4 +11,4 @@ $content:
   - Checkbox: true
     $disabled: true
   - a: ← All Components
-    $href: /playground/index.html
+    $href: /play/index.html

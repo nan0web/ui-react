@@ -56,4 +56,4 @@ $content:
   - button: DOM Button
     $onClick: () => alert('Clicked')
   - a: ← All Components
-    $href: /playground/index.html
+    $href: /play/index.html

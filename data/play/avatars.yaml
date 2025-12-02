@@ -56,4 +56,4 @@ $content:
           marginLeft: -1rem
   - h2: Back to Playground
   - a: ← All Components
-    $href: /playground/index.html
+    $href: /play/index.html

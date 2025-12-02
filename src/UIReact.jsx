@@ -3,7 +3,7 @@
  * builds the UI context and renders the document content using the nan0 element system.
  */
 
-import React, { useEffect, useState, StrictMode, useCallback } from 'react'
+import React, { useEffect, useState, StrictMode } from 'react'
 import DB from '@nan0web/db-browser'
 import { UIContext } from './context/UIContext.jsx'
 import UIContextValue from './context/UIContextValue.jsx'
@@ -12,7 +12,7 @@ import renderers from './renderers/index.jsx'
 import Document from './models/Document.js'
 import Element from './Element.jsx'
 import { LogConsole } from '@nan0web/log'
-import { createT } from '@nan0web/i18n'
+import { I18nDb } from '@nan0web/i18n'
 
 /**
  * @param {Object} props
@@ -28,12 +28,9 @@ export default function UIReact({
 	console = typeof window !== 'undefined' ? window.console : new LogConsole(),
 }) {
 	const [loading, setLoading] = useState(true)
-	const [error, setError] = useState(/** @type {Error|null} */ (null))
+	const [error, setError] = useState(/** @type {Error|null} */(null))
 	const [document, setDocument] = useState(new Document())
-	const [vocab, setVocab] = useState(new Map())
-
-	// Translation helper bound to the current vocabulary map.
-	const t = useCallback(createT(vocab), [vocab])
+	const [t, setT] = useState(() => (k) => k)
 
 	// -------------------------------------------------------------------------
 	// Load document + optional language map
@@ -42,10 +39,15 @@ export default function UIReact({
 		const load = async () => {
 			try {
 				setLoading(true)
+				setError(null)
 
 				// Ensure the fetched path ends with `.json`
-				const norm = db.resolveSync(db.dirname(uri), db.basename(uri, true))
-				const url = norm || "index"
+				let ext = "." + uri.split('.').pop()
+				if (!db.Directory.DATA_EXTNAMES.includes(ext)) ext = db.Directory.DATA_EXTNAMES[0]
+				let base = uri.split('.')[0] || uri
+				if (base.endsWith("/")) base += "index"
+				const norm = base + ext
+				const url = norm || "index.json"
 
 				console.debug('UIReact: fetching document', url)
 
@@ -53,16 +55,14 @@ export default function UIReact({
 				const doc = Document.from(data)
 				setDocument(doc)
 
-				// Load translation map if a language is declared.
-				const lang = doc.$lang ?? 'en'
-				try {
-					const langData = await db.fetch(`${lang}/_/t`)
-					if (langData && typeof langData === 'object') {
-						setVocab(new Map(Object.entries(langData)))
-					}
-				} catch (_) {
-					/* ignore missing translation file */
-				}
+				// Create translation helper using I18nDb
+				const i18n = new I18nDb({
+					// @ts-ignore
+					db,
+					locale: doc.$lang ?? 'en'
+				})
+				const translationFn = await i18n.createT(doc.$lang ?? 'en', url)
+				setT(() => translationFn)
 
 				setError(null)
 			} catch (/** @type {any} */ err) {

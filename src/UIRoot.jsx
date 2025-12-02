@@ -131,9 +131,6 @@ export function UIRoot({
  */
 function getPath() {
 	const path = window.location.pathname
-	if (path === '/' || path.endsWith('/index.html')) {
-		return '/playground/index.json'
-	}
 	return path.replace(/\.html$/, '.json')
 }
 

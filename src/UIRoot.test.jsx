@@ -91,12 +91,12 @@ describe('UIRoot', () => {
 		const uiReact = screen.getByTestId('ui-react')
 
 		expect(uiReact).toHaveAttribute('data-db', 'provided')
-		expect(uiReact).toHaveAttribute('data-uri', '/playground/index.json')
+		expect(uiReact).toHaveAttribute('data-uri', '/')
 
 		expect(UIReact).toHaveBeenCalledWith(
 			expect.objectContaining({
 				db: expect.any(DB),
-				uri: '/playground/index.json'
+				uri: '/'
 			}),
 			undefined
 		)
@@ -268,7 +268,7 @@ describe('UIRoot', () => {
 		expect(UIReact).toHaveBeenCalledWith(
 			expect.objectContaining({
 				db: mockDb,
-				uri: '/playground/index.json'
+				uri: '/'
 			}),
 			undefined
 		)

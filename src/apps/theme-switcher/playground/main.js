@@ -13,6 +13,7 @@ async function main(argv = []) {
 	const setTheme = (newTheme) => { theme = newTheme }
 
 	const app = new ThemeSwitcherApp({
+		// @ts-ignore find out the issue with the #private in DB.
 		db,
 		theme,
 		setTheme,

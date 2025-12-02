@@ -13,4 +13,4 @@ $content:
         $alt: Sample image
       - p: Card with an image.
   - a: ← All Components
-    $href: /playground/index.html
+    $href: /play/index.html

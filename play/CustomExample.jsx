@@ -24,7 +24,7 @@ function HelloWorld({ name = "World", style }) {
 /* -------------------------------------------------
    Playground – rendering with overrides
    ------------------------------------------------- */
-export default function PlaygroundExample() {
+export default function CustomExample() {
 	const db = new DB({ host: window.location.origin })
 	const customComponents = new Map([["HelloWorld", HelloWorld]])
 	const customRenderers = new Map([...renderers])  // Вже має interactive

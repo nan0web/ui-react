@@ -1,4 +1,5 @@
 import { AppCore } from '@nan0web/core'
+import DB from '@nan0web/db'
 
 /**
  * Simple App: рендериться стандартно з content (без динаміки).
@@ -10,7 +11,7 @@ import { AppCore } from '@nan0web/core'
 export default class SimpleApp extends AppCore {
 	/**
 	 * @param {Object} input
-	 * @param {import('@nan0web/db-browser').default} input.db
+	 * @param {DB} input.db
 	 * @param {string} [input.title='Demo']
 	 * @param {string} [input.uri='index.html']
 	 * @param {string} [input.locale='en']

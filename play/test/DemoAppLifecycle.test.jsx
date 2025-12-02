@@ -15,7 +15,7 @@ describe('DemoApp Lifecycle and Integration', () => {
 
 		mockDB = new DB({
 			predefined: [
-				['playground/index.json', { $content: [] }],
+				['play/index.json', { $content: [] }],
 				['apps/navigation/data/main.json', { $app: 'navigation', $content: [] }]
 			],
 			console: {
@@ -36,14 +36,14 @@ describe('DemoApp Lifecycle and Integration', () => {
 			theme: { mode: 'light' },
 			setTheme: setThemeMock,
 			navigate: navigateMock,
-			uri: '/playground/index.json'
+			uri: '/play/index.json'
 		})
 
 		expect(app.db).toBe(mockDB)
 		expect(app.theme).toEqual({ mode: 'light' })
 		expect(app.setTheme).toBe(setThemeMock)
 		expect(app.navigate).toBe(navigateMock)
-		expect(app.uri).toBe('/playground/index.json')
+		expect(app.uri).toBe('/play/index.json')
 	})
 
 	it('should handle missing optional parameters gracefully', () => {

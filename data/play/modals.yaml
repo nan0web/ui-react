@@ -11,4 +11,4 @@ $content:
     $style:
       display: none
   - a: ← All Components
-    $href: /playground/index.html
+    $href: /play/index.html

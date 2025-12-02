@@ -7,7 +7,7 @@ import CustomRendererApp from '../src/apps/demo/CustomRendererApp.js'
 
 const mockDB = new DB({
 	predefined: [
-		['playground/index.json', { $content: [] }],
+		['play/index.json', { $content: [] }],
 		['apps/navigation/data/main.json', { $app: 'navigation', $content: [] }]
 	]
 })

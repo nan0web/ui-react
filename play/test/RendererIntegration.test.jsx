@@ -13,7 +13,7 @@ describe('Custom Renderer Integration', () => {
 		// Мокуємо DB
 		const mockDB = {
 			fetch: vi.fn((path) => {
-				if (path === '/playground/index.json') {
+				if (path === '/play/index.json') {
 					return Promise.resolve({
 						$content: [
 							{ hello: true, $data: { name: 'Alice' } }
@@ -51,7 +51,7 @@ describe('Custom Renderer Integration', () => {
 	it('should properly integrate custom renderers with UIContext', async () => {
 		const mockDB = {
 			fetch: vi.fn((path) => {
-				if (path === '/playground/index.json') {
+				if (path === '/play/index.json') {
 					return Promise.resolve({
 						$content: [
 							{ hello: true, $data: { name: 'Custom Renderer Test' } }

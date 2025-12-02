@@ -1,7 +1,7 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
 import { LogConsole } from "@nan0web/log"
-import PlaygroundExample from "./CustomExample.jsx"
+import CustomExample from "./CustomExample.jsx"
 
 /**
  * Entry point for the playground.
@@ -12,6 +12,6 @@ import PlaygroundExample from "./CustomExample.jsx"
 const console = new LogConsole({ prefix: "Playground:" })
 ReactDOM.createRoot(document.getElementById("app")).render(
 	<React.StrictMode>
-		<PlaygroundExample />
+		<CustomExample />
 	</React.StrictMode>
 )

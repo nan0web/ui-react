@@ -31,7 +31,6 @@ export default class DemoApp extends AppCore {
     theme: any;
     setTheme: Function;
     navigate: Function;
-    uri: string;
     /**
      * @type {Map<string, () => Promise<AppCore>>}
      */

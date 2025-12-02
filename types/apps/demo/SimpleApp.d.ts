@@ -9,19 +9,17 @@ export default class SimpleApp extends AppCore {
     static from(input: any): SimpleApp;
     /**
      * @param {Object} input
-     * @param {import('@nan0web/db-browser').default} input.db
+     * @param {DB} input.db
      * @param {string} [input.title='Demo']
      * @param {string} [input.uri='index.html']
      * @param {string} [input.locale='en']
      */
     constructor(input: {
-        db: import("@nan0web/db-browser").default;
+        db: DB;
         title?: string | undefined;
         uri?: string | undefined;
         locale?: string | undefined;
     });
-    title: string;
-    uri: string;
     /**
      * @override
      * @returns {Promise<Object>} — { type: 'standard', content: [...] }
@@ -29,3 +27,4 @@ export default class SimpleApp extends AppCore {
     override run(): Promise<any>;
 }
 import { AppCore } from '@nan0web/core';
+import DB from '@nan0web/db';

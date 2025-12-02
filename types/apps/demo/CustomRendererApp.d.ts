@@ -24,8 +24,6 @@ export default class CustomRendererApp extends AppCore {
         uri?: string | undefined;
         locale?: string | undefined;
     });
-    title: string;
-    uri: string;
     /**
      * @override
      * @returns {Promise<Object>} — { type: 'interactive', content: базовий, requiresInput: схема, compute: fn }

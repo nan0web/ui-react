@@ -5,4 +5,4 @@ $content:
   - TextArea: true
     $placeholder: Enter your message here...
   - a: ← All Components
-    $href: /playground/index.html
+    $href: /play/index.html

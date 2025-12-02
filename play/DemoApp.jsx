@@ -10,13 +10,13 @@ import { useUI } from '../src/context/UIContext.jsx'
  * @param {DB} props.db
  */
 export default function DemoApp({ db }) {
-	const [currentPath, setCurrentPath] = useState('/playground/index.json')
+	const [currentPath, setCurrentPath] = useState('/play/index.json')
 	const [sharedData, setSharedData] = useState({ theme: { current: 'light' } })  // Load from _.yaml
 
 	// Convert URL pathname → JSON document path
 	const getPathFromUrl = () => {
 		const pathname = window.location.pathname
-		if (pathname === '/' || pathname === '/index.html') return '/playground/index.json'
+		if (pathname === '/' || pathname === '/index.html') return '/play/index.json'
 		return pathname.replace('.html', '.json')
 	}
 
@@ -24,7 +24,7 @@ export default function DemoApp({ db }) {
 	useEffect(() => {
 		async function loadShared() {
 			try {
-				const data = await db.fetch('/playground/_.yaml')
+				const data = await db.fetch('/play/_.yaml')
 				if (data) {
 					setSharedData(data)
 					// Set initial theme from data
@@ -50,7 +50,7 @@ export default function DemoApp({ db }) {
 		// Save to localStorage
 		localStorage.setItem('theme', newThemeName)
 		// Optionally save to db for persistence across sessions (for demo, just state/local)
-		db.saveDocument('/playground/_.yaml', sharedData).catch(console.error)
+		db.saveDocument('/play/_.yaml', sharedData).catch(console.error)
 	}
 
 	// Listen to theme changes from ThemeSwitcher

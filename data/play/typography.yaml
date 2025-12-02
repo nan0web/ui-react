@@ -22,4 +22,4 @@ $content:
   - Typography: This is caption text.
     $variant: caption
   - a: ← All Components
-    $href: /playground/index.html
+    $href: /play/index.html

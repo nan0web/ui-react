@@ -20,8 +20,6 @@ export default class NavigationApp extends AppCore {
     });
     navigate: Function;
     currentPath: string;
-    title: string;
-    uri: string;
     /**
      * @override
      * @returns {Promise<Object>}

@@ -5,31 +5,31 @@ $content:
   - h2: Apps
   - ul:
     - a: DemoApp
-      $href: /playground/apps/demo.html
+      $href: /play/apps/demo.html
   - h2: Components
   - ul:
       - a: Avatar
-        $href: /playground/avatars.html
+        $href: /play/avatars.html
       - a: Badge
-        $href: /playground/badges.html
+        $href: /play/badges.html
       - a: Button
-        $href: /playground/buttons.html
+        $href: /play/buttons.html
       - a: Input
-        $href: /playground/inputs.html
+        $href: /play/inputs.html
       - a: Checkbox
-        $href: /playground/checkboxes.html
+        $href: /play/checkboxes.html
       - a: Radio
-        $href: /playground/radios.html
+        $href: /play/radios.html
       - a: Select
-        $href: /playground/selects.html
+        $href: /play/selects.html
       - a: TextArea
-        $href: /playground/textareas.html
+        $href: /play/textareas.html
       - a: Typography
-        $href: /playground/typography.html
+        $href: /play/typography.html
       - a: Card
-        $href: /playground/cards.html
+        $href: /play/cards.html
       - a: Modal
-        $href: /playground/modals.html
+        $href: /play/modals.html
   - h2: Usage
   - p: This playground uses the standard <code>Document</code> format. Components are rendered via type mapping in <code>Components</code> registry.
   - p: Navigate using the links above. Each page demonstrates props and variants.

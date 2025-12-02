@@ -21,4 +21,4 @@ $content:
   - Badge: Info
     $variant: info
   - a: ← All Components
-    $href: /playground/index.html
+    $href: /play/index.html
