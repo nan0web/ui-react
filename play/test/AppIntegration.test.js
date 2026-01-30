@@ -8,8 +8,8 @@ import CustomRendererApp from '../src/apps/demo/CustomRendererApp.js'
 const mockDB = new DB({
 	predefined: [
 		['play/index.json', { $content: [] }],
-		['apps/navigation/data/main.json', { $app: 'navigation', $content: [] }]
-	]
+		['apps/navigation/data/main.json', { $app: 'navigation', $content: [] }],
+	],
 })
 
 // Інтеграційний тест перевіряє взаємодію додатків через патерн реєстрації та запуску
@@ -35,9 +35,9 @@ describe('App Integration via AppCore and run()', () => {
 		const demoApp = new DemoApp({
 			db: mockDB,
 			theme: { mode: 'light' },
-			setTheme: () => { },
-			navigate: () => { },
-			uri: '/test.html'
+			setTheme: () => {},
+			navigate: () => {},
+			uri: '/test.html',
 		})
 
 		const result = await demoApp.run()
@@ -45,7 +45,10 @@ describe('App Integration via AppCore and run()', () => {
 		const [simpleAppBlock, customRendererBlock] = container.div
 
 		assert.ok(simpleAppBlock.App === 'SimpleApp', 'Should include SimpleApp reference')
-		assert.ok(customRendererBlock.App === 'CustomRendererApp', 'Should include CustomRendererApp reference')
+		assert.ok(
+			customRendererBlock.App === 'CustomRendererApp',
+			'Should include CustomRendererApp reference',
+		)
 		assert.ok(customRendererBlock.$title === 'Interactive Demo', 'Should pass title to sub-app')
 	})
 })

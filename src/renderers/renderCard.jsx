@@ -4,7 +4,7 @@ import Card from '../components/molecules/Card.jsx'
 
 /**
  * Renderer for Card component
- * 
+ *
  * @param {object} block - Component block definition
  * @returns {JSX.Element} Rendered card
  */

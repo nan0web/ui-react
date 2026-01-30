@@ -21,7 +21,7 @@ export default class CustomRendererApp extends AppCore {
 	 */
 	constructor(input) {
 		super(input)
-		const { title = 'Demo', uri = "index.html" } = input
+		const { title = 'Demo', uri = 'index.html' } = input
 		this.title = title
 		this.uri = uri
 	}
@@ -36,13 +36,13 @@ export default class CustomRendererApp extends AppCore {
 				{
 					Typography: [`Custom Interactive App: ${this.title}`],
 					$variant: 'h3',
-					$className: 'text-lg font-medium mb-2'
+					$className: 'text-lg font-medium mb-2',
 				},
 				{
 					p: [`URI: ${this.uri}. Обчислення потребує input (клік counter).`],
-					$className: 'mb-4'
-				}
-			]
+					$className: 'mb-4',
+				},
+			],
 		}
 
 		const requiresInput = {
@@ -52,10 +52,10 @@ export default class CustomRendererApp extends AppCore {
 					type: 'number',
 					label: 'Initial Count',
 					defaultValue: 0,
-					min: 0
-				}
+					min: 0,
+				},
 			],
-			onSubmit: 'action:computeCustom'
+			onSubmit: 'action:computeCustom',
 		}
 
 		const compute = (inputData) => {
@@ -67,9 +67,9 @@ export default class CustomRendererApp extends AppCore {
 				updatedContent: [
 					{
 						p: [`Dynamic Result: ${result}`],
-						$className: 'text-green-600 font-bold'
-					}
-				]
+						$className: 'text-green-600 font-bold',
+					},
+				],
 			}
 		}
 
@@ -77,7 +77,7 @@ export default class CustomRendererApp extends AppCore {
 			type: 'interactive',
 			...baseContent,
 			requiresInput,
-			compute
+			compute,
 		}
 	}
 

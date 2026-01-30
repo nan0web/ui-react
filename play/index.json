@@ -1,27 +1,61 @@
 {
-  "$content": [
-    {
-      "div": [
-        {
-          "Typography": [
-            "Playground: Apps з Renderers"
-          ],
-          "$variant": "h1",
-          "$style": "margin-bottom: 1rem;"
-        },
-        {
-          "App": "DemoApp",
-          "$uri": "/playground"
-        },
-        {
-          "HelloWorld": true,
-          "$name": "Custom Component",
-          "$style": {
-            "backgroundColor": "#28a745"
-          }
-        }
-      ],
-      "$style": "padding: 2rem; max-width: 800px; margin: 0 auto;"
-    }
-  ]
+	"$content": [
+		{
+			"Typography": ["NaN•Web UI React Playground"],
+			"$variant": "h1"
+		},
+		{
+			"Typography": [
+				"Interactive demo of all components. Click on a component to explore variations."
+			],
+			"$variant": "p"
+		},
+		{
+			"ThemeSwitcher": [true]
+		},
+		{
+			"Typography": ["Apps"],
+			"$variant": "h2"
+		},
+		{
+			"ul": [{ "a": ["DemoApp"], "$href": "/play/apps/demo.html" }]
+		},
+		{
+			"Typography": ["Components"],
+			"$variant": "h2"
+		},
+		{
+			"ul": [
+				{ "a": ["Avatar"], "$href": "/play/avatars.html" },
+				{ "a": ["Badge"], "$href": "/play/badges.html" },
+				{ "a": ["Button"], "$href": "/play/buttons.html" },
+				{ "a": ["Input"], "$href": "/play/inputs.html" },
+				{ "a": ["Checkbox"], "$href": "/play/checkboxes.html" },
+				{ "a": ["Radio"], "$href": "/play/radios.html" },
+				{ "a": ["Select"], "$href": "/play/selects.html" },
+				{ "a": ["TextArea"], "$href": "/play/textareas.html" },
+				{ "a": ["Typography"], "$href": "/play/typography.html" },
+				{ "a": ["Card"], "$href": "/play/cards.html" },
+				{ "a": ["Modal"], "$href": "/play/modals.html" }
+			]
+		},
+		{
+			"Typography": ["Usage"],
+			"$variant": "h2"
+		},
+		{
+			"Typography": [
+				"This playground uses the standard Document format. Components are rendered via type mapping in Components registry."
+			],
+			"$variant": "p"
+		},
+		{
+			"Typography": ["Navigate using the links above. Each page demonstrates props and variants."],
+			"$variant": "p"
+		},
+		{
+			"Typography": ["Theme is controlled via data in _.yaml and toggled by ThemeSwitcher."],
+			"$variant": "p"
+		}
+	]
 }

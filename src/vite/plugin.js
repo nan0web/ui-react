@@ -3,7 +3,7 @@ import { DocumentStat } from '@nan0web/db'
 import DBFS from '@nan0web/db-fs'
 
 export function createLogger() {
-	return viteCreateLogger("info", { prefix: "nan0web", allowClearScreen: false })
+	return viteCreateLogger('info', { prefix: 'nan0web', allowClearScreen: false })
 }
 
 /**
@@ -17,16 +17,18 @@ export async function buildSite(input, output, logger = createLogger()) {
 	await input.connect()
 	await output.connect()
 
-	logger.info("Loading all input data", { timestamp: true })
-	for await (const entry of input.findStream(".")) {
+	logger.info('Loading all input data', { timestamp: true })
+	for await (const entry of input.findStream('.')) {
 		// loading all entries
 	}
 
 	const stats = await input.dump(output)
-	output.meta.set("?loaded", new DocumentStat({ isDirectory: true, size: 0 }))
+	output.meta.set('?loaded', new DocumentStat({ isDirectory: true, size: 0 }))
 	await output.buildIndexes()
 
-	logger.info(`Build complete: ${stats.processed} files, ${stats.ignored} ignored`, { timestamp: true })
+	logger.info(`Build complete: ${stats.processed} files, ${stats.ignored} ignored`, {
+		timestamp: true,
+	})
 	return stats
 }
 
@@ -38,11 +40,7 @@ export async function buildSite(input, output, logger = createLogger()) {
  * @param {import('vite').Logger} [input.logger]
  * @returns {object}
  */
-export default function nan0webVitePlugin({
-	input,
-	output,
-	logger = createLogger()
-}) {
+export default function nan0webVitePlugin({ input, output, logger = createLogger() }) {
 	/**
 	 * @param {import('http').IncomingMessage} req
 	 * @param {import('http').ServerResponse} res
@@ -52,7 +50,7 @@ export default function nan0webVitePlugin({
 		if (req.url && output.isData(req.url)) {
 			try {
 				let uri = output.normalize(req.url)
-				if (["/"].includes(uri)) uri = "."
+				if (['/'].includes(uri)) uri = '.'
 				const stat = await output.statDocument(uri)
 				if (stat.exists && stat.isFile) {
 					const data = await output.loadDocument(uri)
@@ -76,13 +74,9 @@ export default function nan0webVitePlugin({
 				// Завжди дозволяємо доступ до dist
 				server: {
 					fs: {
-						allow: [
-							process.cwd(),
-							input.location("."),
-							output.location("."),
-						]
-					}
-				}
+						allow: [process.cwd(), input.location('.'), output.location('.')],
+					},
+				},
 			}
 		},
 
@@ -90,17 +84,19 @@ export default function nan0webVitePlugin({
 			sequential: true,
 			async handler() {
 				if (process.env.BUILD_COMMAND === 'vite-build') {
-					logger.info("Generating nan0web assets after Vite build", { timestamp: true })
+					logger.info('Generating nan0web assets after Vite build', { timestamp: true })
 					await buildSite(input, output, logger)
 				}
-			}
+			},
 		},
 
 		async configureServer(server) {
 			// connect to database
-			input.connect().catch(err =>
-				logger.error(`Failed to connect to input DB: ${err.message}`, { timestamp: true })
-			)
+			input
+				.connect()
+				.catch((err) =>
+					logger.error(`Failed to connect to input DB: ${err.message}`, { timestamp: true }),
+				)
 
 			// input.on('change', async (uri) => {
 			// 	try {
@@ -119,6 +115,6 @@ export default function nan0webVitePlugin({
 
 			// Додаємо наш middleware
 			server.middlewares.use(handleRequest)
-		}
+		},
 	}
 }

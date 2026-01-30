@@ -35,15 +35,16 @@
 	"scripts": {
 		"build": "tsc && vite build",
 		"dev": "vite",
-		"play": "vite --port 4242",
+		"play": "echo 'Open browser http://localhost:4242/play/\\n' && vite --port 4242",
 		"preview": "vite preview",
 		"test": "npm run test:js && npm run test:jsx",
-		"test:docs": "node --test src/README.md.js",
-		"test:jsx": "vitest run",
-		"test:js": "node --test --test-timeout=9999 \"src/**/*.test.js\"",
+		"test:js": "node --test  --test-timeout=6333 --test-reporter=tap \"src/**/*.test.js\"",
+		"test:docs": "node --test --test-timeout=3333 --test-reporter=tap src/README.md.js",
+		"test:jsx": "vitest run --reporter tap",
 		"test:debug": "vitest --inspect --no-file-parallelism",
 		"test:status": "nan0test status --hide-name --debug",
-		"test:all": "npm run test && npm run build",
+		"test:all": "npm run test && npm run build && npm run knip",
+		"knip": "knip --production",
 		"precommit": "npm test",
 		"prepush": "npm test",
 		"prepare": "husky",
@@ -64,15 +65,17 @@
 	"devDependencies": {
 		"@nan0web/auth-core": "1.0.0",
 		"@nan0web/core": "1.0.1",
-		"@nan0web/db": "1.1.2",
+		"@nan0web/db": "1.2.1",
 		"@nan0web/db-browser": "1.0.0",
 		"@nan0web/ui-core": "1.0.0",
 		"@testing-library/jest-dom": "^6.8.0",
 		"@testing-library/react": "^16.3.0",
 		"@vitejs/plugin-react": "^5.0.3",
 		"@vitest/ui": "3.2.4",
+		"happy-dom": "^20.4.0",
+		"knip": "^5.82.1",
 		"prop-types": "^15.8.1",
-		"vite": "^7.2.4",
+		"vite": "^7.3.1",
 		"vitest": "^3.2.4"
 	},
 	"peerDependencies": {
@@ -85,5 +88,8 @@
 		"prop-types": "^15.8.1",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0"
+	},
+	"dependencies": {
+		"@nan0web/log": "1.1.1"
 	}
 }

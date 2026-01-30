@@ -15,7 +15,7 @@ describe('Radio', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<Radio name="test" />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const radio = screen.getByRole('radio')
 		expect(radio).not.toBeChecked()
@@ -25,7 +25,7 @@ describe('Radio', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<Radio name="test" checked />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const radio = screen.getByRole('radio')
 		expect(radio).toBeChecked()
@@ -36,7 +36,7 @@ describe('Radio', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<Radio name="test" onChange={handleChange} />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const radio = screen.getByRole('radio')
 		fireEvent.click(radio)
@@ -47,7 +47,7 @@ describe('Radio', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<Radio name="group" value="option1" checked />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const radio = screen.getByRole('radio')
 		expect(radio).toHaveAttribute('name', 'group')
@@ -58,21 +58,21 @@ describe('Radio', () => {
 		const themeContext = new UIContextValue({
 			theme: {
 				atoms: {
-					Radio: { size: '18px', checkedColor: 'blue' }
-				}
-			}
+					Radio: { size: '18px', checkedColor: 'blue' },
+				},
+			},
 		})
 		render(
 			<UIProvider value={themeContext}>
 				<Radio checked />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const radio = screen.getByRole('radio')
-		expect(radio).toHaveStyle({ 
-			width: '18px', 
-			height: '18px', 
+		expect(radio).toHaveStyle({
+			width: '18px',
+			height: '18px',
 			backgroundColor: 'blue',
-			borderRadius: '50%'
+			borderRadius: '50%',
 		})
 	})
 })

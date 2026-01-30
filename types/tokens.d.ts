@@ -1,2 +1,2 @@
 export { tokens };
-import { tokens } from "@nan0web/ui-core";
+import { tokens } from '@nan0web/ui-core';

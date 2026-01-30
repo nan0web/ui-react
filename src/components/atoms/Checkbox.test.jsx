@@ -16,7 +16,7 @@ describe('Checkbox', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<Checkbox onChange={handleChange} />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const checkbox = screen.getByRole('checkbox')
 		expect(checkbox).not.toBeChecked()
@@ -26,7 +26,7 @@ describe('Checkbox', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<Checkbox checked />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const checkbox = screen.getByRole('checkbox')
 		expect(checkbox).toBeChecked()
@@ -37,7 +37,7 @@ describe('Checkbox', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<Checkbox onChange={handleChange} />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const checkbox = screen.getByRole('checkbox')
 		fireEvent.click(checkbox)
@@ -48,7 +48,7 @@ describe('Checkbox', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<Checkbox disabled />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const checkbox = screen.getByRole('checkbox')
 		expect(checkbox).toBeDisabled()
@@ -59,21 +59,21 @@ describe('Checkbox', () => {
 		const themeContext = new UIContextValue({
 			theme: {
 				atoms: {
-					Checkbox: { size: '20px', checkedColor: 'red' }
-				}
-			}
+					Checkbox: { size: '20px', checkedColor: 'red' },
+				},
+			},
 		})
 		render(
 			<UIProvider value={themeContext}>
 				<Checkbox checked />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const checkbox = screen.getByRole('checkbox')
-		expect(checkbox).toHaveStyle({ 
-			width: '20px', 
-			height: '20px', 
+		expect(checkbox).toHaveStyle({
+			width: '20px',
+			height: '20px',
 			backgroundColor: 'red',
-			borderRadius: '3px'
+			borderRadius: '3px',
 		})
 	})
 })

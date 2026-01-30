@@ -19,21 +19,24 @@ function MockInteractiveRenderer({ element, context }) {
 	const { theme } = context || {}
 
 	const handleInputChange = useCallback((fieldName, value) => {
-		setInputData(prev => ({ ...prev, [fieldName]: value }))
+		setInputData((prev) => ({ ...prev, [fieldName]: value }))
 	}, [])
 
-	const handleSubmit = useCallback(async (e) => {
-		e.preventDefault()
-		setIsComputing(true)
-		try {
-			const computed = await compute(inputData)
-			setResult(computed)
-		} catch (err) {
-			setResult({ error: err.message })
-		} finally {
-			setIsComputing(false)
-		}
-	}, [inputData, compute])
+	const handleSubmit = useCallback(
+		async (e) => {
+			e.preventDefault()
+			setIsComputing(true)
+			try {
+				const computed = await compute(inputData)
+				setResult(computed)
+			} catch (err) {
+				setResult({ error: err.message })
+			} finally {
+				setIsComputing(false)
+			}
+		},
+		[inputData, compute],
+	)
 
 	const renderField = (field) => {
 		const { name, type = 'text', label, defaultValue = '', min, ...fieldProps } = field
@@ -59,7 +62,9 @@ function MockInteractiveRenderer({ element, context }) {
 		<div data-testid="interactive-renderer" style={{ padding: '1rem', border: '1px solid #ccc' }}>
 			{/* Base content - simple render */}
 			{baseContent.map((block, i) => (
-				<div key={`base-${i}`}>{Array.isArray(block.Typography) ? block.Typography[0] : 'Base'}</div>
+				<div key={`base-${i}`}>
+					{Array.isArray(block.Typography) ? block.Typography[0] : 'Base'}
+				</div>
 			))}
 
 			{/* Form */}
@@ -67,9 +72,7 @@ function MockInteractiveRenderer({ element, context }) {
 				<form onSubmit={handleSubmit} data-testid="interactive-form">
 					<div>Provide Input</div>
 					{requiresInput.fields.map((field, i) => (
-						<div key={`field-${i}`}>
-							{renderField(field)}
-						</div>
+						<div key={`field-${i}`}>{renderField(field)}</div>
 					))}
 					<button type="submit" disabled={isComputing} data-testid="compute-btn">
 						{isComputing ? 'Computing...' : 'Compute'}
@@ -95,22 +98,20 @@ function MockInteractiveRenderer({ element, context }) {
 describe('renderInteractive', () => {
 	const mockContext = new UIContextValue({
 		theme: {},
-		actions: {}
+		actions: {},
 	})
 
 	const mockElement = {
 		type: 'interactive',
 		requiresInput: {
-			fields: [
-				{ name: 'count', type: 'number', label: 'Count', defaultValue: 0, min: 0 }
-			]
+			fields: [{ name: 'count', type: 'number', label: 'Count', defaultValue: 0, min: 0 }],
 		},
 		compute: vi.fn(async (input) => ({
 			$title: `Result: ${input.count * 2}`,
 			message: `Computed from ${input.count}`,
-			updatedContent: [{ p: ['Dynamic text'] }]
+			updatedContent: [{ p: ['Dynamic text'] }],
 		})),
-		$content: [{ Typography: ['Base Title'], $variant: 'h3' }]
+		$content: [{ Typography: ['Base Title'], $variant: 'h3' }],
 	}
 
 	beforeEach(() => {
@@ -121,7 +122,7 @@ describe('renderInteractive', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<MockInteractiveRenderer element={mockElement} context={mockContext} />
-			</UIProvider>
+			</UIProvider>,
 		)
 
 		expect(screen.getByText('Base Title')).toBeInTheDocument()
@@ -134,10 +135,10 @@ describe('renderInteractive', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<MockInteractiveRenderer element={mockElement} context={mockContext} />
-			</UIProvider>
+			</UIProvider>,
 		)
 
-		const input = screen.getByDisplayValue('0')  // default
+		const input = screen.getByDisplayValue('0') // default
 		fireEvent.change(input, { target: { value: '5' } })
 
 		const submitBtn = screen.getByTestId('compute-btn')
@@ -158,7 +159,7 @@ describe('renderInteractive', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<MockInteractiveRenderer element={mockElement} context={mockContext} />
-			</UIProvider>
+			</UIProvider>,
 		)
 
 		const input = screen.getByDisplayValue('0')
@@ -173,11 +174,15 @@ describe('renderInteractive', () => {
 	})
 
 	it('renders without requiresInput (no form, just base)', () => {
-		const noInputElement = { ...mockElement, requiresInput: undefined, $content: [{ Typography: ['Only Base'] }] }
+		const noInputElement = {
+			...mockElement,
+			requiresInput: undefined,
+			$content: [{ Typography: ['Only Base'] }],
+		}
 		render(
 			<UIProvider value={mockContext}>
 				<MockInteractiveRenderer element={noInputElement} context={mockContext} />
-			</UIProvider>
+			</UIProvider>,
 		)
 
 		expect(screen.getByText('Only Base')).toBeInTheDocument()

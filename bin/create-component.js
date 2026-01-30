@@ -1,11 +1,11 @@
 // scripts/create-component.js
-import fs from "fs"
-import path from "path"
+import fs from 'fs'
+import path from 'path'
 
 const name = process.argv[2]
-if (!name) throw new Error("Usage: node create-component.js <name>")
+if (!name) throw new Error('Usage: node create-component.js <name>')
 
-const dir = path.resolve("src/components/atoms", name)
+const dir = path.resolve('src/components/atoms', name)
 
 if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
 
@@ -24,12 +24,9 @@ class ${name} {
 }
 
 export default ${name}
-`
+`,
 )
 
-fs.writeFileSync(
-	path.join(dir, "index.js"),
-	`export { default } from "./${name}.js"\n`
-)
+fs.writeFileSync(path.join(dir, 'index.js'), `export { default } from "./${name}.js"\n`)
 
 console.log(`${name} component scaffolded.`)

@@ -17,12 +17,12 @@ export default function Avatar({ src, alt = '', style = {}, className = '', ...p
 	}, [])
 
 	const defaults = {
-		size: "2.5rem",
-		borderRadius: "50%",
-		border: "none",
-		backgroundColor: "#f3f4f6",
-		fallbackColor: "#9ca3af",
-		fallbackTextColor: "#6b7280",
+		size: '2.5rem',
+		borderRadius: '50%',
+		border: 'none',
+		backgroundColor: '#f3f4f6',
+		fallbackColor: '#9ca3af',
+		fallbackTextColor: '#6b7280',
 	}
 	const themeDefaults = theme?.atoms?.Avatar || {}
 	Object.assign(defaults, themeDefaults)
@@ -39,7 +39,13 @@ export default function Avatar({ src, alt = '', style = {}, className = '', ...p
 	}
 
 	if (useFallback) {
-		const initials = alt ? alt.split(' ').map(n => n[0]?.toUpperCase()).join('').slice(0, 2) || '?' : '?'
+		const initials = alt
+			? alt
+					.split(' ')
+					.map((n) => n[0]?.toUpperCase())
+					.join('')
+					.slice(0, 2) || '?'
+			: '?'
 		return (
 			<div className={className} style={containerStyle} role="img" aria-label={alt}>
 				<div

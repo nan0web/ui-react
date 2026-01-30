@@ -2,13 +2,13 @@ import { describe, it, beforeEach, afterEach } from 'node:test'
 import assert from 'node:assert'
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import DB from "@nan0web/db"
+import DB from '@nan0web/db'
 import { NoConsole } from '@nan0web/log'
-import nan0webVitePlugin, { buildSite } from "./plugin.js"
+import nan0webVitePlugin, { buildSite } from './plugin.js'
 
 const testDirs = ['public', 'dist']
 
-describe("nan0webVitePlugin", () => {
+describe('nan0webVitePlugin', () => {
 	let inputDB, outputDB, plugin, tempDir
 
 	beforeEach(async () => {
@@ -18,22 +18,31 @@ describe("nan0webVitePlugin", () => {
 			await fs.mkdir(path.join(tempDir, dir), { recursive: true })
 		}
 
-		await fs.writeFile(path.join(tempDir, 'public', 'public-test.json'), JSON.stringify({ from: 'public' }))
-		await fs.writeFile(path.join(tempDir, 'public', 'favicon.svg'), '<svg xmlns="http://www.w3.org/2000/svg"></svg>')
-		await fs.writeFile(path.join(tempDir, 'dist', 'dist-test.json'), JSON.stringify({ from: 'dist' }))
+		await fs.writeFile(
+			path.join(tempDir, 'public', 'public-test.json'),
+			JSON.stringify({ from: 'public' }),
+		)
+		await fs.writeFile(
+			path.join(tempDir, 'public', 'favicon.svg'),
+			'<svg xmlns="http://www.w3.org/2000/svg"></svg>',
+		)
+		await fs.writeFile(
+			path.join(tempDir, 'dist', 'dist-test.json'),
+			JSON.stringify({ from: 'dist' }),
+		)
 
 		inputDB = new DB({
-			console: new NoConsole({ prefix: "[Input DB]" }),
+			console: new NoConsole({ prefix: '[Input DB]' }),
 			predefined: [
-				["index.html", "<html><body>Hello</body></html>"],
-				["_.yaml", { $host: "localhost" }],
-				["data/test.json", { "message": "test data" }],
-				["nested/deep.json", { "value": 42 }],
-				["data/contacts.json", { "name": "Test Contact" }]
-			]
+				['index.html', '<html><body>Hello</body></html>'],
+				['_.yaml', { $host: 'localhost' }],
+				['data/test.json', { message: 'test data' }],
+				['nested/deep.json', { value: 42 }],
+				['data/contacts.json', { name: 'Test Contact' }],
+			],
 		})
 		outputDB = new DB({
-			console: new NoConsole({ prefix: "[Output DB]" })
+			console: new NoConsole({ prefix: '[Output DB]' }),
 		})
 
 		await inputDB.connect()
@@ -42,8 +51,8 @@ describe("nan0webVitePlugin", () => {
 		plugin = nan0webVitePlugin({
 			input: inputDB,
 			output: outputDB,
-			staticDirs: testDirs.map(dir => path.join(tempDir, dir)),
-			logger: new NoConsole()
+			staticDirs: testDirs.map((dir) => path.join(tempDir, dir)),
+			logger: new NoConsole(),
 		})
 	})
 
@@ -54,31 +63,31 @@ describe("nan0webVitePlugin", () => {
 		for (const dir of testDirs) {
 			try {
 				await fs.rm(path.join(tempDir, dir), { recursive: true, force: true })
-			} catch { }
+			} catch {}
 		}
 
 		try {
 			await fs.rm(tempDir, { recursive: true, force: true })
-		} catch { }
+		} catch {}
 	})
 
-	it("should generate static files on build", async () => {
+	it('should generate static files on build', async () => {
 		assert.ok(plugin)
 		await buildSite(inputDB, outputDB, new NoConsole())
 
 		const testDoc = await outputDB.loadDocument('data/test.json')
 		const contactsDoc = await outputDB.loadDocument('data/contacts.json')
 
-		assert.deepStrictEqual(testDoc, { message: "test data" })
-		assert.deepStrictEqual(contactsDoc, { name: "Test Contact" })
+		assert.deepStrictEqual(testDoc, { message: 'test data' })
+		assert.deepStrictEqual(contactsDoc, { name: 'Test Contact' })
 	})
 
-	it.skip("should handle static files correctly", async () => {
+	it.skip('should handle static files correctly', async () => {
 		const middlewares = []
 		const mockServer = {
 			middlewares: {
-				use: (fn) => middlewares.push(fn)
-			}
+				use: (fn) => middlewares.push(fn),
+			},
 		}
 
 		plugin.configureServer(mockServer)
@@ -89,20 +98,24 @@ describe("nan0webVitePlugin", () => {
 		{
 			const [req, res] = createMockReqRes('/data/contacts.json')
 			let nextCalled = false
-			await wrapMiddleware(middleware, req, res, () => { nextCalled = true })
+			await wrapMiddleware(middleware, req, res, () => {
+				nextCalled = true
+			})
 
 			if (!nextCalled) {
 				assert.strictEqual(res._headers['content-type'], 'application/json')
-				assert.deepStrictEqual(JSON.parse(res._data), { name: "Test Contact" })
+				assert.deepStrictEqual(JSON.parse(res._data), { name: 'Test Contact' })
 			} else {
-				assert.fail("Middleware should respond with JSON data")
+				assert.fail('Middleware should respond with JSON data')
 			}
 		}
 
 		{
 			const [req, res] = createMockReqRes('/not-exists.json')
 			let nextCalled = false
-			await wrapMiddleware(middleware, req, res, () => { nextCalled = true })
+			await wrapMiddleware(middleware, req, res, () => {
+				nextCalled = true
+			})
 
 			assert.strictEqual(nextCalled, true)
 		}
@@ -125,10 +138,12 @@ function wrapMiddleware(middleware, req, res, next) {
 			resolve()
 			return this
 		}
-		const nextWrapper = next ? (err) => {
-			next(err)
-			resolve()
-		} : () => resolve()
+		const nextWrapper = next
+			? (err) => {
+					next(err)
+					resolve()
+				}
+			: () => resolve()
 		middleware(req, res, nextWrapper)
 		if (res.finished) {
 			resolve()
@@ -140,8 +155,8 @@ function createMockReqRes(url = '/') {
 	return [
 		{
 			url: url,
-			headers: { 'accept': '*/*' },
-			method: 'GET'
+			headers: { accept: '*/*' },
+			method: 'GET',
 		},
 		{
 			_headers: {},
@@ -159,7 +174,7 @@ function createMockReqRes(url = '/') {
 				this._data = data
 				this.finished = true
 				return this
-			}
-		}
+			},
+		},
 	]
 }

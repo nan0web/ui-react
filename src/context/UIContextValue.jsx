@@ -1,6 +1,6 @@
-import AppCore from "@nan0web/core"
-import { Theme } from "@nan0web/ui-core"
-import DB from "@nan0web/db-browser"
+import AppCore from '@nan0web/core'
+import { Theme } from '@nan0web/ui-core'
+import DB from '@nan0web/db-browser'
 
 /**
  * @typedef {Function} SyncImport
@@ -45,8 +45,8 @@ class UIContextValue {
 			lang = 'en',
 			db = new DB(),
 			reducedMotion = false,
-			setTheme = () => { },
-			t = k => k,
+			setTheme = () => {},
+			t = (k) => k,
 			data = {},
 			renderFn = () => null,
 			console: consoleInitial = console,
@@ -61,27 +61,28 @@ class UIContextValue {
 		this.lang = lang
 		this.db = db
 		this.reducedMotion = Boolean(reducedMotion)
-		this.setTheme = this.#proxy("setTheme", typeof setTheme === 'function' ? setTheme : () => { })
+		this.setTheme = this.#proxy('setTheme', typeof setTheme === 'function' ? setTheme : () => {})
 		this.console = consoleInitial
-		this.t = this.#proxy("t", typeof t === 'function' ? t : (k => k))
+		this.t = this.#proxy('t', typeof t === 'function' ? t : (k) => k)
 		this.renderFn = renderFn
-		this.components = components instanceof Map
-			? components
-			: new Map(Array.isArray(components) ? components : Object.entries(components))
-		this.renderers = renderers instanceof Map
-			? renderers
-			: new Map(Array.isArray(renderers) ? renderers : Object.entries(renderers))
-		this.apps = apps instanceof Map
-			? apps
-			: new Map(Array.isArray(apps) ? apps : Object.entries(apps))
+		this.components =
+			components instanceof Map
+				? components
+				: new Map(Array.isArray(components) ? components : Object.entries(components))
+		this.renderers =
+			renderers instanceof Map
+				? renderers
+				: new Map(Array.isArray(renderers) ? renderers : Object.entries(renderers))
+		this.apps =
+			apps instanceof Map ? apps : new Map(Array.isArray(apps) ? apps : Object.entries(apps))
 		Object.values(actions).forEach((fn) => {
-			if ("function" !== typeof fn) {
-				throw new TypeError("All actions must be functions")
+			if ('function' !== typeof fn) {
+				throw new TypeError('All actions must be functions')
 			}
 		})
 		this.apps.forEach((fn) => {
-			if ("function" !== typeof fn) {
-				throw new TypeError("All apps must be lazy functions")
+			if ('function' !== typeof fn) {
+				throw new TypeError('All apps must be lazy functions')
 			}
 		})
 		this.actions = actions
@@ -104,7 +105,7 @@ class UIContextValue {
 	 * @returns {UIContextValue}
 	 */
 	extend(overrides = {}) {
-		this.console.debug("UIContextValue.extend", overrides)
+		this.console.debug('UIContextValue.extend', overrides)
 		return new UIContextValue({
 			...this,
 			...overrides,

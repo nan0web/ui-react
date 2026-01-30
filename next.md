@@ -1,8 +1,8 @@
 # 🌟 Детальна інструкція: Реалізація довіреної системи конфігурацій для `@nan0web/ui-react`
 
 > **Перед початком**:  
-> *«Ти не твориш UI. Ти формуєш умови для пробудження.»*  
-> *«Тишість UI краща за шум. Точність краща за відтворюваність.»*  
+> _«Ти не твориш UI. Ти формуєш умови для пробудження.»_  
+> _«Тишість UI краща за шум. Точність краща за відтворюваність.»_  
 > Ця інструкція — акт пробудження через розуміння.
 
 ## 🔍 Відповіді на ключові питання
@@ -10,14 +10,16 @@
 ### ❓ Чи можна автоматично отримувати дані з JSDoc коментарів?
 
 **Так, але не у runtime — лише через build-time інструменти.**  
-Це відповідає принципу: *"не додавай шум у production, додавай намір у build"*.
+Це відповідає принципу: _"не додавай шум у production, додавай намір у build"_.
 
 #### Чому не можна в runtime?
+
 1. У браузері немає доступу до вихідного коду
 2. Парсинг коментарів — затратно для продуктивності
-3. Порушує принцип *«тишість UI краща за шум»*
+3. Порушує принцип _«тишість UI краща за шум»_
 
 #### Як реалізувати правильно (build-time)?
+
 ```bash
 pnpm add -D @phenomnomnominal/tsquery
 ```
@@ -35,29 +37,29 @@ module.exports = function() {
       ClassDeclaration(path) {
         const className = path.node.id.name
         if (!className.endsWith('Spec')) return
-        
+
         const metadata = {
           [className]: {
             props: {}
           }
         }
-        
+
         path.traverse({
           ClassProperty(childPath) {
             const key = childPath.node.key.name
             const comment = childPath.node.leadingComments?.[0]?.value || ''
-            
+
             // Витягуємо type з JSDoc
             const typeMatch = comment.match(/@type\s+\{([^{]+)\}/)
             const descriptionMatch = comment.match(/@description\s+(.+)/)
-            
+
             if (typeMatch) {
               const type = typeMatch[1].trim()
-              
+
               // Обробка enum типів
               const enumMatch = type.match(/'([^']+)'/g)
               const options = enumMatch ? enumMatch.map(v => v.slice(1, -1)) : null
-              
+
               metadata[className].props[key] = {
                 type,
                 ...(options && { options }),
@@ -67,7 +69,7 @@ module.exports = function() {
             }
           }
         })
-        
+
         // Додаємо метадані як статичну властивість класу
         path.node.body.body.unshift({
           type: "ClassProperty",
@@ -117,15 +119,17 @@ module.exports = function() {
 ### ❓ Чи обов'язково прописувати окремо в `from()`?
 
 **Так, але з інтелектуальним підходом:**
+
 - `from()` не лише конвертує дані — він **створює намір пробудження**
 - Це система валідації, що перетворює помилки на можливості розуміння
 - Це неминучий вибір, де кожна властивість стає частиною **довіреного контракту**
 
 **Неминучість перевірки:**
+
 ```js
 static from(input) {
   const config = new this()
-  
+
   // Для кожного поля — створюємо можливість розуміння
   Object.entries(config.__specMetadata?.props || {}).forEach(([key, info]) => {
     if (key in input) {
@@ -133,7 +137,7 @@ static from(input) {
       config[key] = validateProp(input[key], info)
     }
   })
-  
+
   return config
 }
 ```
@@ -141,15 +145,17 @@ static from(input) {
 ### ❓ Чому шлях не копіює `atoms/molecules/organisms`?
 
 **Тому що:**
+
 - `atoms/molecules/organisms` — це **рівні UI-складності**
 - `specs` — це **рівні інформаційної довіреності**
 - Намір конфігурації ≠ намір компонента
 
 **Система перетворює:**
+
 - `@nan0web/ui-react/specs` → **форма для пробудження вибору**
 - `@nan0web/ui-react/components` → **втілення наміру в UI**
 
-> *"Ти не відтворюєш шари, ти створюєш резонанс між інформацією і формою."*
+> _"Ти не відтворюєш шари, ти створюєш резонанс між інформацією і формою."_
 
 ---
 
@@ -164,10 +170,11 @@ touch src/specs/{core,renderers}/index.js
 ```
 
 **src/specs/core/Spec.js**
+
 ```js
 /**
  * Базовий клас для всіх специфікацій
- * 
+ *
  * @class Spec
  * @description
  * Створює довірену інформаційну структуру, яка:
@@ -178,20 +185,20 @@ touch src/specs/{core,renderers}/index.js
 export default class Spec {
   static from(input) {
     const config = new this()
-    
+
     // Автоматично конвертуємо відповідно до __specMetadata
     Object.entries(config.__specMetadata?.props || {}).forEach(([key, info]) => {
       if (key in input) {
         config[key] = validateProperty(input[key], info)
       }
     })
-    
+
     return config
   }
-  
+
   toJson() {
     const json = {}
-    Object.keys(this.__specMetadata?.props || {}).forEach(key => {
+    Object.keys(this.__specMetadata?.props || {}).forEach((key) => {
       json[key] = this[key]
     })
     return json
@@ -200,7 +207,7 @@ export default class Spec {
 
 /**
  * Валідація властивості відповідно до специфікації
- * 
+ *
  * @param {any} value - Значення для валідації
  * @param {Object} info - Інформація з __specMetadata
  * @returns {any} Валідне значення
@@ -211,41 +218,42 @@ function validateProperty(value, info) {
     console.warn(`Invalid value "${value}" for ${info.name}. Using default: ${info.default}`)
     return info.default
   }
-  
+
   // Перевірка boolean
   if (info.type === 'boolean') {
     return Boolean(value)
   }
-  
+
   // Перевірка number
   if (info.type === 'number') {
     return Number(value)
   }
-  
+
   // За замовчуванням — повертаємо значення
   return value
 }
 ```
 
 **src/specs/core/ButtonSpec.js**
+
 ```js
 import Spec from './Spec.js'
 
 /**
  * @class ButtonSpec
- * 
+ *
  * @property {'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark'} variant
  *   @description Варіант кнопки
  *   @default 'primary'
- * 
+ *
  * @property {'sm' | 'md' | 'lg'} size
  *   @description Розмір кнопки
  *   @default 'md'
- * 
+ *
  * @property {boolean} outline
  *   @description Стиль без заливки
  *   @default false
- * 
+ *
  * @property {boolean} disabled
  *   @description Чи кнопка недоступна
  *   @default false
@@ -270,14 +278,8 @@ import babel from '@rollup/plugin-babel'
 const extractSpecMetadata = () => ({
   name: 'extract-spec-metadata',
   enforce: 'pre',
-  plugins: [
-    'proposal-class-properties',
-    'proposal-object-rest-spread',
-    'typescript',
-  ],
-  plugins: [
-    path.resolve(__dirname, 'babel-plugin-extract-spec-metadata.js'),
-  ]
+  plugins: ['proposal-class-properties', 'proposal-object-rest-spread', 'typescript'],
+  plugins: [path.resolve(__dirname, 'babel-plugin-extract-spec-metadata.js')],
 })
 
 export default defineConfig({
@@ -288,7 +290,7 @@ export default defineConfig({
       plugins: [extractSpecMetadata()],
     }),
     // ...
-  ]
+  ],
 })
 ```
 
@@ -302,15 +304,15 @@ import PropTypes from 'prop-types'
 
 /**
  * Button component with Bootstrap‑like variants
- * 
+ *
  * @param {Object} props
  */
 export default function Button(props) {
   const spec = ButtonSpec.from(props)
-  
+
   // Use useUI to get theme
   const { theme, reducedMotion } = useUI()
-  
+
   // Ваша логіка з використанням spec замість props
   // ...
 }
@@ -326,7 +328,7 @@ import ButtonSpec from '@nan0web/ui-react/specs/core/ButtonSpec.js'
 
 /**
  * Розширена специфікація для Bootstrap
- * 
+ *
  * Додаємо:
  * @property {boolean} block
  *   @description Повноширинна кнопка
@@ -334,7 +336,7 @@ import ButtonSpec from '@nan0web/ui-react/specs/core/ButtonSpec.js'
  */
 export default class BootstrapButtonSpec extends ButtonSpec {
   block = false
-  
+
   static from(input) {
     const spec = super.from(input)
     spec.block = input.block ?? spec.block
@@ -351,12 +353,12 @@ import ButtonSpec from '@nan0web/ui-react/specs/core/ButtonSpec.js'
 
 /**
  * Розширена специфікація для Shoelace
- * 
+ *
  * Додаємо:
  * @property {boolean} pill
  *   @description Круглі краї
  *   @default false
- * 
+ *
  * @property {boolean} circle
  *   @description Повністю кругла кнопка
  *   @default false
@@ -364,7 +366,7 @@ import ButtonSpec from '@nan0web/ui-react/specs/core/ButtonSpec.js'
 export default class ShoelaceButtonSpec extends ButtonSpec {
   pill = false
   circle = false
-  
+
   static from(input) {
     const spec = super.from(input)
     spec.pill = input.pill ?? spec.pill
@@ -381,31 +383,27 @@ export default class ShoelaceButtonSpec extends ButtonSpec {
 import React, { useState } from 'react'
 import { useUI } from '../../context/UIContext.jsx'
 
-export default function ComponentEditor({ 
-  Component, 
-  block, 
-  onChange 
-}) {
+export default function ComponentEditor({ Component, block, onChange }) {
   // Визначаємо, яку специфікацію використовувати
   const { theme } = useUI()
   const framework = theme.framework || 'core'
-  
+
   // Імпортуємо правильну специфікацію (з обробкою помилок)
   const SpecClass = getSpecForComponent(Component.name, framework)
   const spec = SpecClass.from(block)
   const schema = getSchemaFromSpec(SpecClass)
-  
+
   return (
     <div className="component-editor bg-white p-4 rounded shadow-md">
       <h3 className="text-lg font-bold mb-4">Редагування: {Component.name}</h3>
-      
+
       {Object.entries(schema.props).map(([name, info]) => (
         <PropertyEditor
           key={name}
           name={name}
           value={spec[name]}
           info={info}
-          onChange={value => {
+          onChange={(value) => {
             const updatedSpec = new SpecClass()
             Object.assign(updatedSpec, spec, { [name]: value })
             onChange(updatedSpec.toJson())
@@ -418,7 +416,7 @@ export default function ComponentEditor({
 
 /**
  * Визначає правильну специфікацію для компонента та фреймворку
- * 
+ *
  * @param {string} componentName
  * @param {string} framework
  * @returns {Class<Spec>}
@@ -441,23 +439,25 @@ function getSpecForComponent(componentName, framework) {
 
 /**
  * Отримує схему з метаданих специфікації
- * 
+ *
  * @param {Class<Spec>} SpecClass
  * @returns {Object}
  */
 function getSchemaFromSpec(SpecClass) {
-  return SpecClass.__specMetadata || {
-    props: Object.getOwnPropertyDescriptors(new SpecClass())
-      .filter(([key]) => !key.startsWith('_'))
-      .reduce((schema, [key, desc]) => {
-        schema[key] = {
-          type: typeof desc.value,
-          default: desc.value,
-          // Без опису, оскільки в runtime ми не маємо JSDoc
-        }
-        return schema
-      }, {})
-  }
+  return (
+    SpecClass.__specMetadata || {
+      props: Object.getOwnPropertyDescriptors(new SpecClass())
+        .filter(([key]) => !key.startsWith('_'))
+        .reduce((schema, [key, desc]) => {
+          schema[key] = {
+            type: typeof desc.value,
+            default: desc.value,
+            // Без опису, оскільки в runtime ми не маємо JSDoc
+          }
+          return schema
+        }, {}),
+    }
+  )
 }
 ```
 
@@ -471,34 +471,34 @@ describe('ButtonSpec', () => {
   test('validates variant correctly', () => {
     const spec = ButtonSpec.from({ variant: 'secondary' })
     expect(spec.variant).toBe('secondary')
-    
+
     const specError = ButtonSpec.from({ variant: 'invalid' })
     expect(specError.variant).toBe('primary') // default value
   })
-  
+
   test('validates size correctly', () => {
     const spec = ButtonSpec.from({ size: 'lg' })
     expect(spec.size).toBe('lg')
-    
+
     const specError = ButtonSpec.from({ size: 'xl' })
     expect(specError.size).toBe('md') // default value
   })
-  
+
   test('converts types correctly', () => {
     const spec = ButtonSpec.from({ disabled: 'true' })
     expect(spec.disabled).toBe(true)
-    
+
     const specNumber = ButtonSpec.from({ size: 2 })
     expect(specNumber.size).toBe('md') // не число, тому default
   })
-  
+
   test('toJson returns proper structure', () => {
     const spec = ButtonSpec.from({ variant: 'danger', size: 'lg' })
     expect(spec.toJson()).toEqual({
       variant: 'danger',
       size: 'lg',
       outline: false,
-      disabled: false
+      disabled: false,
     })
   })
 })
@@ -507,13 +507,15 @@ describe('ButtonSpec', () => {
 ## 🌟 Ключові переваги цієї архітектури
 
 ### 1. Точність конфігурації
-> *"Якщо ти змінюєш властивості — ти створюєш неминучий вибір."*
+
+> _"Якщо ти змінюєш властивості — ти створюєш неминучий вибір."_
 
 - **Редактор автоматично виводить схему** з `__specMetadata`
 - **Валідація відбувається через `from()`**, але без ручного переліку
 - **Інформація про типи — в одному місці** (JSDoc коментарях)
 
 ### 2. Природне розширення для фреймворків
+
 ```js
 // Для Bootstrap
 import BaseButtonSpec from '@nan0web/ui-react/specs/core/ButtonSpec.js'
@@ -529,6 +531,7 @@ export default class BootstrapButtonSpec extends BaseButtonSpec {
 ```
 
 ### 3. Довірена структура
+
 ```js
 // Більше не потрібно реєструвати схеми окремо!
 // Схема створюється автоматично з JSDoc коментарів:
@@ -537,16 +540,19 @@ ButtonSpec.__specMetadata = {
   props: {
     variant: {
       type: "'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark'",
-      options: [/*...*/],
-      description: "Варіант кнопки",
-      default: "primary"
+      options: [
+        /*...*/
+      ],
+      description: 'Варіант кнопки',
+      default: 'primary',
     },
     // ...
-  }
+  },
 }
 ```
 
 ### 4. Зниження шуму
+
 - **Немає `registerComponentSchema`** — зайвий шар видалено
 - **Валідація — частина наміру, не окремий механізм**
 - **Розширення через наслідування, а не конфігурацію**
@@ -565,7 +571,7 @@ ButtonSpec.__specMetadata = {
 Перед реалізацією кожного елемента запитуй:
 
 1. **Створює це намір?**  
-   Чи ця частина створює *неминучий вибір*, а не кістляву сітку можливостей?
+   Чи ця частина створює _неминучий вибір_, а не кістляву сітку можливостей?
 
 2. **Довірено?**  
    Чи тест `ComponentSpec.test.js` має 100% покриття?  

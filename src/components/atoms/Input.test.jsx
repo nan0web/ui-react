@@ -15,7 +15,7 @@ describe('Input', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<Input />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const input = screen.getByRole('textbox')
 		expect(input).toHaveAttribute('type', 'text')
@@ -25,7 +25,7 @@ describe('Input', () => {
 		const typeConfigs = [
 			{ type: 'email', selector: 'input[type="email"]' },
 			{ type: 'password', selector: 'input[type="password"]' },
-			{ type: 'number', selector: 'input[type="number"]' }
+			{ type: 'number', selector: 'input[type="number"]' },
 		]
 
 		render(
@@ -35,7 +35,7 @@ describe('Input', () => {
 						<Input key={index} type={type} data-testid={`input-${type}`} />
 					))}
 				</div>
-			</UIProvider>
+			</UIProvider>,
 		)
 
 		typeConfigs.forEach(({ type }) => {
@@ -48,7 +48,7 @@ describe('Input', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<Input placeholder="Test placeholder" />
-			</UIProvider>
+			</UIProvider>,
 		)
 		expect(screen.getByPlaceholderText('Test placeholder')).toBeInTheDocument()
 	})
@@ -58,7 +58,7 @@ describe('Input', () => {
 		const { getByRole } = render(
 			<UIProvider value={mockContext}>
 				<Input value="initial" onChange={handleChange} />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const input = getByRole('textbox')
 		expect(input).toHaveValue('initial')
@@ -71,14 +71,14 @@ describe('Input', () => {
 		const themeContext = new UIContextValue({
 			theme: {
 				atoms: {
-					Input: { borderRadius: '8px', paddingX: '16px' }
-				}
-			}
+					Input: { borderRadius: '8px', paddingX: '16px' },
+				},
+			},
 		})
 		render(
 			<UIProvider value={themeContext}>
 				<Input />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const input = screen.getByRole('textbox')
 		expect(input).toHaveStyle({ borderRadius: '8px', paddingLeft: '16px', paddingRight: '16px' })

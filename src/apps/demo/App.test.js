@@ -9,8 +9,8 @@ const mockDB = new DB({
 	console: new NoConsole(),
 	predefined: [
 		['play/index.json', { $content: [] }],
-		['apps/navigation/data/main.json', { $app: 'navigation', $content: [] }]
-	]
+		['apps/navigation/data/main.json', { $app: 'navigation', $content: [] }],
+	],
 })
 
 /**
@@ -24,9 +24,9 @@ describe.skip('DemoApp', () => {
 		app = new DemoApp({
 			db: mockDB,
 			theme: { mode: 'light' },
-			setTheme: () => { },
-			navigate: () => { },
-			uri: '/play/index.json'
+			setTheme: () => {},
+			navigate: () => {},
+			uri: '/play/index.json',
 		})
 	})
 
@@ -58,7 +58,11 @@ describe.skip('DemoApp', () => {
 
 		const [simpleAppBlock, customRendererBlock] = firstBlock.div
 		assert.strictEqual(simpleAppBlock.App, 'SimpleApp', 'Should include SimpleApp')
-		assert.strictEqual(customRendererBlock.App, 'CustomRendererApp', 'Should include CustomRendererApp')
+		assert.strictEqual(
+			customRendererBlock.App,
+			'CustomRendererApp',
+			'Should include CustomRendererApp',
+		)
 	})
 
 	it('should handle navigation properly', async () => {

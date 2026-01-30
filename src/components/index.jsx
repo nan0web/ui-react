@@ -25,7 +25,7 @@ const components = new Map([
 	['TextArea', TextArea],
 	['Card', Card],
 	['Modal', Modal],
-	['ThemeSwitcher', ThemeSwitcher]
+	['ThemeSwitcher', ThemeSwitcher],
 ])
 
 export default components

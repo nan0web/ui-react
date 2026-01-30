@@ -9,8 +9,14 @@ import renderTable from './renderTable.jsx'
 describe('renderTable', () => {
 	it('renders table with content', () => {
 		const element = {
-			table: <tbody><tr><td>Test Cell</td></tr></tbody>,
-			id: 'test-table'
+			table: (
+				<tbody>
+					<tr>
+						<td>Test Cell</td>
+					</tr>
+				</tbody>
+			),
+			id: 'test-table',
 		}
 
 		render(renderTable({ element }))
@@ -21,7 +27,7 @@ describe('renderTable', () => {
 	it('applies additional props to table element', () => {
 		const element = {
 			table: <tbody></tbody>,
-			className: 'table-class'
+			className: 'table-class',
 		}
 
 		render(renderTable({ element }))

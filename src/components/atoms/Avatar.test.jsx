@@ -27,7 +27,7 @@ describe('Avatar', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<Avatar src="https://via.placeholder.com/40" alt="User Avatar" />
-			</UIProvider>
+			</UIProvider>,
 		)
 		expect(screen.getByAltText('User Avatar')).toBeInTheDocument()
 		const container = screen.getByAltText('User Avatar').parentElement
@@ -41,7 +41,7 @@ describe('Avatar', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<Avatar alt="John Doe" />
-			</UIProvider>
+			</UIProvider>,
 		)
 		expect(screen.getByRole('img')).toBeInTheDocument()
 		expect(screen.getByText('JD')).toBeInTheDocument()
@@ -56,7 +56,7 @@ describe('Avatar', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<Avatar src="invalid.jpg" alt="Failed" />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const img = screen.getByAltText('Failed')
 		await act(async () => {
@@ -73,8 +73,13 @@ describe('Avatar', () => {
 	it('applies custom style and className', () => {
 		render(
 			<UIProvider value={mockContext}>
-				<Avatar src="test.jpg" alt="Test" style={{ border: '2px solid red' }} className="test-class" />
-			</UIProvider>
+				<Avatar
+					src="test.jpg"
+					alt="Test"
+					style={{ border: '2px solid red' }}
+					className="test-class"
+				/>
+			</UIProvider>,
 		)
 		const container = screen.getByAltText('Test').parentElement
 		expect(container.style.border).toBe('2px solid red')
@@ -86,7 +91,7 @@ describe('Avatar', () => {
 		render(
 			<UIProvider value={defaultContext}>
 				<Avatar src="test.jpg" alt="Default" />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const container = screen.getByAltText('Default').parentElement
 		expect(container.style.width).toBe('2.5rem')

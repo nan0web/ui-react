@@ -1,2 +1,2 @@
 export default Theme;
-import { Theme } from "@nan0web/ui-core";
+import { Theme } from '@nan0web/ui-core';

@@ -24,4 +24,4 @@ nav:
   - href: /play/modals.html
     title: Modal
 theme:
-  current: light  # 'light' or 'night' - controlled via data, toggled by ThemeSwitcher
+  current: light # 'light' or 'night' - controlled via data, toggled by ThemeSwitcher

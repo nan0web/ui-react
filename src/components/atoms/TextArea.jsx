@@ -14,7 +14,7 @@ export default function TextArea({ ...props }) {
 		fontFamily = 'sans-serif',
 		height = '100px',
 	} = theme.atoms?.TextArea ?? {}
-	
+
 	const style = {
 		border: `${borderWidth} solid ${borderColor}`,
 		borderRadius,

@@ -12,12 +12,12 @@ describe('renderForm', () => {
 	const baseContext = new UIContextValue({
 		data: {
 			user: { name: 'John' },
-			countries: ['Ukraine', 'USA', 'Canada']
+			countries: ['Ukraine', 'USA', 'Canada'],
 		},
 		actions: {
 			updateName: () => {},
-			updateCountry: () => {}
-		}
+			updateCountry: () => {},
+		},
 	})
 
 	it('renders form with input field', () => {
@@ -29,16 +29,14 @@ describe('renderForm', () => {
 						type: 'text',
 						name: 'name',
 						$value: 'data:user.name',
-						$onChange: 'action:updateName'
-					}
-				}
-			]
+						$onChange: 'action:updateName',
+					},
+				},
+			],
 		}
 
 		render(
-			<UIProvider value={baseContext}>
-				{renderForm({ element, context: baseContext })}
-			</UIProvider>
+			<UIProvider value={baseContext}>{renderForm({ element, context: baseContext })}</UIProvider>,
 		)
 
 		expect(screen.getByLabelText('Name')).toBeInTheDocument()
@@ -54,16 +52,14 @@ describe('renderForm', () => {
 						name: 'country',
 						$value: 'Ukraine',
 						$onChange: 'action:updateCountry',
-						$options: 'data:countries'
-					}
-				}
-			]
+						$options: 'data:countries',
+					},
+				},
+			],
 		}
 
 		render(
-			<UIProvider value={baseContext}>
-				{renderForm({ element, context: baseContext })}
-			</UIProvider>
+			<UIProvider value={baseContext}>{renderForm({ element, context: baseContext })}</UIProvider>,
 		)
 
 		expect(screen.getByLabelText('Country')).toBeInTheDocument()
@@ -76,18 +72,16 @@ describe('renderForm', () => {
 				{
 					input: {
 						type: 'text',
-						name: 'test'
-					}
-				}
+						name: 'test',
+					},
+				},
 			],
 			id: 'test-form',
-			className: 'test-class'
+			className: 'test-class',
 		}
 
 		render(
-			<UIProvider value={baseContext}>
-				{renderForm({ element, context: baseContext })}
-			</UIProvider>
+			<UIProvider value={baseContext}>{renderForm({ element, context: baseContext })}</UIProvider>,
 		)
 
 		const form = screen.getByRole('form', { hidden: true })

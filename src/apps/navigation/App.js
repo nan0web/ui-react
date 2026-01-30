@@ -6,7 +6,7 @@ const NAV_ITEMS = [
 	{ href: 'avatar', title: 'navigation.avatar' },
 	{ href: 'badge', title: 'navigation.badge' },
 	{ href: 'button', title: 'navigation.button' },
-	{ href: 'input', title: 'navigation.input' }
+	{ href: 'input', title: 'navigation.input' },
 	// Додай інші точки
 ]
 
@@ -43,31 +43,29 @@ export default class NavigationApp extends AppCore {
 			navigate: (path) => {
 				this.currentPath = path
 				this.navigate(path)
-			}
+			},
 		}
 
 		return {
 			content: [
 				{
-					Typography: [
-						{ "$t": "navigation.title" }
-					],
-					$variant: "h2",
-					$style: "margin-bottom: 1rem;"
+					Typography: [{ $t: 'navigation.title' }],
+					$variant: 'h2',
+					$style: 'margin-bottom: 1rem;',
 				},
 				{
-					Navigation: NAV_ITEMS.map(item => ({
+					Navigation: NAV_ITEMS.map((item) => ({
 						$href: item.href,
-						$title: { "$t": item.title },
-						$active: this.currentPath === item.href
+						$title: { $t: item.title },
+						$active: this.currentPath === item.href,
 					})),
-					$variant: "default"
+					$variant: 'default',
 				},
 				{
-					App: "ThemeSwitcher",
-					$style: "margin-top: 1rem;"
-				}
-			]
+					App: 'ThemeSwitcher',
+					$style: 'margin-top: 1rem;',
+				},
+			],
 		}
 	}
 

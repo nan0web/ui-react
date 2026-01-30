@@ -1,5 +1,5 @@
-import DB from "@nan0web/db-browser"
-import Element from "./Element.jsx"
+import DB from '@nan0web/db-browser'
+import Element from './Element.jsx'
 
 export default class AppModule {
 	/** @type {string} */
@@ -27,9 +27,9 @@ export default class AppModule {
 	}
 
 	async load() {
-		this.config = await this.db.fetch("config.json") || {}
-		this.ui = await this.db.fetch("main.json") || { $content: [] }
-		this.data = await this.db.fetch("data.json") || {}
+		this.config = (await this.db.fetch('config.json')) || {}
+		this.ui = (await this.db.fetch('main.json')) || { $content: [] }
+		this.data = (await this.db.fetch('data.json')) || {}
 	}
 
 	async run(action) {
@@ -55,7 +55,7 @@ export default class AppModule {
 			app: this,
 			bind: (field) => (ev) => {
 				this.data[field] = ev.target.value
-			}
+			},
 		})
 	}
 }

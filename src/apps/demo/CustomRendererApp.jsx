@@ -16,7 +16,7 @@ export default class CustomRendererApp extends AppCore {
 	 */
 	constructor(input) {
 		super(input)
-		const { title = 'Demo', uri = "index.html" } = input
+		const { title = 'Demo', uri = 'index.html' } = input
 		this.title = title
 		this.uri = uri
 	}
@@ -35,13 +35,13 @@ export default class CustomRendererApp extends AppCore {
 			$content: [
 				{
 					h3: [`Custom Renderer: ${this.title}`],
-					$className: 'text-lg font-medium mb-2'
+					$className: 'text-lg font-medium mb-2',
 				},
 				{
 					p: [`URI: ${this.uri}. Це рендериться через кастомний Renderer з useState.`],
-					$className: 'mb-4'
-				}
-			]
+					$className: 'mb-4',
+				},
+			],
 		}
 
 		// Кастомний Renderer — React-компонент з динамікою
@@ -56,7 +56,13 @@ export default class CustomRendererApp extends AppCore {
 					</h4>
 					<button
 						onClick={() => setCount(count + 1)}
-						style={{ background: '#007bff', color: 'white', padding: '0.5rem', border: 'none', cursor: 'pointer' }}
+						style={{
+							background: '#007bff',
+							color: 'white',
+							padding: '0.5rem',
+							border: 'none',
+							cursor: 'pointer',
+						}}
 					>
 						Збільшити (React state)
 					</button>
@@ -73,7 +79,7 @@ export default class CustomRendererApp extends AppCore {
 
 		return {
 			...baseContent,
-			Renderer  // Експортуємо як частину result
+			Renderer, // Експортуємо як частину result
 		}
 	}
 

@@ -1,11 +1,24 @@
 // @nan0web/ui-react/src/UIRoot.jsx
-import React, { useState, useEffect } from "react"
-import DB from "@nan0web/db-browser"
-import { NightTheme, Theme } from "@nan0web/ui-core"
-import { LogConsole } from "@nan0web/log"
-import UIReact from "./UIReact.jsx"
-import { UIProvider } from "./context/UIContext.jsx"
-import UIContextValue from "./context/UIContextValue.jsx"
+import React, { useState, useEffect } from 'react'
+import DB from '@nan0web/db-browser'
+import { NightTheme, Theme } from '@nan0web/ui-core'
+import UIReact from './UIReact.jsx'
+import { UIProvider } from './context/UIContext.jsx'
+import defaultComponents from './components/index.jsx'
+import defaultRenderers from './renderers/index.jsx'
+import AppCore from '@nan0web/core'
+
+/**
+ * Default registries for components, renderers, and apps.
+ * @type {Map<string, () => Promise<any>>}
+ */
+const defaultAppsRegistry = new Map(
+	/** @type {Array<[string, () => Promise<any>]>} */ ([
+		['DemoApp', () => import('./apps/demo/App.js')],
+		['NavigationApp', () => import('./apps/navigation/App.js')],
+		['ThemeApp', () => import('./apps/theme-switcher/App.js')],
+	]),
+)
 
 /**
  * UIRoot — root container for the @nan0web/ui-react system.
@@ -32,7 +45,7 @@ export function UIRoot({
 	apps: overrideApps = new Map(),
 	actions: overrideActions = {},
 	console: externalConsole = console,
-	devMode = true
+	devMode = true,
 }) {
 	// Initialize URI from current path
 	const [uri, setUri] = useState(getPath())
@@ -43,7 +56,7 @@ export function UIRoot({
 	// Use external console or disable logs in production-like mode
 	const finalConsole = devMode ? externalConsole : createNoOpConsole()
 
-	finalConsole.debug("UIRoot initialized", { uri, hasDb: !!db })
+	finalConsole.debug('UIRoot initialized', { uri, hasDb: !!db })
 
 	// Initialize DB if not provided
 	const opts = { host: window.location.origin }
@@ -53,7 +66,7 @@ export function UIRoot({
 	// Subscribe to browser navigation (back/forward)
 	useEffect(() => {
 		const handler = () => {
-			finalConsole.debug("Location change detected, updating URI")
+			finalConsole.debug('Location change detected, updating URI')
 			setUri(getPath())
 		}
 		window.addEventListener('popstate', handler)
@@ -68,10 +81,10 @@ export function UIRoot({
 	// Handle internal link clicks to enable SPA navigation
 	useEffect(() => {
 		const handleClick = (e) => {
-			const link = e.target.closest("a[href]")
+			const link = e.target.closest('a[href]')
 			if (!link) return
-			const href = link.getAttribute("href")
-			finalConsole.debug("Navigation link intercepted", href)
+			const href = link.getAttribute('href')
+			finalConsole.debug('Navigation link intercepted', href)
 
 			// Skip special links
 			if (
@@ -81,7 +94,8 @@ export function UIRoot({
 				href.startsWith('tel:') ||
 				href.startsWith('https://') ||
 				href.startsWith('http://')
-			) return
+			)
+				return
 
 			e.preventDefault()
 			window.history.pushState({}, '', href)
@@ -89,35 +103,30 @@ export function UIRoot({
 			window.dispatchEvent(new PopStateEvent('popstate'))
 		}
 
-		document.addEventListener("click", handleClick)
-		return () => document.removeEventListener("click", handleClick)
+		document.addEventListener('click', handleClick)
+		return () => document.removeEventListener('click', handleClick)
 	}, [])
 
 	// Merge default and custom context values
 	const mergedContext = {
-		components: new Map([...components, ...overrideComponents]),
-		renderers: new Map([...renderers, ...overrideRenderers]),
-		apps: new Map([...apps, ...overrideApps]),
-		actions: { ...actions, ...overrideActions },
-		console: finalConsole
+		components: new Map([...defaultComponents, ...overrideComponents]),
+		renderers: new Map([...defaultRenderers, ...overrideRenderers]),
+		apps: new Map([...defaultAppsRegistry, ...overrideApps]),
+		actions: overrideActions,
+		console: finalConsole,
 	}
 
-	finalConsole.debug("UIRoot: Merged context", {
+	finalConsole.debug('UIRoot: Merged context', {
 		components: Array.from(mergedContext.components.keys()),
 		renderers: Array.from(mergedContext.renderers.keys()),
 		apps: Array.from(mergedContext.apps.keys()),
-		actions: Object.keys(mergedContext.actions)
+		actions: Object.keys(mergedContext.actions),
 	})
 
 	return (
 		<div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
 			<UIProvider value={{ theme, setTheme, db: finalDb, ...mergedContext }}>
-				<UIReact
-					db={finalDb}
-					uri={uri}
-					context={mergedContext}
-					console={finalConsole}
-				/>
+				<UIReact db={finalDb} uri={uri} context={mergedContext} console={finalConsole} />
 			</UIProvider>
 		</div>
 	)
@@ -143,9 +152,10 @@ function getInitialTheme() {
 	if (saved === 'night') return NightTheme
 	if (saved === 'light') return Theme
 
-	const mql = typeof window !== 'undefined' && window.matchMedia
-		? window.matchMedia('(prefers-color-scheme: dark)')
-		: { matches: false }
+	const mql =
+		typeof window !== 'undefined' && window.matchMedia
+			? window.matchMedia('(prefers-color-scheme: dark)')
+			: { matches: false }
 
 	return mql.matches ? NightTheme : Theme
 }
@@ -166,7 +176,7 @@ function setThemeInStorage(theme) {
  * @returns {object} No-op console object
  */
 function createNoOpConsole() {
-	const noOp = () => { }
+	const noOp = () => {}
 
 	return {
 		// Standard methods
@@ -205,30 +215,9 @@ function createNoOpConsole() {
 	}
 }
 
-// --- Default Registries (from src/index.jsx) ---
-
-import defaultComponents from './components/index.jsx'
-import defaultRenderers from './renderers/index.jsx'
-
-/**
- * @type {Map<string, React.Component>}
- */
-const components = defaultComponents
-
-/**
- * @type {Map<string, Function>}
- */
-const renderers = defaultRenderers
-
-/**
- * @type {Map<string, Function>}
- */
-const apps = new Map() // Extend as needed
-
-/**
- * @type {Record<string, Function>}
- */
-const actions = {}
-
 // Export for reuse in custom setups
-export { components, renderers, apps, actions }
+export {
+	defaultComponents as components,
+	defaultRenderers as renderers,
+	defaultAppsRegistry as apps,
+}

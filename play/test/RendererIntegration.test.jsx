@@ -15,13 +15,11 @@ describe('Custom Renderer Integration', () => {
 			fetch: vi.fn((path) => {
 				if (path === '/play/index.json') {
 					return Promise.resolve({
-						$content: [
-							{ hello: true, $data: { name: 'Alice' } }
-						]
+						$content: [{ hello: true, $data: { name: 'Alice' } }],
 					})
 				}
 				return Promise.resolve(null)
-			})
+			}),
 		}
 
 		// Створюємо контекст
@@ -30,16 +28,16 @@ describe('Custom Renderer Integration', () => {
 			theme: {
 				atoms: {
 					Button: {
-						backgroundColor: '#0d6efd'
-					}
-				}
-			}
+						backgroundColor: '#0d6efd',
+					},
+				},
+			},
 		})
 
 		render(
 			<UIProvider value={customContext}>
 				<PlaygroundExample />
-			</UIProvider>
+			</UIProvider>,
 		)
 
 		// Перевіряємо, чи відтворюється компонент через кастомний рендерер
@@ -53,13 +51,11 @@ describe('Custom Renderer Integration', () => {
 			fetch: vi.fn((path) => {
 				if (path === '/play/index.json') {
 					return Promise.resolve({
-						$content: [
-							{ hello: true, $data: { name: 'Custom Renderer Test' } }
-						]
+						$content: [{ hello: true, $data: { name: 'Custom Renderer Test' } }],
 					})
 				}
 				return Promise.resolve(null)
-			})
+			}),
 		}
 
 		const customContext = new UIContextValue({
@@ -67,16 +63,16 @@ describe('Custom Renderer Integration', () => {
 			theme: {
 				atoms: {
 					Button: {
-						backgroundColor: '#ff6b6b'
-					}
-				}
-			}
+						backgroundColor: '#ff6b6b',
+					},
+				},
+			},
 		})
 
 		render(
 			<UIProvider value={customContext}>
 				<PlaygroundExample />
-			</UIProvider>
+			</UIProvider>,
 		)
 
 		const helloElement = await screen.findByText('👋 Hello, Custom Renderer Test!')

@@ -50,6 +50,15 @@ export default function Badge({ children, variant = 'primary', ...props }) {
 
 Badge.propTypes = {
 	children: PropTypes.node.isRequired,
-	variant: PropTypes.oneOf(['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'light', 'dark']),
+	variant: PropTypes.oneOf([
+		'primary',
+		'secondary',
+		'success',
+		'warning',
+		'danger',
+		'info',
+		'light',
+		'dark',
+	]),
 	style: PropTypes.object,
 }

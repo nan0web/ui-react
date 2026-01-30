@@ -28,7 +28,7 @@ export default function Typography({ variant = 'body', children, ...props }) {
 	const defaultStyles = {
 		margin: '0 0 1rem 0',
 		fontWeight: '400',
-		lineHeight: '1.5'
+		lineHeight: '1.5',
 	}
 
 	const variantStyles = variants[variant] ?? variants.body ?? {}

@@ -13,7 +13,7 @@ export default function Select({ options = [], ...props }) {
 		paddingY = '8px',
 		fontFamily = 'sans-serif',
 	} = theme.atoms?.Select ?? {}
-	
+
 	const style = {
 		border: `${borderWidth} solid ${borderColor}`,
 		borderRadius,
@@ -43,8 +43,8 @@ Select.propTypes = {
 			PropTypes.shape({
 				value: PropTypes.string.isRequired,
 				label: PropTypes.string.isRequired,
-			})
-		])
+			}),
+		]),
 	),
 	style: PropTypes.object,
 }

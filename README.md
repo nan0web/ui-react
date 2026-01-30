@@ -1,12 +1,12 @@
 # @nan0web/ui-react
 
-## Minimal, functional React component library for **nan0web** projects  
+## Minimal, functional React component library for **nan0web** projects
 
-- **Zero‑dependency** (except React & PropTypes)  
-- Pure JavaScript with **JSDoc** typings – no TypeScript source needed  
-- Built‑in **Theme**, **UIContext**, **AppCore** integration, and **renderers** for dynamic UI blocks  
+- **Zero‑dependency** (except React & PropTypes)
+- Pure JavaScript with **JSDoc** typings – no TypeScript source needed
+- Built‑in **Theme**, **UIContext**, **AppCore** integration, and **renderers** for dynamic UI blocks
 
-> The library is not a UI “framework”. It provides **intent‑driven** building blocks that let you compose *applications* (apps) and *renderers* in a declarative, data‑first way.
+> The library is not a UI “framework”. It provides **intent‑driven** building blocks that let you compose _applications_ (apps) and _renderers_ in a declarative, data‑first way.
 
 ---
 
@@ -23,17 +23,17 @@ pnpm add react react-dom @nan0web/db-browser @nan0web/ui-core
 ## Quick start – render a static document
 
 ```tsx
-import React from "react"
-import ReactDOM from "react-dom/client"
-import { UIReact } from "@nan0web/ui-react"
-import DB from "@nan0web/db-browser"
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { UIReact } from '@nan0web/ui-react'
+import DB from '@nan0web/db-browser'
 
 const db = new DB({ host: window.location.origin })
 
-ReactDOM.createRoot(document.getElementById("app")).render(
-	<React.StrictMode>
-		<UIReact db={db} uri="/playground/index.json" />
-	</React.StrictMode>
+ReactDOM.createRoot(document.getElementById('app')).render(
+  <React.StrictMode>
+    <UIReact db={db} uri="/playground/index.json" />
+  </React.StrictMode>,
 )
 ```
 
@@ -59,35 +59,31 @@ The document is loaded, translated (if a `$lang` file exists) and rendered throu
 You can extend the UI by providing your own components or renderers via `UIRoot` (or directly to `UIReact`).
 
 ```tsx
-import React from "react"
-import { UIRoot } from "@nan0web/ui-react"
-import DB from "@nan0web/db-browser"
-import MyButton from "./MyButton.jsx"
-import renderMyBlock from "./renderMyBlock.jsx"
+import React from 'react'
+import { UIRoot } from '@nan0web/ui-react'
+import DB from '@nan0web/db-browser'
+import MyButton from './MyButton.jsx'
+import renderMyBlock from './renderMyBlock.jsx'
 
 const db = new DB({ host: window.location.origin })
-const customComponents = new Map([["MyButton", MyButton]])
-const customRenderers   = new Map([["myBlock", renderMyBlock]])
+const customComponents = new Map([['MyButton', MyButton]])
+const customRenderers = new Map([['myBlock', renderMyBlock]])
 
-ReactDOM.createRoot(document.getElementById("app")).render(
-	<React.StrictMode>
-		<UIRoot
-			db={db}
-			components={customComponents}
-			renderers={customRenderers}
-		/>
-	</React.StrictMode>
+ReactDOM.createRoot(document.getElementById('app')).render(
+  <React.StrictMode>
+    <UIRoot db={db} components={customComponents} renderers={customRenderers} />
+  </React.StrictMode>,
 )
 ```
 
 `renderMyBlock.jsx` example:
 
 ```tsx
-import React from "react"
-import MyButton from "./MyButton.jsx"
+import React from 'react'
+import MyButton from './MyButton.jsx'
 
 export default function renderMyBlock({ element, context }) {
-	return <MyButton {...element.props}>Custom block</MyButton>
+  return <MyButton {...element.props}>Custom block</MyButton>
 }
 ```
 
@@ -95,9 +91,7 @@ Now a document can reference the custom block:
 
 ```json
 {
-  "$content": [
-    { "myBlock": [], "$className": "mt-4" }
-  ]
+  "$content": [{ "myBlock": [], "$className": "mt-4" }]
 }
 ```
 
@@ -105,41 +99,41 @@ Now a document can reference the custom block:
 
 ## Building an **App** (interactive piece)
 
-An *App* is a class extending `AppCore`. It registers itself in the UI context and can expose a `run()` method that returns UI data.
+An _App_ is a class extending `AppCore`. It registers itself in the UI context and can expose a `run()` method that returns UI data.
 
 ### Example: `SimpleApp`
 
 ```js
 // src/apps/demo/SimpleApp.js
-import { AppCore } from "@nan0web/core"
+import { AppCore } from '@nan0web/core'
 
 /**
  * SimpleApp – static content, no renderer.
  */
 export default class SimpleApp extends AppCore {
-	constructor(input) {
-		super(input)
-		const { title = "Demo", uri = "index.html" } = input
-		this.title = title
-		this.uri   = uri
-	}
+  constructor(input) {
+    super(input)
+    const { title = 'Demo', uri = 'index.html' } = input
+    this.title = title
+    this.uri = uri
+  }
 
-	async run() {
-		return {
-			type: "standard",
-			content: [
-				{
-					Typography: [`Simple App: ${this.title}`],
-					$variant: "h2"
-				},
-				{
-					Button: ["Click me"],
-					$variant: "secondary",
-					$onClick: "action:doSomething"
-				}
-			]
-		}
-	}
+  async run() {
+    return {
+      type: 'standard',
+      content: [
+        {
+          Typography: [`Simple App: ${this.title}`],
+          $variant: 'h2',
+        },
+        {
+          Button: ['Click me'],
+          $variant: 'secondary',
+          $onClick: 'action:doSomething',
+        },
+      ],
+    }
+  }
 }
 ```
 
@@ -147,39 +141,41 @@ export default class SimpleApp extends AppCore {
 
 ```js
 // src/apps/demo/CustomRendererApp.jsx
-import React, { useState } from "react"
-import { AppCore } from "@nan0web/core"
-import Button from "../components/atoms/Button.jsx"
-import Typography from "../components/atoms/Typography.jsx"
+import React, { useState } from 'react'
+import { AppCore } from '@nan0web/core'
+import Button from '../components/atoms/Button.jsx'
+import Typography from '../components/atoms/Typography.jsx'
 
 export default class CustomRendererApp extends AppCore {
-	constructor(input) {
-		super(input)
-		const { title = "Demo", uri = "index.html" } = input
-		this.title = title
-		this.uri   = uri
-	}
+  constructor(input) {
+    super(input)
+    const { title = 'Demo', uri = 'index.html' } = input
+    this.title = title
+    this.uri = uri
+  }
 
-	async run() {
-		const base = {
-			$content: [
-				{ h3: [`Custom Renderer: ${this.title}`] },
-				{ p: ["Press the button to increment a counter"] }
-			]
-		}
-		const Renderer = ({ result, context }) => {
-			const [cnt, setCnt] = useState(0)
-			const { theme } = context || {}
-			return (
-				<div style={{ padding: "1rem", border: "1px solid #ccc" }}>
-					<Typography variant="h4">{result.$title || "Interactive"} – {cnt}</Typography>
-					<Button onClick={() => setCnt(cnt + 1)}>+1</Button>
-				</div>
-			)
-		}
-		Renderer.displayName = "CustomRendererAppRenderer"
-		return { ...base, Renderer }
-	}
+  async run() {
+    const base = {
+      $content: [
+        { h3: [`Custom Renderer: ${this.title}`] },
+        { p: ['Press the button to increment a counter'] },
+      ],
+    }
+    const Renderer = ({ result, context }) => {
+      const [cnt, setCnt] = useState(0)
+      const { theme } = context || {}
+      return (
+        <div style={{ padding: '1rem', border: '1px solid #ccc' }}>
+          <Typography variant="h4">
+            {result.$title || 'Interactive'} – {cnt}
+          </Typography>
+          <Button onClick={() => setCnt(cnt + 1)}>+1</Button>
+        </div>
+      )
+    }
+    Renderer.displayName = 'CustomRendererAppRenderer'
+    return { ...base, Renderer }
+  }
 }
 ```
 
@@ -187,57 +183,62 @@ export default class CustomRendererApp extends AppCore {
 
 ```js
 // src/apps/demo/App.js
-import { AppCore } from "@nan0web/core"
+import { AppCore } from '@nan0web/core'
 
 export default class DemoApp extends AppCore {
-	constructor({ db, theme, setTheme, navigate, uri = "index.html", locale = "en" }) {
-		super({ db, locale })
-		this.theme     = theme
-		this.setTheme  = setTheme
-		this.navigate  = navigate
-		this.uri       = uri
+  constructor({ db, theme, setTheme, navigate, uri = 'index.html', locale = 'en' }) {
+    super({ db, locale })
+    this.theme = theme
+    this.setTheme = setTheme
+    this.navigate = navigate
+    this.uri = uri
 
-		this.apps = new Map([
-			["SimpleApp", async () => {
-				const mod = await import("./SimpleApp.js")
-				return mod.default.from({ title: "Simple", uri: this.uri, db })
-			}],
-			["CustomRendererApp", async () => {
-				const mod = await import("./CustomRendererApp.jsx")
-				return mod.default.from({ title: "Custom", uri: this.uri, db })
-			}]
-		])
-	}
+    this.apps = new Map([
+      [
+        'SimpleApp',
+        async () => {
+          const mod = await import('./SimpleApp.js')
+          return mod.default.from({ title: 'Simple', uri: this.uri, db })
+        },
+      ],
+      [
+        'CustomRendererApp',
+        async () => {
+          const mod = await import('./CustomRendererApp.jsx')
+          return mod.default.from({ title: 'Custom', uri: this.uri, db })
+        },
+      ],
+    ])
+  }
 
-	async run() {
-		return {
-			content: [
-				{
-					div: [
-						{ App: "SimpleApp", $uri: this.uri },
-						{ App: "CustomRendererApp", $title: "Interactive Demo", $uri: this.uri }
-					],
-					$style: "display:flex;flex-direction:column;gap:2rem"
-				}
-			]
-		}
-	}
+  async run() {
+    return {
+      content: [
+        {
+          div: [
+            { App: 'SimpleApp', $uri: this.uri },
+            { App: 'CustomRendererApp', $title: 'Interactive Demo', $uri: this.uri },
+          ],
+          $style: 'display:flex;flex-direction:column;gap:2rem',
+        },
+      ],
+    }
+  }
 }
 ```
 
 Now the demo app can be rendered anywhere:
 
 ```tsx
-import DemoApp from "./src/apps/demo/App.js"
-
-<UIReact
-	db={db}
-	documentPath="/playground/index.json"
-	context={{
-		theme,
-		setTheme,
-		reducedMotion: false
-	}}
+import DemoApp from './src/apps/demo/App.js'
+;<UIReact
+  db={db}
+  documentPath="/playground/index.json"
+  context={{
+    theme,
+    setTheme,
+    reducedMotion: false,
+  }}
 />
 ```
 
@@ -248,9 +249,8 @@ import DemoApp from "./src/apps/demo/App.js"
 `ThemeSwitcher` component toggles between **Theme** (light) and **NightTheme** (dark).
 
 ```tsx
-import ThemeSwitcher from "@nan0web/ui-react/src/components/atoms/ThemeSwitcher.jsx"
-
-<ThemeSwitcher label="Toggle theme" />
+import ThemeSwitcher from '@nan0web/ui-react/src/components/atoms/ThemeSwitcher.jsx'
+;<ThemeSwitcher label="Toggle theme" />
 ```
 
 The component reads `theme` and `setTheme` from the UI context. When the button is clicked it updates the theme and persists the choice in `localStorage`.
@@ -291,17 +291,17 @@ The Vite config is already preset in `vite.config.js`; you can customize `input`
 
 ## Exported entry points
 
-| Export | Description |
-|--------|-------------|
-| `components` | Map of built‑in atom, molecule, organism components |
-| `renderers`  | Map of default renderers (`table`, `form`, `avatar`, …) |
-| `UIReact`    | Top‑level component that loads a document and renders it |
-| `UIRoot`     | SPA‑ready wrapper that handles navigation, theme, and custom registries |
-| `UIProvider` / `useUI` | React context helpers |
-| `UIContextValue` | Immutable value object used by the context |
-| `Theme`      | Default light theme (imported from `@nan0web/ui-core`) |
-| `tokens`     | Design tokens (spacing, colors, etc.) from `@nan0web/ui-core` |
-| `Element`    | Core renderer that turns JSON blocks into React elements |
+| Export                 | Description                                                             |
+| ---------------------- | ----------------------------------------------------------------------- |
+| `components`           | Map of built‑in atom, molecule, organism components                     |
+| `renderers`            | Map of default renderers (`table`, `form`, `avatar`, …)                 |
+| `UIReact`              | Top‑level component that loads a document and renders it                |
+| `UIRoot`               | SPA‑ready wrapper that handles navigation, theme, and custom registries |
+| `UIProvider` / `useUI` | React context helpers                                                   |
+| `UIContextValue`       | Immutable value object used by the context                              |
+| `Theme`                | Default light theme (imported from `@nan0web/ui-core`)                  |
+| `tokens`               | Design tokens (spacing, colors, etc.) from `@nan0web/ui-core`           |
+| `Element`              | Core renderer that turns JSON blocks into React elements                |
 
 ---
 

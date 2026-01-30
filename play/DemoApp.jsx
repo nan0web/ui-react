@@ -11,7 +11,7 @@ import { useUI } from '../src/context/UIContext.jsx'
  */
 export default function DemoApp({ db }) {
 	const [currentPath, setCurrentPath] = useState('/play/index.json')
-	const [sharedData, setSharedData] = useState({ theme: { current: 'light' } })  // Load from _.yaml
+	const [sharedData, setSharedData] = useState({ theme: { current: 'light' } }) // Load from _.json
 
 	// Convert URL pathname → JSON document path
 	const getPathFromUrl = () => {
@@ -20,11 +20,11 @@ export default function DemoApp({ db }) {
 		return pathname.replace('.html', '.json')
 	}
 
-	// Load shared data (nav, theme) from _.yaml
+	// Load shared data (nav, theme) from _.json
 	useEffect(() => {
 		async function loadShared() {
 			try {
-				const data = await db.fetch('/play/_.yaml')
+				const data = await db.fetch('/play/_.json')
 				if (data) {
 					setSharedData(data)
 					// Set initial theme from data
@@ -46,11 +46,11 @@ export default function DemoApp({ db }) {
 		const newTheme = newThemeName === 'night' ? NightTheme : Theme
 		setCurrentTheme(newTheme)
 		// Update shared data
-		setSharedData(prev => ({ ...prev, theme: { current: newThemeName } }))
+		setSharedData((prev) => ({ ...prev, theme: { current: newThemeName } }))
 		// Save to localStorage
 		localStorage.setItem('theme', newThemeName)
 		// Optionally save to db for persistence across sessions (for demo, just state/local)
-		db.saveDocument('/play/_.yaml', sharedData).catch(console.error)
+		db.saveDocument('/play/_.json', sharedData).catch(console.error)
 	}
 
 	// Listen to theme changes from ThemeSwitcher
@@ -70,14 +70,14 @@ export default function DemoApp({ db }) {
 	useEffect(() => {
 		setCurrentPath(getPathFromUrl())
 		const handlePopState = () => {
-			console.log("POPState", getPathFromUrl())
+			console.log('POPState', getPathFromUrl())
 			setCurrentPath(getPathFromUrl())
 		}
 		window.addEventListener('popstate', handlePopState)
 		return () => window.removeEventListener('popstate', handlePopState)
 	}, [])
 
-	console.log("DemoApp")
+	console.log('DemoApp')
 
 	// Navigation handler
 	const handleNavigation = (path) => (e) => {
@@ -88,10 +88,11 @@ export default function DemoApp({ db }) {
 	}
 
 	// Load nav from shared data
-	const navLinks = sharedData.nav?.map(item => ({
-		path: item.href.replace('.html', '.json'),
-		label: item.title
-	})) || []
+	const navLinks =
+		sharedData.nav?.map((item) => ({
+			path: item.href.replace('.html', '.json'),
+			label: item.title,
+		})) || []
 
 	return (
 		<div className="demo-app">
@@ -134,7 +135,7 @@ export default function DemoApp({ db }) {
 					documentPath={currentPath}
 					context={{
 						theme: currentTheme,
-						setTheme: setThemeFromData,  // Pass setter that updates data
+						setTheme: setThemeFromData, // Pass setter that updates data
 						reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
 					}}
 				/>

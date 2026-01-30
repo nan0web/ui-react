@@ -23,4 +23,4 @@ export default class AppModule {
      */
     render(key: any, context: any): JSX.Element | null;
 }
-import DB from "@nan0web/db-browser";
+import DB from '@nan0web/db-browser';

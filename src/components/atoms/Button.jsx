@@ -2,7 +2,13 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useUI } from '../../context/UIContext.jsx'
 
-export default function Button({ children, variant = 'primary', outline = false, size = 'md', ...props }) {
+export default function Button({
+	children,
+	variant = 'primary',
+	outline = false,
+	size = 'md',
+	...props
+}) {
 	const { theme, reducedMotion } = useUI()
 	const baseConfig = {
 		sizes: {
@@ -47,7 +53,7 @@ export default function Button({ children, variant = 'primary', outline = false,
 		? baseConfig.variants.link
 		: isOutline
 			? baseConfig.outlines[baseName]
-			: baseConfig.variants[baseName] ?? baseConfig.variants.primary
+			: (baseConfig.variants[baseName] ?? baseConfig.variants.primary)
 
 	const [isHovered, setIsHovered] = useState(false)
 	const [isActive, setIsActive] = useState(false)
@@ -101,7 +107,15 @@ export default function Button({ children, variant = 'primary', outline = false,
 
 Button.propTypes = {
 	children: PropTypes.node.isRequired,
-	variant: PropTypes.oneOf(['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'link']),
+	variant: PropTypes.oneOf([
+		'primary',
+		'secondary',
+		'success',
+		'warning',
+		'danger',
+		'info',
+		'link',
+	]),
 	outline: PropTypes.bool,
 	size: PropTypes.oneOf(['md', 'sm']),
 	style: PropTypes.object,

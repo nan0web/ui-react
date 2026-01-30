@@ -1,7 +1,3 @@
-import nan0webVitePlugin, { buildSite, createLogger } from "./plugin.js"
+import nan0webVitePlugin, { buildSite, createLogger } from './plugin.js'
 
-export {
-	nan0webVitePlugin,
-	buildSite,
-	createLogger,
-}
+export { nan0webVitePlugin, buildSite, createLogger }

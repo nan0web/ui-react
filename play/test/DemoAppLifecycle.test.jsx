@@ -16,14 +16,14 @@ describe('DemoApp Lifecycle and Integration', () => {
 		mockDB = new DB({
 			predefined: [
 				['play/index.json', { $content: [] }],
-				['apps/navigation/data/main.json', { $app: 'navigation', $content: [] }]
+				['apps/navigation/data/main.json', { $app: 'navigation', $content: [] }],
 			],
 			console: {
 				debug: vi.fn(),
 				log: vi.fn(),
 				warn: vi.fn(),
-				error: vi.fn()
-			}
+				error: vi.fn(),
+			},
 		})
 	})
 
@@ -36,7 +36,7 @@ describe('DemoApp Lifecycle and Integration', () => {
 			theme: { mode: 'light' },
 			setTheme: setThemeMock,
 			navigate: navigateMock,
-			uri: '/play/index.json'
+			uri: '/play/index.json',
 		})
 
 		expect(app.db).toBe(mockDB)
@@ -48,7 +48,7 @@ describe('DemoApp Lifecycle and Integration', () => {
 
 	it('should handle missing optional parameters gracefully', () => {
 		const app = new DemoApp({
-			db: mockDB
+			db: mockDB,
 		})
 
 		expect(app.uri).toBe('index.html')
@@ -62,8 +62,8 @@ describe('DemoApp Lifecycle and Integration', () => {
 		const app = new DemoApp({
 			db: mockDB,
 			theme: { mode: 'light' },
-			setTheme: () => { },
-			navigate: () => { }
+			setTheme: () => {},
+			navigate: () => {},
 		})
 
 		const result = await app.run()

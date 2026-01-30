@@ -19,7 +19,7 @@ describe('Select', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<Select options={options} />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const select = screen.getByRole('combobox')
 		expect(select).toBeInTheDocument()
@@ -32,7 +32,7 @@ describe('Select', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<Select options={options} value="1" onChange={handleChange} />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const select = screen.getByRole('combobox')
 		expect(select).toHaveValue('1')
@@ -45,7 +45,7 @@ describe('Select', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<Select options={['Opt1', 'Opt2']} />
-			</UIProvider>
+			</UIProvider>,
 		)
 		expect(screen.getByText('Opt1')).toBeInTheDocument()
 		expect(screen.getByText('Opt2')).toBeInTheDocument()
@@ -55,14 +55,14 @@ describe('Select', () => {
 		const themeContext = new UIContextValue({
 			theme: {
 				atoms: {
-					Select: { borderRadius: '6px', fontSize: '16px' }
-				}
-			}
+					Select: { borderRadius: '6px', fontSize: '16px' },
+				},
+			},
 		})
 		render(
 			<UIProvider value={themeContext}>
 				<Select options={options} />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const select = screen.getByRole('combobox')
 		expect(select).toHaveStyle({ borderRadius: '6px', fontSize: '16px' })

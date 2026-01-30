@@ -12,31 +12,32 @@ const mockContext = new UIContextValue({})
 
 describe('Badge', () => {
 	const variants = ['primary', 'secondary', 'success', 'danger']
-	variants.forEach(variant => {
+	variants.forEach((variant) => {
 		it(`renders ${variant} variant with correct background and white text`, () => {
 			render(
 				<UIProvider value={mockContext}>
 					<Badge variant={variant}>{variant}</Badge>
-				</UIProvider>
+				</UIProvider>,
 			)
 			const badge = screen.getByText(variant)
 			expect(badge).toBeInTheDocument()
 			const computedStyle = window.getComputedStyle(badge)
 			expect(computedStyle.backgroundColor).not.toBe('transparent')
 			// Match hex or rgb
-			const isWhite = computedStyle.color === 'rgb(255, 255, 255)' || computedStyle.color === '#ffffff'
+			const isWhite =
+				computedStyle.color === 'rgb(255, 255, 255)' || computedStyle.color === '#ffffff'
 			expect(isWhite).toBe(true)
 		})
 	})
 
 	// Special cases for dark text variants
 	const darkTextVariants = ['warning', 'info']
-	darkTextVariants.forEach(variant => {
+	darkTextVariants.forEach((variant) => {
 		it(`renders ${variant} variant with dark text`, () => {
 			render(
 				<UIProvider value={mockContext}>
 					<Badge variant={variant}>{variant}</Badge>
-				</UIProvider>
+				</UIProvider>,
 			)
 			const badge = screen.getByText(variant)
 			expect(badge).toBeInTheDocument()
@@ -50,7 +51,7 @@ describe('Badge', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<Badge style={{ fontSize: '20px' }}>Custom</Badge>
-			</UIProvider>
+			</UIProvider>,
 		)
 		const badge = screen.getByText('Custom')
 		expect(badge).toHaveStyle({ fontSize: '20px' })

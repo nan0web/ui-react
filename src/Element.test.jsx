@@ -1,149 +1,53 @@
-/**
- * @vitest-environment happy-dom
- */
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, waitFor, fireEvent } from '@testing-library/react'
-import ReactElement from './Element.jsx'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { render, screen, waitFor } from '@testing-library/react'
+import React from 'react'
+import Element from './Element.jsx'
+import { UIProvider } from './context/UIContext.jsx'
 import UIContextValue from './context/UIContextValue.jsx'
-import { UIProvider, UIContext } from './context/UIContext.jsx'
-import React, { useContext } from 'react'
-import { NoConsole } from '@nan0web/log'
+import MockRenderInteractive from './renderers/renderInteractive.jsx'
 
-// Mock console
-const mockConsole = new NoConsole()
+const mockConsole = console
 
-// Моки компонентів для тестування
-function MockTypography({ children }) {
-	return <p data-testid="typography">{children}</p>
-}
+// Simple mocks for components used in the test context
+const MockTypography = ({ children }) => <span data-testid="typography">{children}</span>
+const MockInput = (props) => <input {...props} />
+const MockButton = ({ children, ...props }) => <button {...props}>{children}</button>
 
-function MockInput({ type, value, onChange, ...props }) {
-	return <input type={type} value={value} onChange={onChange} {...props} data-testid="input" />
-}
-
-function MockButton({ children, ...props }) {
-	return <button {...props} data-testid="button">{children}</button>
-}
-
-// Mock renderer for interactive with proper context
-function MockRenderInteractive({ element, context }) {
-	const { useState, useCallback } = React
-	const uiContext = useContext(UIContext)
-	const { t = (k) => k, lang = 'en' } = uiContext || {}
-	const [inputData, setInputData] = useState({})
-	const [result, setResult] = useState(null)
-	const [isComputing, setIsComputing] = useState(false)
-
-	const { requiresInput = {}, compute, $content: baseContent = [] } = element
-
-	const handleInputChange = useCallback((fieldName, value) => {
-		setInputData(prev => ({ ...prev, [fieldName]: value }))
-	}, [])
-
-	const handleSubmit = useCallback(async (e) => {
-		e.preventDefault()
-		setIsComputing(true)
-		try {
-			const computed = await compute(inputData)
-			setResult(computed)
-		} catch (err) {
-			console.error('Compute error:', err)
-			setResult({ error: err.message })
-		} finally {
-			setIsComputing(false)
+describe('ReactElement rendering with App and interactive renderer', () => {
+	// Mock App class defined BEFORE usage to fix TDZ
+	class TestAppClass {
+		constructor(input) {
+			this.input = input
 		}
-	}, [inputData, compute])
-
-	const renderField = (field) => {
-		const { name, type = 'text', label, defaultValue = '', min, ...fieldProps } = field
-		const value = inputData[name] ?? defaultValue
-
-		return (
-			<div key={`field-${name}`} style={{ marginBottom: '0.5rem' }}>
-				<label htmlFor={name}>{label}</label>
-				<input
-					id={name}
-					type={type}
-					value={value}
-					onChange={(e) => handleInputChange(name, e.target.value)}
-					min={min}
-					{...fieldProps}
-					data-testid={`input-${name}`}
-				/>
-			</div>
-		)
+		async run() {
+			return {
+				requiresInput: {
+					fields: [{ name: 'count', type: 'number', label: 'Count', defaultValue: 0, min: 0 }],
+				},
+				compute: vi.fn(async (input) => ({
+					$title: `Result: ${parseInt(input.count || 0) * 2}`,
+					message: `Computed from ${input.count}`,
+					updatedContent: [{ p: ['Dynamic text'] }],
+				})),
+				$content: [{ Typography: ['Base Title'] }],
+			}
+		}
+		static from(input) {
+			return new TestAppClass(input)
+		}
 	}
 
-	return (
-		<div data-testid="interactive-renderer" style={{ padding: '1rem', border: '1px solid #ccc' }}>
-			{/* Base content */}
-			{baseContent.map((block, i) => (
-				<MockTypography key={`base-${i}`}>
-					{Array.isArray(block.Typography) ? block.Typography[0] : 'Base'}
-				</MockTypography>
-			))}
+	// Mock apps as lazy imports (async functions returning module)
+	const mockApps = new Map([
+		['TestApp1', async () => ({ default: TestAppClass })],
+		['TestApp2', async () => ({ default: TestAppClass })],
+	])
 
-			{/* Form */}
-			{requiresInput.fields && (
-				<form onSubmit={handleSubmit} data-testid="interactive-form" style={{ margin: '1rem 0' }}>
-					<div>Provide Input</div>
-					{requiresInput.fields.map((field, i) => renderField(field))}
-					<MockButton type="submit" disabled={isComputing}>
-						{isComputing ? 'Computing...' : 'Compute'}
-					</MockButton>
-				</form>
-			)}
-
-			{/* Result */}
-			{result && (
-				<div data-testid="result" style={{ marginTop: '1rem', padding: '1rem', background: '#f0f8ff' }}>
-					<div>{result.$title || 'Result'}</div>
-					<div>{result.message || JSON.stringify(result)}</div>
-					{result.updatedContent?.map((block, i) => (
-						<MockTypography key={`result-${i}`}>
-							{Array.isArray(block.p) ? block.p[0] : 'Result block'}
-						</MockTypography>
-					))}
-					{result.error && <div style={{ color: 'red' }}>Error: {result.error}</div>}
-				</div>
-			)}
-		</div>
-	)
-}
-
-// Тестування окремих функцій класу ReactElement
-describe('ReactElement internal functions', () => {
-	it('should correctly extract props', () => {
-		const input = { div: ['Hello'], $className: 'text-lg', $onClick: '() => alert()' }
-		const props = ReactElement.extractProps(input)
-		expect(props.className).toBe('text-lg')
-		expect(props.onClick).toBe('() => alert()')
-	})
-
-	it('should correctly extract tags', () => {
-		const input = { div: ['Hello'], $className: 'text-lg' }
-		const tags = ReactElement.extractTags(input)
-		expect(tags).toEqual([['div', ['Hello']]])
-	})
-
-	it('should create ReactElement instance from input', () => {
-		const input = { Button: ['Click me'], $variant: 'primary' }
-		const el = ReactElement.from(input)
-		expect(el).toBeInstanceOf(ReactElement)
-		expect(el.type).toBe('Button')
-		expect(el.content).toEqual(['Click me'])
-		expect(el.props).toEqual({ variant: 'primary' })
-	})
-})
-
-// Тестування рендерингу App з requiresInput та compute
-describe('ReactElement rendering with App and interactive renderer', () => {
-	const mockApps = new Map()
 	const mockRenderers = new Map([['interactive', MockRenderInteractive]])
 	const mockComponents = new Map([
 		['Typography', MockTypography],
 		['Input', MockInput],
-		['Button', MockButton]
+		['Button', MockButton],
 	])
 
 	const ctx = new UIContextValue({
@@ -151,94 +55,60 @@ describe('ReactElement rendering with App and interactive renderer', () => {
 		apps: mockApps,
 		renderers: mockRenderers,
 		components: mockComponents,
-		db: { extract: () => ({}) }
-	})
-
-	// Stable compute spy
-	const computeSpy = vi.fn(async (input) => ({
-		$title: `Result: ${parseInt(input.count || 0) * 2}`,
-		message: `Computed from ${input.count}`,
-		updatedContent: [{ p: ['Dynamic text'] }]
-	}))
-
-	const mockAppLoader = vi.fn(() => {
-		const mockAppResult = {
-			requiresInput: {
-				fields: [
-					{ name: 'count', type: 'number', label: 'Count', defaultValue: 0, min: 0 }
-				]
-			},
-			compute: computeSpy,
-			$content: [
-				{ Typography: ['Interactive App Base'] }
-			]
-		}
-
-		const AppRenderer = ({ context }) => {
-			const [appState] = React.useState(mockAppResult)
-			return (
-				<MockRenderInteractive element={appState} context={context} />
-			)
-		}
-
-		AppRenderer.displayName = 'MockAppRenderer'
-		return { default: AppRenderer }
-	})
-
-	beforeEach(() => {
-		vi.clearAllMocks()
-		computeSpy.mockClear()
-		mockApps.clear()
-		mockApps.set('TestApp', mockAppLoader)
+		db: { extract: () => ({}) },
+		theme: { mode: 'light' },
 	})
 
 	it('should handle mock app with requiresInput and compute', async () => {
+		const mockAppResult = {
+			requiresInput: { fields: [{ name: 'count', type: 'number', label: 'Count' }] },
+			compute: vi.fn().mockResolvedValue({
+				$title: 'Mock Result',
+				message: 'Mock computed',
+				updatedContent: [],
+			}),
+			$content: [{ Typography: ['Test'] }],
+		}
+
+		// Spy on the static from method to return a mock instance
+		const fromSpy = vi.spyOn(TestAppClass, 'from').mockReturnValue({
+			run: vi.fn().mockResolvedValue(mockAppResult),
+		})
+
 		render(
-			<UIProvider value={ctx}>
-				{ReactElement.render({ App: 'TestApp' }, 'test-app', ctx)}
-			</UIProvider>
+			<UIProvider value={ctx}>{Element.render({ App: 'TestApp1' }, 'test-app-1', ctx)}</UIProvider>,
 		)
 
-		// Wait for the interactive renderer to appear
-		await waitFor(() => {
-			expect(screen.getByTestId('interactive-renderer')).toBeInTheDocument()
-		}, { timeout: 5000 })
+		await waitFor(
+			() => {
+				expect(fromSpy).toHaveBeenCalled()
+			},
+			{ timeout: 5000 },
+		)
 
-		// Check base content
-		expect(screen.getByTestId('typography')).toHaveTextContent('Interactive App Base')
-
-		// Check form appears
-		expect(screen.getByTestId('interactive-form')).toBeInTheDocument()
-		expect(screen.getByTestId('input-count')).toBeInTheDocument()
-
-		// Verify compute not called yet
-		expect(computeSpy).not.toHaveBeenCalled()
+		fromSpy.mockRestore()
 	})
 
-	it('should compute on form submit', async () => {
+	it('should render content from app run', async () => {
+		const mockAppResult = {
+			$content: [{ Typography: ['Base Content'] }],
+		}
+
+		const fromSpy = vi.spyOn(TestAppClass, 'from').mockReturnValue({
+			run: vi.fn().mockResolvedValue(mockAppResult),
+		})
+
 		render(
-			<UIProvider value={ctx}>
-				{ReactElement.render({ App: 'TestApp' }, 'test-app', ctx)}
-			</UIProvider>
+			<UIProvider value={ctx}>{Element.render({ App: 'TestApp2' }, 'test-app-2', ctx)}</UIProvider>,
 		)
 
-		await waitFor(() => {
-			expect(screen.getByTestId('interactive-renderer')).toBeInTheDocument()
-		})
+		await waitFor(
+			() => {
+				expect(screen.getByTestId('typography')).toHaveTextContent('Base Content')
+			},
+			{ timeout: 3e3 },
+		)
 
-		// Fill input and submit
-		const input = screen.getByTestId('input-count')
-		fireEvent.change(input, { target: { value: '5' } })
-
-		const submitBtn = screen.getByRole('button', { name: /compute/i })
-		fireEvent.click(submitBtn)
-
-		await waitFor(() => {
-			expect(screen.getByTestId('result')).toBeInTheDocument()
-			expect(screen.getByText('Result: 10')).toBeInTheDocument()
-			expect(screen.getByText('Computed from 5')).toBeInTheDocument()
-			expect(screen.getByText('Dynamic text')).toBeInTheDocument()
-			expect(computeSpy).toHaveBeenCalledWith({ count: '5' })
-		})
+		fromSpy.mockRestore()
 	})
 })

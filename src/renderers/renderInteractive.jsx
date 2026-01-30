@@ -19,32 +19,36 @@ import ReactElement from '../Element.jsx'
 export default function renderInteractive({ element, context }) {
 	// State holds user input, result and computing flag.
 	const [inputData, setInputData] = useState({})
-	const [result, setResult] = useState(null)
+	const [result, setResult] = useState(/** @type {any} */(null))
 	const [isComputing, setIsComputing] = useState(false)
 
 	const appElement = element || {}
-	const { requiresInput = {}, compute, content: baseContent = [] } = appElement
+	const { requiresInput = {}, compute, $content, content } = appElement
+	const baseContent = Array.isArray($content || content) ? $content || content : []
 
 	const handleInputChange = useCallback((fieldName, value) => {
-		setInputData(prev => ({ ...prev, [fieldName]: value }))
+		setInputData((prev) => ({ ...prev, [fieldName]: value }))
 	}, [])
 
-	const handleSubmit = useCallback(async (e) => {
-		e.preventDefault()
-		setIsComputing(true)
-		try {
-			if (typeof compute === 'function') {
-				const computed = await compute(inputData)
-				setResult(computed)
+	const handleSubmit = useCallback(
+		async (e) => {
+			e.preventDefault()
+			setIsComputing(true)
+			try {
+				if (typeof compute === 'function') {
+					const computed = await compute(inputData)
+					setResult(computed)
+				}
+			} catch (err) {
+				console.error('Compute error:', err)
+				// @ts-ignore
+				setResult({ error: err instanceof Error ? err.message : String(err) })
+			} finally {
+				setIsComputing(false)
 			}
-		} catch (err) {
-			console.error('Compute error:', err)
-			// @ts-ignore
-			setResult({ error: err instanceof Error ? err.message : String(err) })
-		} finally {
-			setIsComputing(false)
-		}
-	}, [inputData, compute])
+		},
+		[inputData, compute],
+	)
 
 	const renderField = (field) => {
 		const { name, type = 'text', label, defaultValue = '', min, ...fieldProps } = field
@@ -55,7 +59,7 @@ export default function renderInteractive({ element, context }) {
 		const inputProps = {
 			value,
 			onChange: (e) => handleInputChange(name, e.target.value),
-			...cleanFieldProps
+			...cleanFieldProps,
 		}
 
 		switch (type.toLowerCase()) {
@@ -77,11 +81,17 @@ export default function renderInteractive({ element, context }) {
 	}
 
 	return (
-		<div data-testid="interactive-renderer" style={{ padding: '1rem', border: '1px solid #ccc', margin: '1rem 0', borderRadius: '0.25rem' }}>
+		<div
+			data-testid="interactive-renderer"
+			style={{
+				padding: '1rem',
+				border: '1px solid #ccc',
+				margin: '1rem 0',
+				borderRadius: '0.25rem',
+			}}
+		>
 			{/* Базовий контент з app */}
-			{baseContent.map((block, i) => (
-				ReactElement.render(block, `base-${i}`, context)
-			))}
+			{baseContent.map((block, i) => ReactElement.render(block, `base-${i}`, context))}
 
 			{/* Форма input, якщо requiresInput */}
 			{requiresInput.fields && (
@@ -100,17 +110,28 @@ export default function renderInteractive({ element, context }) {
 
 			{/* Результат обчислень */}
 			{result && (
-				<div style={{ marginTop: '1rem', padding: '1rem', background: '#f0f8ff', borderRadius: '0.25rem' }}>
+				<div
+					style={{
+						marginTop: '1rem',
+						padding: '1rem',
+						background: '#f0f8ff',
+						borderRadius: '0.25rem',
+					}}
+				>
 					{/* @ts-ignore */}
 					<Typography variant="h5">{result.$title || 'Result'}</Typography>
 					{/* @ts-ignore */}
 					<Typography>{result.message || JSON.stringify(result)}</Typography>
 					{/* @ts-ignore */}
-					{result.updatedContent?.map((block, i) => (
-						ReactElement.render(block, `result-${i}`, context)
-					))}
+					{result.updatedContent?.map((block, i) =>
+						ReactElement.render(block, `result-${i}`, context),
+					)}
 					{/* @ts-ignore */}
-					{result.error && <Typography variant="body" style={{ color: 'red' }}>Error: {result.error}</Typography>}
+					{result.error && (
+						<Typography variant="body" style={{ color: 'red' }}>
+							Error: {result.error}
+						</Typography>
+					)}
 				</div>
 			)}
 		</div>
@@ -121,7 +142,7 @@ renderInteractive.propTypes = {
 	element: PropTypes.shape({
 		requiresInput: PropTypes.object,
 		compute: PropTypes.func,
-		content: PropTypes.array
+		content: PropTypes.array,
 	}),
-	context: PropTypes.object.isRequired
+	context: PropTypes.object.isRequired,
 }

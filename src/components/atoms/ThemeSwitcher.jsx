@@ -14,20 +14,20 @@ import { useUI } from '../../context/UIContext.jsx'
 export default function ThemeSwitcher({ label = 'Theme', style, onClick } = {}) {
 	const { theme, setTheme } = useUI() || {}
 
-	console.debug("ThemeSwitcher rendered with label:", label)
-	console.debug("Current theme in ThemeSwitcher:", theme)
+	console.debug('ThemeSwitcher rendered with label:', label)
+	console.debug('Current theme in ThemeSwitcher:', theme)
 
 	const toggle = () => {
 		if (!setTheme) {
-			console.debug("No setTheme function in context")
+			console.debug('No setTheme function in context')
 			return
 		}
-		console.debug("ThemeSwitcher: Toggle theme requested")
+		console.debug('ThemeSwitcher: Toggle theme requested')
 		const newTheme = theme === Theme ? NightTheme : Theme
-		console.debug("ThemeSwitcher: Switching theme from", theme, "to", newTheme)
+		console.debug('ThemeSwitcher: Switching theme from', theme, 'to', newTheme)
 		setTheme(newTheme)
 		if (onClick) {
-			console.debug("ThemeSwitcher: Calling additional onClick handler")
+			console.debug('ThemeSwitcher: Calling additional onClick handler')
 			onClick()
 		}
 	}

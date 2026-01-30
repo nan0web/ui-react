@@ -4,7 +4,7 @@ import Typography from '../components/atoms/Typography.jsx'
 
 /**
  * Renderer for Typography component
- * 
+ *
  * @param {object} block - Component block definition
  * @returns {JSX.Element} Rendered typography
  */

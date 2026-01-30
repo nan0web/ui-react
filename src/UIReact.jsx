@@ -28,7 +28,7 @@ export default function UIReact({
 	console = typeof window !== 'undefined' ? window.console : new LogConsole(),
 }) {
 	const [loading, setLoading] = useState(true)
-	const [error, setError] = useState(/** @type {Error|null} */(null))
+	const [error, setError] = useState(/** @type {Error|null} */ (null))
 	const [document, setDocument] = useState(new Document())
 	const [t, setT] = useState(() => (k) => k)
 
@@ -42,12 +42,12 @@ export default function UIReact({
 				setError(null)
 
 				// Ensure the fetched path ends with `.json`
-				let ext = "." + uri.split('.').pop()
+				let ext = '.' + uri.split('.').pop()
 				if (!db.Directory.DATA_EXTNAMES.includes(ext)) ext = db.Directory.DATA_EXTNAMES[0]
 				let base = uri.split('.')[0] || uri
-				if (base.endsWith("/")) base += "index"
+				if (base.endsWith('/')) base += 'index'
 				const norm = base + ext
-				const url = norm || "index.json"
+				const url = norm || 'index.json'
 
 				console.debug('UIReact: fetching document', url)
 
@@ -59,7 +59,7 @@ export default function UIReact({
 				const i18n = new I18nDb({
 					// @ts-ignore
 					db,
-					locale: doc.$lang ?? 'en'
+					locale: doc.$lang ?? 'en',
 				})
 				const translationFn = await i18n.createT(doc.$lang ?? 'en', url)
 				setT(() => translationFn)
@@ -95,7 +95,7 @@ export default function UIReact({
 	if (error) {
 		return (
 			<div className="ui-error" role="alert">
-				{t("Failed to load document")}: {error.message || String(error)}
+				{t('Failed to load document')}: {error.message || String(error)}
 			</div>
 		)
 	}

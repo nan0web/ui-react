@@ -23,7 +23,7 @@ describe('Card', () => {
 	afterEach(() => {
 		// Clean up styles
 		const styles = document.head.querySelectorAll('style')
-		styles.forEach(s => s.remove())
+		styles.forEach((s) => s.remove())
 	})
 
 	it('renders children inside div with theme styles', () => {
@@ -32,15 +32,17 @@ describe('Card', () => {
 				<Card>
 					<p>Card content</p>
 				</Card>
-			</UIProvider>
+			</UIProvider>,
 		)
 		const card = screen.getByText('Card content').parentElement
 		const computed = window.getComputedStyle(card)
-		expect(computed.padding).toBe('16px')  // 1rem default
+		expect(computed.padding).toBe('16px') // 1rem default
 		expect(computed.backgroundColor).toBe('rgb(255, 255, 255)')
 		expect(computed.borderRadius).toBe('8px')
 		expect(computed.border).toBe('1px solid rgb(229, 231, 235)')
-		expect(computed.boxShadow).toBe('rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 2px 0px')
+		expect(computed.boxShadow).toBe(
+			'rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 2px 0px',
+		)
 	})
 
 	it('forwards custom style and className', () => {
@@ -49,7 +51,7 @@ describe('Card', () => {
 				<Card style={{ border: '2px solid blue' }} className="custom-card">
 					<p>Custom card</p>
 				</Card>
-			</UIProvider>
+			</UIProvider>,
 		)
 		const card = screen.getByText('Custom card').parentElement
 		expect(card.style.border).toBe('2px solid blue')
@@ -64,7 +66,7 @@ describe('Card', () => {
 					<p>Paragraph</p>
 					<button>Action</button>
 				</Card>
-			</UIProvider>
+			</UIProvider>,
 		)
 		expect(screen.getByText('Title')).toBeInTheDocument()
 		expect(screen.getByText('Paragraph')).toBeInTheDocument()

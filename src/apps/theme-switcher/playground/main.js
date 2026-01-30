@@ -1,4 +1,4 @@
-import process from "node:process"
+import process from 'node:process'
 import DB from '@nan0web/db-fs'
 import { Theme, NightTheme, getUserTheme } from '@nan0web/ui-core'
 import ThemeSwitcherApp from '../App.js'
@@ -10,14 +10,16 @@ async function main(argv = []) {
 	await db.connect()
 
 	let theme = Theme
-	const setTheme = (newTheme) => { theme = newTheme }
+	const setTheme = (newTheme) => {
+		theme = newTheme
+	}
 
 	const app = new ThemeSwitcherApp({
 		// @ts-ignore find out the issue with the #private in DB.
 		db,
 		theme,
 		setTheme,
-		locale: 'uk'
+		locale: 'uk',
 	})
 
 	const result = await app.run()
@@ -28,7 +30,7 @@ async function main(argv = []) {
 	console.info(`Theme switched to: ${theme === NightTheme ? 'Night' : 'Light'}`)
 }
 
-main(process.argv.slice(2)).catch(err => {
+main(process.argv.slice(2)).catch((err) => {
 	console.error(err)
 	process.exit(1)
 })

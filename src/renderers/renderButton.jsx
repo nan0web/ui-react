@@ -4,7 +4,7 @@ import Button from '../components/atoms/Button.jsx'
 
 /**
  * Renderer for Button component
- * 
+ *
  * @param {object} block - Component block definition
  * @returns {JSX.Element} Rendered button
  */

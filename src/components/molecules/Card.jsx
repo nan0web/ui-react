@@ -17,12 +17,11 @@ export default function Card({ children, style = {}, ...props }) {
 
 	const config = {
 		borderRadius: '8px',
-		boxShadow:
-			'rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 2px 0px',
+		boxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 2px 0px',
 		padding: '1rem',
 		backgroundColor: 'rgb(255, 255, 255)',
 		border: `1px solid rgb(229, 231, 235)`,
-		...style
+		...style,
 	}
 
 	return (

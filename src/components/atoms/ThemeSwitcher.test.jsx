@@ -15,7 +15,7 @@ describe('Night theme button toggle', () => {
 			<UIProvider>
 				<ThemeSwitcher />
 				<ThemeIndicator />
-			</UIProvider>
+			</UIProvider>,
 		)
 
 		const btn = getByText('Theme')

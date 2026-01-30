@@ -29,7 +29,7 @@ export function UIProvider({ children, value: initValue = {} }) {
 	const [renderers, setRenderers] = useState(() => initValue.renderers || new Map())
 	const [actions, setActions] = useState(() => initValue.actions || {})
 	const [data, setData] = useState(() => initValue.data || {})
-	const [t, setT] = useState(() => initValue.t ?? (k => k))
+	const [t, setT] = useState(() => initValue.t ?? ((k) => k))
 
 	const value = UIContextValue.from({
 		initValue,

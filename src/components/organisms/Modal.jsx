@@ -48,7 +48,7 @@ export default function Modal({ isOpen, onClose, children, style = {}, ...props 
 		...style,
 	}
 
-	const handleOverlayClick = e => {
+	const handleOverlayClick = (e) => {
 		if (e.target === e.currentTarget) onClose(e)
 	}
 
@@ -56,7 +56,12 @@ export default function Modal({ isOpen, onClose, children, style = {}, ...props 
 		<div>
 			{/* @ts-ignore */}
 			<div data-testid="modal-overlay" style={overlayStyle} onClick={handleOverlayClick}>
-				<div data-testid="modal-content" style={modalStyle} onClick={e => e.stopPropagation()} {...props}>
+				<div
+					data-testid="modal-content"
+					style={modalStyle}
+					onClick={(e) => e.stopPropagation()}
+					{...props}
+				>
 					{children}
 				</div>
 			</div>

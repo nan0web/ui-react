@@ -4,7 +4,7 @@ import Avatar from '../components/atoms/Avatar.jsx'
 
 /**
  * Renderer for Avatar component
- * 
+ *
  * @param {object} block - Component block definition
  * @returns {JSX.Element} Rendered avatar
  */

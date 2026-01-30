@@ -21,13 +21,13 @@ $content:
       width: 4rem
       height: 4rem
   - h2: With Fallback Text
-  - p: "Future: support fallback initials when no image."
+  - p: 'Future: support fallback initials when no image.'
   - div: AB
     $style:
       width: 2.5rem
       height: 2.5rem
       borderRadius: 9999px
-      background: "#ddd"
+      background: '#ddd'
       display: flex
       alignItems: center
       justifyContent: center

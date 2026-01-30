@@ -12,13 +12,13 @@ const mockContext = new UIContextValue({})
 const variants = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'body', 'small', 'caption']
 
 describe('Typography', () => {
-	variants.forEach(variant => {
+	variants.forEach((variant) => {
 		it(`renders variant ${variant} with correct HTML element`, () => {
 			const text = `Variant ${variant}`
 			render(
 				<UIProvider value={mockContext}>
 					<Typography variant={variant}>{text}</Typography>
-				</UIProvider>
+				</UIProvider>,
 			)
 
 			const element = screen.getByText(text)
@@ -42,7 +42,7 @@ describe('Typography', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<Typography style={{ color: 'red' }}>Styled</Typography>
-			</UIProvider>
+			</UIProvider>,
 		)
 		const el = screen.getByText('Styled')
 		expect(el).toHaveStyle({ color: 'red' })

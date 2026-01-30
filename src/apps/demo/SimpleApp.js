@@ -1,59 +1,15 @@
-import { AppCore } from '@nan0web/core'
-import DB from '@nan0web/db'
+import AppCore, { AppResult } from '@nan0web/core'
 
-/**
- * Simple App: рендериться стандартно з content (без динаміки).
- * run() повертає об'єкт з content для ясності.
- *
- * @example
- * new SimpleApp({ uri }).run() → { content: [ { h2: [...] }, { Button: [...] } ] }
- */
 export default class SimpleApp extends AppCore {
 	/**
-	 * @param {Object} input
-	 * @param {DB} input.db
-	 * @param {string} [input.title='Demo']
-	 * @param {string} [input.uri='index.html']
-	 * @param {string} [input.locale='en']
-	 */
-	constructor(input) {
-		super(input)
-		const { title = 'Demo', uri = "index.html" } = input
-		this.title = title
-		this.uri = uri
-	}
-
-	/**
-	 * @override
-	 * @returns {Promise<Object>} — { type: 'standard', content: [...] }
+	 *
+	 * @returns {Promise<AppResult>}
 	 */
 	async run() {
-		// Simulate async delay (~3 seconds) for testing purposes
-		await new Promise(resolve => setTimeout(resolve, 3000))
-
-		return {
-			type: 'standard',
-			content: [
-				{
-					Typography: [`Simple App: ${this.title}`],
-					$variant: 'h2',
-					$className: 'text-xl font-semibold mb-2'
-				},
-				{
-					p: [`URI: ${this.uri}. Стандартний рендеринг без стану.`],
-					$className: 'mb-4'
-				},
-				{
-					Button: ['Клік для наміру'],
-					$variant: 'secondary',
-					$onClick: '() => console.log("Simple click!")'
-				}
-			]
-		}
-	}
-
-	static from(input) {
-		if (input instanceof SimpleApp) return input
-		return new SimpleApp(input)
+		// Simulate minimal async delay (e.g., real fetch/API) — reduced for faster debugging
+		await new Promise((resolve) => setTimeout(resolve, 10))
+		return new AppResult({
+			content: ['SimpleApp: ' + this.title, 'Standard rendering'],
+		})
 	}
 }

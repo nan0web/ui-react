@@ -15,7 +15,7 @@ export default function Input({ type = 'text', value, defaultValue, ...props }) 
 		fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
 		backgroundColor: 'white',
 		color: 'inherit',
-		...themeDefaults
+		...themeDefaults,
 	}
 
 	const style = {
@@ -41,8 +41,8 @@ export default function Input({ type = 'text', value, defaultValue, ...props }) 
 		value,
 		defaultValue,
 		style,
-		role: "textbox",
-		...props
+		role: 'textbox',
+		...props,
 	}
 	if (type.toLowerCase() === 'password') {
 		inputProps.role = 'password'

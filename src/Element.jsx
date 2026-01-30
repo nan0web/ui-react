@@ -1,17 +1,34 @@
-import AppCore from "@nan0web/core"
-import { Element as CoreElement } from "@nan0web/ui-core"
-import React, { Suspense, lazy, useCallback, useState } from 'react'
-import UIContextValue from "./context/UIContextValue.jsx"
-// List of void elements </>
+import AppCore from '@nan0web/core'
+import { Element as CoreElement, Theme } from '@nan0web/ui-core'
+import React, { Suspense, lazy, useCallback, useEffect, useState } from 'react'
+import UIContextValue from './context/UIContextValue.jsx'
+
+// List of void elements
 const voidElements = new Set([
-	'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
-	'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'
+	'area',
+	'base',
+	'br',
+	'col',
+	'embed',
+	'hr',
+	'img',
+	'input',
+	'keygen',
+	'link',
+	'menuitem',
+	'meta',
+	'param',
+	'source',
+	'track',
+	'wbr',
 ])
+
 // Elements that have only <li> children, so in document we can omit li.
 const listElements = new Set(['ul', 'ol'])
-const appCache = new Map()
+
 const componentCache = new Map()
-const lazyAppLoaders = new Map()  // Cache for lazy app loaders to prevent re-loading
+const lazyAppLoaders = new Map() // Cache for lazy app loaders to prevent re-loading
+
 /**
  *
  * @param {Object} param0
@@ -19,14 +36,39 @@ const lazyAppLoaders = new Map()  // Cache for lazy app loaders to prevent re-lo
  * @param {string | Array} [param0.children=[]]
  * @returns
  */
-const Alert = ({ variant = "info", children = [] }) => (
-	<div className={["alert", "alert-" + variant].join(" ")}>
-		{children}
-	</div>
+const Alert = ({ variant = 'info', children = [] }) => (
+	<div className={['alert', 'alert-' + variant].join(' ')}>{children}</div>
 )
+
+/**
+ * Helper to resolve async imports safely.
+ * @param {Function} loadable
+ */
+async function resolveAsyncImport(loadable) {
+	try {
+		const module = await loadable()
+		if (module.default && typeof module.default === 'function') {
+			return { default: module.default }
+		}
+		if (typeof module === 'function') {
+			return { default: module }
+		}
+		if (module) {
+			return { default: () => React.createElement(module) }
+		}
+		throw new Error('Module does not contain a valid component')
+	} catch (/** @type {any} */ e) {
+		return {
+			default: () => (
+				<Alert variant="danger">Error loading component: {e.message || String(e)}</Alert>
+			),
+		}
+	}
+}
+
 /**
  * Resolve a Loadable (sync import, async import or component) to a React component.
- * @param {any} loadable
+ * @param {Function} loadable
  * @returns {React.ComponentType}
  */
 function resolveComponent(loadable) {
@@ -35,41 +77,15 @@ function resolveComponent(loadable) {
 	}
 	let resolved = loadable
 	if (typeof loadable === 'function' && loadable.toString().includes('import(')) {
-		// Виправлено: додаємо try-catch до lazy loader
-		resolved = lazy(async () => {
-			try {
-				const module = await loadable()
-				// Повертаємо об'єкт з default експортом
-				if (module.default) {
-					return { default: module.default }
-				}
-				// Якщо немає default експорту, але є функція, вважаємо її компонентом
-				if (typeof module === 'function') {
-					return { default: module }
-				}
-				// Для модулів, які експортують компонент без default
-				if (module) {
-					return { default: () => React.createElement(module) }
-				}
-				// Останній випадок
-				throw new Error('Module does not contain a valid component')
-			} catch (e) {
-				console.error('Failed to load component:', e)
-				return {
-					default: () => (
-						<Alert variant="danger">
-							{/* @ts-ignore */}
-							Помилка завантаження компоненту: {e.message}
-						</Alert>
-					)
-				}
-			}
-		})
+		resolved = lazy(() => resolveAsyncImport(loadable))
 	} else if (typeof loadable === 'function') {
 		resolved = loadable
 	}
-	// ── Wrapper для data-test → data-testid (тільки для функцій) ──
-	if (typeof resolved === 'function' && !(resolved.prototype && resolved.prototype.isReactComponent)) {
+	// Wrapper for data-test → data-testid
+	if (
+		typeof resolved === 'function' &&
+		!(resolved.prototype && resolved.prototype.isReactComponent)
+	) {
 		const original = resolved
 		const Wrapper = (props) => {
 			const child = original(props)
@@ -78,12 +94,13 @@ function resolveComponent(loadable) {
 			}
 			return child
 		}
-		Wrapper.displayName = `Wrapped(${original.displayName ?? original.name ?? 'Component'})`
-		resolved = Wrapper
+		/** @type {any} */ Wrapper.displayName = `Wrapped(${/** @type {any} */ (original).displayName ?? original.name ?? 'Component'})`
+		resolved = /** @type {any} */ (Wrapper)
 	}
 	componentCache.set(loadable, resolved)
-	return resolved
+	return /** @type {any} */ (resolved)
 }
+
 /**
  * Parse string to function more robustly, handling common patterns.
  * @param {string} str - Function string like '() => console.log("hi")'
@@ -126,6 +143,7 @@ function parseFunctionString(str) {
 	}
 	return null
 }
+
 export default class ReactElement extends CoreElement {
 	/**
 	 * @param {any} input Input data
@@ -135,9 +153,7 @@ export default class ReactElement extends CoreElement {
 	 */
 	static render(input, key, context) {
 		if (!input) {
-			return (
-				<Alert variant="danger">Provide UI input to render</Alert>
-			)
+			return <Alert variant="danger">Provide UI input to render</Alert>
 		}
 		const {
 			renderers = new Map(),
@@ -147,20 +163,22 @@ export default class ReactElement extends CoreElement {
 			console = window.console,
 		} = context
 		// Extract tag and content
-		let type, value, rawProps = {}
+		let type,
+			value,
+			rawProps = {}
 		if (input instanceof ReactElement) {
 			type = input.type
 			value = input.content
 			rawProps = input.props
-		}
-		else {
+		} else {
 			rawProps = ReactElement.extractProps(input)
-			const arr = ReactElement.extractTags(input)[0] ?? ["div", ""]
+			const tags = ReactElement.extractTags(input)
+			const arr = tags[0] ?? ['div', input.$content ?? input.content ?? '']
 			type = arr[0]
 			value = arr[1]
 		}
-		if ("App" === type) {
-			const name = input[type] ?? ""
+		if ('App' === type) {
+			const name = input[type] ?? ''
 			if (!name) {
 				return <Alert variant="danger">App name must be provided [ App: name ]</Alert>
 			}
@@ -169,144 +187,209 @@ export default class ReactElement extends CoreElement {
 				const keys = Array.from(apps.keys())
 				return (
 					<Alert variant="danger">
-						<p>App not found <b>{name}</b>.</p>
+						<p>
+							App not found <b>{name}</b>.
+						</p>
 						<p>Available apps ({keys.length}):</p>
-						<ul>{keys.map((app, key) => <li key={key}>{app}</li>)}</ul>
+						<ul>
+							{keys.map((app, key) => (
+								<li key={key}>{app}</li>
+							))}
+						</ul>
 					</Alert>
 				)
 			}
 
-			// Виправлено: додаємо унікальний ключ для кешування
 			const cacheKey = `${name}|hasRenderer:true`
 
-			// Cache the lazy loader per app name to prevent infinite re-loading
 			if (!lazyAppLoaders.has(cacheKey)) {
-				lazyAppLoaders.set(cacheKey, lazy(async () => {
-					try {
-						console.log(`Loading App: ${name}`)
-						let module
-						if (typeof importFn === 'function') {
-							module = await importFn()
-						} else {
-							module = importFn
-						}
+				lazyAppLoaders.set(
+					cacheKey,
+					lazy(async () => {
+						try {
+							let module
+							// Check if it's a class (e.g. AppCore subclass) or a loader function
+							// Classes start with 'class ' in their string representation in modern JS
+							const isLoader =
+								typeof importFn === 'function' &&
+								!importFn.prototype?.run &&
+								!importFn.toString().startsWith('class ')
 
-						// Виправлено: правильне оброблення експортів
-						let AppComponent = null
+							if (isLoader) {
+								module = await importFn()
+							} else {
+								module = { default: importFn }
+							}
 
-						// Спробуємо знайти компонент у різних можливих місцях
-						if (module.default && typeof module.default === 'function') {
-							AppComponent = module.default
-						} else if (module.Renderer && typeof module.Renderer === 'function') {
-							AppComponent = module.Renderer
-						} else if (typeof module === 'function') {
-							AppComponent = module
-						} else if (module.defaultRenderer && typeof module.defaultRenderer === 'function') {
-							AppComponent = module.defaultRenderer
-						}
+							let AppComponent = null
 
-						// Якщо знайшли компонент, повертаємо його
-						if (AppComponent) {
-							return { default: AppComponent }
-						}
+							// Prioritize explicit renderer or default export
+							if (module.default && typeof module.default === 'function') {
+								AppComponent = module.default
+							} else if (module.Renderer && typeof module.Renderer === 'function') {
+								AppComponent = module.Renderer
+							} else if (typeof module === 'function') {
+								AppComponent = module
+							} else if (module.defaultRenderer && typeof module.defaultRenderer === 'function') {
+								AppComponent = module.defaultRenderer
+							}
 
-						// Якщо не знайшли компонент, намагаємося створити його з AppCore
-						const AppClassOrFn = module.default || module.App || module
-						if (typeof AppClassOrFn !== 'function') {
-							throw new TypeError(`App ${name} default export is not a function: ${typeof AppClassOrFn}`)
-						}
-
-						const uri = window.location.pathname
-						const props = {
-							db: context.db.extract("apps/" + name),
-							theme: context.theme,
-							setTheme: context.setTheme || (() => { }),
-							navigate: context.actions.navigate || ((path) => {
-								window.history.pushState({}, '', path)
-								window.dispatchEvent(new PopStateEvent('popstate'))
-							}),
-							currentPath: rawProps.$currentPath || uri || window.location.pathname,
-							locale: context.lang || 'en',
-							...rawProps,
-							element: input,
-							context,
-						}
-
-						/** @type {AppCore} */
-						const appInstance = AppClassOrFn.from
-							? AppClassOrFn.from(props)
-							: new AppClassOrFn(props)
-
-						let result = await appInstance.run()
-
-						// Ensure result has required properties
-						if (!result.content) result.content = []
-
-						// Основне виправлення: створюємо компонент React, який буде правильно обробляти хуки
-						const AppRenderer = (rendererProps) => {
-							const [appState, setAppState] = useState(result)
-
-							const refresh = useCallback(async () => {
-								try {
-									const newResult = await appInstance.run()
-									setAppState(newResult)
-								} catch (err) {
-									console.error('Error refreshing app:', err)
+							let returnDefault = null
+							if (
+								AppComponent &&
+								typeof AppComponent === 'function' &&
+								AppComponent.prototype.run
+							) {
+								// Treat as AppCore subclass => create AppRenderer
+								const uri = window.location.pathname
+								const props = {
+									db: context.db.extract('apps/' + name),
+									theme: context.theme || Theme,
+									setTheme: context.setTheme || (() => { }),
+									navigate:
+										context.actions.navigate ||
+										((path) => {
+											window.history.pushState({}, '', path)
+											window.dispatchEvent(new PopStateEvent('popstate'))
+										}),
+									locale: context.lang || 'en',
+									uri,
+									element: input,
+									context,
+									...rawProps,
 								}
-							}, [])
 
-							const appData = {
-								...appState,
-								actions: {
-									...appInstance.actions,
-									refresh
-								}
-							}
+								/** @type {AppCore} */
+								const appInstance = AppComponent.from
+									? AppComponent.from(props)
+									: new AppComponent(props)
 
-							// @ts-ignore – `requiresInput` may not exist on `appData`.
-							if (appData.requiresInput && typeof appData.compute === 'function' && renderers.has('interactive')) {
-								const InteractiveRenderer = renderers.get('interactive')
-								return <InteractiveRenderer element={appData} context={rendererProps.context} key={rendererProps.key} />
-							}
-							// @ts-ignore – `Renderer` may not exist on `appData`.
-							else if (appData.Renderer && typeof appData.Renderer === 'function') {
-								const RendererComp = /** @type {any} */ (appData).Renderer
-								return <RendererComp result={appData} context={rendererProps.context} />
-							}
-							else {
-								const contentBlocks = Array.isArray(appData.content) ? appData.content : [appData]
-								return contentBlocks.map((block, index) =>
-									ReactElement.render(
-										block,
-										`${rendererProps.key}-${index}`,
-										{
-											...rendererProps.context,
-											data: /** @type {any} */ (appData).data || {},
-											actions: appData.actions,
-											t: appInstance.t,
+								// Create AppRenderer to handle state management and async run()
+								const AppRenderer = (rendererProps) => {
+									const [appState, setAppState] = useState(/** @type {any} */(null))
+									const [loading, setLoading] = useState(true)
+									const [error, setError] = useState(/** @type {any} */(''))
+
+									useEffect(() => {
+										const loadApp = async () => {
+											try {
+												const result = await appInstance.run()
+												setAppState(result)
+											} catch (/** @type {any} */ err) {
+												console.error(`App ${name} run error:`, err)
+												setError(err)
+											} finally {
+												setLoading(false)
+											}
 										}
-									)
-								)
+										loadApp()
+									}, [])
+
+									const refresh = useCallback(async () => {
+										setLoading(true)
+										try {
+											const newResult = await appInstance.run()
+											setAppState(newResult)
+										} catch (/** @type {any} */ err) {
+											console.error('Error refreshing app:', err)
+											setError(err)
+										} finally {
+											setLoading(false)
+										}
+									}, [])
+
+									if (loading) {
+										return (
+											<span
+												style={{ fontStyle: 'italic', opacity: 0.6 }}
+												data-testid={`loading-${name}`}
+											>
+												Loading app: {name}...
+											</span>
+										)
+									}
+
+									if (error || !appState) {
+										return (
+											<Alert variant="danger">
+												Failed to load/run app {name}: {error?.message || 'Unknown error'}
+											</Alert>
+										)
+									}
+
+									/**
+									 * @type {{ actions: object, requiresInput?: boolean, compute?: function, Renderer?: any, content?: any, $content?: any, data?: object }}
+									 */
+									const appData = {
+										...appState,
+										actions: {
+											...appInstance.actions,
+											refresh,
+										},
+									}
+
+									if (
+										appData.requiresInput &&
+										typeof appData.compute === 'function' &&
+										renderers.has('interactive')
+									) {
+										const InteractiveRenderer = renderers.get('interactive')
+										return (
+											<InteractiveRenderer
+												element={appData}
+												context={rendererProps.context}
+												key={rendererProps.key}
+											/>
+										)
+									} else if (
+										appData.Renderer &&
+										(typeof appData.Renderer === 'function' || typeof appData.Renderer === 'object')
+									) {
+										const RendererComp = /** @type {any} */ (appData.Renderer)
+										return <RendererComp result={appData} context={rendererProps.context} />
+									} else {
+										const content = appData.$content || appData.content
+										const contentBlocks = Array.isArray(content) ? content : [appData]
+										return contentBlocks.map((block, index) =>
+											ReactElement.render(block, `${rendererProps.key}-${index}`, {
+												...rendererProps.context,
+												data: appData.data || {},
+												actions: appData.actions,
+												t: appInstance.t,
+											}),
+										)
+									}
+								}
+
+								AppRenderer.displayName = `AppRenderer(${name})`
+
+								returnDefault = { default: AppRenderer }
+							} else {
+								// Assume it's a pure React component
+								returnDefault = { default: AppComponent }
+							}
+
+							if (!returnDefault) {
+								throw new Error(`App ${name} does not export a valid component or AppCore class`)
+							}
+
+							return returnDefault
+						} catch (/** @type {any} */ err) {
+							console.error(`Failed to load/run app ${name}:`, err)
+							return {
+								default: () => (
+									<Alert variant="danger">
+										Failed to load/run app {name}: {err.message || String(err)}
+									</Alert>
+								),
 							}
 						}
-
-						AppRenderer.displayName = `AppRenderer(${name})`
-						return { default: AppRenderer }
-					} catch (/** @type {any} */ err) {
-						console.error(`Failed to load/run app ${name}:`, err)
-						return {
-							default: () => (
-								<Alert variant="danger">
-									Failed to load/run app {name}
-								</Alert>
-							)
-						}
-					}
-				}))
+					}),
+				)
 			}
 
 			const AppLoader = lazyAppLoaders.get(cacheKey)
-			const db = context.db.extract("apps/" + name)
+			const db = context.db.extract('apps/' + name)
 			return (
 				<Suspense
 					key={`${name}-${key}`}
@@ -316,8 +399,7 @@ export default class ReactElement extends CoreElement {
 						</span>
 					}
 				>
-					{/* Виправлення: додаємо правильні пропси для компоненту */}
-					<AppLoader db={db} lang={context.lang} />
+					<AppLoader db={db} context={context} key={key} />
 				</Suspense>
 			)
 		}
@@ -382,7 +464,7 @@ export default class ReactElement extends CoreElement {
 					children = value.map((item, i) =>
 						typeof item === 'object' && item !== null
 							? ReactElement.render(item, `${key}-${i}`, context)
-							: item
+							: item,
 					)
 				}
 			} else if (typeof value === 'string' || typeof value === 'number') {
@@ -395,7 +477,7 @@ export default class ReactElement extends CoreElement {
 			}
 		}
 		if (!Component) {
-			console.error("Component not found:", type)
+			console.error('Component not found:', type)
 			return <Alert variant="warning">Unknown element: {type}</Alert>
 		}
 		if (isVoidElement) {
@@ -403,6 +485,7 @@ export default class ReactElement extends CoreElement {
 		}
 		return React.createElement(Component, propsWithKey, children)
 	}
+
 	/**
 	 * @param {any} input
 	 * @returns {ReactElement}

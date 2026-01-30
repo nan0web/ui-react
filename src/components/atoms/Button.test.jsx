@@ -43,10 +43,10 @@ describe('Button', () => {
 		it(`applies outline ${variant} variant with transparent background, correct color and border`, () => {
 			render(<Button variant={variant} outline>{`Outline ${variant}`}</Button>)
 			const btn = screen.getByText(`Outline ${variant}`)
-			expect(btn).toHaveStyle({ 
-				backgroundColor: 'transparent', 
-				color, 
-				border 
+			expect(btn).toHaveStyle({
+				backgroundColor: 'transparent',
+				color,
+				border,
 			})
 		})
 	})
@@ -54,10 +54,10 @@ describe('Button', () => {
 	it('applies link variant (no background, primary color, underline)', () => {
 		render(<Button variant="link">Link</Button>)
 		const btn = screen.getByText('Link')
-		expect(btn).toHaveStyle({ 
-			backgroundColor: 'transparent', 
-			color: '#0d6efd', 
-			textDecoration: 'underline' 
+		expect(btn).toHaveStyle({
+			backgroundColor: 'transparent',
+			color: '#0d6efd',
+			textDecoration: 'underline',
 		})
 	})
 
@@ -76,7 +76,7 @@ describe('Button', () => {
 	})
 
 	it('keyboard interaction – Enter triggers active style and reverts', () => {
-		const { rerender } = render(<Button variant='success'>Enter Test</Button>)
+		const { rerender } = render(<Button variant="success">Enter Test</Button>)
 		let btn = screen.getByText('Enter Test')
 		const initialTransform = btn.style.transform
 

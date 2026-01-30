@@ -4,7 +4,7 @@ import Modal from '../components/organisms/Modal.jsx'
 
 /**
  * Renderer for Modal component
- * 
+ *
  * @param {object} block - Component block definition
  * @returns {JSX.Element} Rendered modal
  */

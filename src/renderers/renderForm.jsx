@@ -1,5 +1,5 @@
 import React from 'react'
-import { resolveContext } from "@nan0web/ui-core"
+import { resolveContext } from '@nan0web/ui-core'
 
 /**
  * Renderer for form elements with dynamic field resolution.
@@ -26,8 +26,7 @@ export default function renderForm(input) {
 								value={resolveContext(context, field.input.$value)}
 								onChange={resolveContext(context, field.input.$onChange)}
 								{...Object.fromEntries(
-									Object.entries(field.input)
-										.filter(([key]) => !key.startsWith('$'))
+									Object.entries(field.input).filter(([key]) => !key.startsWith('$')),
 								)}
 							/>
 						)}
@@ -38,15 +37,22 @@ export default function renderForm(input) {
 								value={resolveContext(context, field.select.$value)}
 								onChange={resolveContext(context, field.select.$onChange)}
 								{...Object.fromEntries(
-									Object.entries(field.select)
-										.filter(([key]) => !key.startsWith('$'))
+									Object.entries(field.select).filter(([key]) => !key.startsWith('$')),
 								)}
 							>
 								{(resolveContext(context, field.select.$options) || []).map((option, j) => {
 									if (typeof option === 'string') {
-										return <option key={j} value={option}>{option}</option>
+										return (
+											<option key={j} value={option}>
+												{option}
+											</option>
+										)
 									}
-									return <option key={j} value={option.value}>{option.label}</option>
+									return (
+										<option key={j} value={option.value}>
+											{option.label}
+										</option>
+									)
 								})}
 							</select>
 						)}

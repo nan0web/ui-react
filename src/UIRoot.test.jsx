@@ -12,7 +12,7 @@ vi.mock('./UIReact.jsx', () => ({
 		<div data-testid="ui-react" data-db={db ? 'provided' : 'default'} data-uri={uri}>
 			UIReact rendered with URI: {uri}
 		</div>
-	))
+	)),
 }))
 
 // Mock history and dispatch
@@ -30,7 +30,7 @@ describe('UIRoot', () => {
 		// Ensure consistent location mock across tests
 		Object.defineProperty(window, 'location', {
 			value: { pathname: '/' },
-			writable: true
+			writable: true,
 		})
 
 		// Mock localStorage
@@ -41,11 +41,14 @@ describe('UIRoot', () => {
 		window.localStorage.getItem.mockReturnValue(null)
 
 		// Mock matchMedia to false for light theme in most tests
-		vi.stubGlobal('matchMedia', vi.fn(() => ({
-			matches: false,
-			addListener: vi.fn(),
-			removeListener: vi.fn(),
-		})))
+		vi.stubGlobal(
+			'matchMedia',
+			vi.fn(() => ({
+				matches: false,
+				addListener: vi.fn(),
+				removeListener: vi.fn(),
+			})),
+		)
 
 		// Mock addEventListener and removeEventListener for window and document
 		vi.spyOn(window, 'addEventListener').mockImplementation((event, handler) => {
@@ -82,7 +85,7 @@ describe('UIRoot', () => {
 		// Reset location
 		Object.defineProperty(window, 'location', {
 			value: { pathname: '/' },
-			writable: true
+			writable: true,
 		})
 	})
 
@@ -96,16 +99,16 @@ describe('UIRoot', () => {
 		expect(UIReact).toHaveBeenCalledWith(
 			expect.objectContaining({
 				db: expect.any(DB),
-				uri: '/'
+				uri: '/',
 			}),
-			undefined
+			undefined,
 		)
 	})
 
 	it('uses provided DB and computes URI from pathname', () => {
 		Object.defineProperty(window, 'location', {
 			value: { pathname: '/test.html' },
-			writable: true
+			writable: true,
 		})
 
 		render(<UIRoot db={mockDb} />)
@@ -117,9 +120,9 @@ describe('UIRoot', () => {
 		expect(UIReact).toHaveBeenCalledWith(
 			expect.objectContaining({
 				db: mockDb,
-				uri: '/test.json'
+				uri: '/test.json',
 			}),
-			undefined
+			undefined,
 		)
 	})
 
@@ -192,7 +195,10 @@ describe('UIRoot', () => {
 		expect(mockPopstateDispatch).toHaveBeenCalledTimes(1)
 
 		// Now trigger the popstate handler to update uri
-		Object.defineProperty(window, 'location', { value: { pathname: '/internal-page.html' }, writable: true })
+		Object.defineProperty(window, 'location', {
+			value: { pathname: '/internal-page.html' },
+			writable: true,
+		})
 		await act(async () => {
 			window.__popstateHandler()
 		})
@@ -216,7 +222,9 @@ describe('UIRoot', () => {
 		const handler = document.__clickHandler
 
 		// External: closest returns a with href starting with https
-		const externalEvent = createMockEvent('https://example.com', { getAttribute: () => 'https://example.com' })
+		const externalEvent = createMockEvent('https://example.com', {
+			getAttribute: () => 'https://example.com',
+		})
 		act(() => handler(externalEvent))
 		expect(externalEvent.preventDefault).not.toHaveBeenCalled()
 		expect(mockHistoryPushState).not.toHaveBeenCalled()
@@ -232,7 +240,9 @@ describe('UIRoot', () => {
 		mockHistoryPushState.mockClear()
 
 		// Mailto: href starts with mailto:
-		const mailtoEvent = createMockEvent('mailto:user@example.com', { getAttribute: () => 'mailto:user@example.com' })
+		const mailtoEvent = createMockEvent('mailto:user@example.com', {
+			getAttribute: () => 'mailto:user@example.com',
+		})
 		act(() => handler(mailtoEvent))
 		expect(mailtoEvent.preventDefault).not.toHaveBeenCalled()
 		expect(mockHistoryPushState).not.toHaveBeenCalled()
@@ -260,7 +270,7 @@ describe('UIRoot', () => {
 	it('wraps UIReact in UIProvider with theme and db', () => {
 		Object.defineProperty(window, 'location', {
 			value: { pathname: '/' },
-			writable: true
+			writable: true,
 		})
 		render(<UIRoot db={mockDb} />)
 
@@ -268,9 +278,9 @@ describe('UIRoot', () => {
 		expect(UIReact).toHaveBeenCalledWith(
 			expect.objectContaining({
 				db: mockDb,
-				uri: '/'
+				uri: '/',
 			}),
-			undefined
+			undefined,
 		)
 	})
 })

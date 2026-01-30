@@ -34,7 +34,7 @@ export default class ThemeSwitcherApp extends AppCore {
 			themeToggle: () => {
 				this.currentTheme = this.currentTheme === Theme ? NightTheme : Theme
 				this.setTheme(this.currentTheme)
-			}
+			},
 		}
 
 		return this.data

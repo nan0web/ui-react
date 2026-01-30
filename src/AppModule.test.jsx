@@ -1,16 +1,16 @@
 import { describe, it, expect } from 'vitest'
 import React from 'react'
 import { screen } from '@testing-library/react'
-import { MemoryDB } from "@nan0web/test"
+import { MemoryDB } from '@nan0web/test'
 import AppModule from './AppModule.jsx'
 import { beforeAll } from 'vitest'
 
 const db = new MemoryDB({
 	predefined: new Map([
-		["app/test/config.json", { theme: "dark" }],
-		["app/test/main.json", { $content: [] }],
-		["app/test/data.json", { test: "data" }],
-	])
+		['app/test/config.json', { theme: 'dark' }],
+		['app/test/main.json', { $content: [] }],
+		['app/test/data.json', { test: 'data' }],
+	]),
 })
 describe('AppModule', () => {
 	beforeAll(async () => {

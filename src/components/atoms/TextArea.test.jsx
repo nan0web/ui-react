@@ -15,7 +15,7 @@ describe('TextArea', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<TextArea placeholder="Enter text" />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const textarea = screen.getByPlaceholderText('Enter text')
 		expect(textarea).toBeInTheDocument()
@@ -27,7 +27,7 @@ describe('TextArea', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<TextArea value="initial" onChange={handleChange} />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const textarea = screen.getByDisplayValue('initial')
 		expect(textarea).toHaveValue('initial')
@@ -40,7 +40,7 @@ describe('TextArea', () => {
 		render(
 			<UIProvider value={mockContext}>
 				<TextArea rows={5} cols={30} />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const textarea = screen.getByRole('textbox')
 		expect(textarea).toHaveAttribute('rows', '5')
@@ -51,14 +51,14 @@ describe('TextArea', () => {
 		const themeContext = new UIContextValue({
 			theme: {
 				atoms: {
-					TextArea: { height: '150px', paddingY: '12px' }
-				}
-			}
+					TextArea: { height: '150px', paddingY: '12px' },
+				},
+			},
 		})
 		render(
 			<UIProvider value={themeContext}>
 				<TextArea />
-			</UIProvider>
+			</UIProvider>,
 		)
 		const textarea = screen.getByRole('textbox')
 		expect(textarea).toHaveStyle({ height: '150px', paddingTop: '12px', paddingBottom: '12px' })

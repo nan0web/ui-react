@@ -77,5 +77,5 @@ declare class UIContextValue {
     extend(overrides?: any): UIContextValue;
     #private;
 }
-import DB from "@nan0web/db-browser";
-import AppCore from "@nan0web/core";
+import DB from '@nan0web/db-browser';
+import AppCore from '@nan0web/core';

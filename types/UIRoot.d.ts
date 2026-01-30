@@ -16,7 +16,7 @@
  * @param {Console} [props.console] - Logger instance
  * @param {boolean} [props.devMode=true] - Enable debug logging
  */
-export function UIRoot({ db, components: overrideComponents, renderers: overrideRenderers, apps: overrideApps, actions: overrideActions, console: externalConsole, devMode }: {
+export function UIRoot({ db, components: overrideComponents, renderers: overrideRenderers, apps: overrideApps, actions: overrideActions, console: externalConsole, devMode, }: {
     db?: DB | undefined;
     components?: Map<string, React.Component<any, any, any>> | undefined;
     renderers?: Map<string, Function> | undefined;
@@ -25,21 +25,13 @@ export function UIRoot({ db, components: overrideComponents, renderers: override
     console?: Console | undefined;
     devMode?: boolean | undefined;
 }): import("react/jsx-runtime").JSX.Element;
-import DB from "@nan0web/db-browser";
-import React from "react";
+import DB from '@nan0web/db-browser';
+import React from 'react';
+import defaultComponents from './components/index.jsx';
+import defaultRenderers from './renderers/index.jsx';
 /**
- * @type {Map<string, React.Component>}
+ * Default registries for components, renderers, and apps.
+ * @type {Map<string, () => Promise<any>>}
  */
-export const components: Map<string, React.Component>;
-/**
- * @type {Map<string, Function>}
- */
-export const renderers: Map<string, Function>;
-/**
- * @type {Map<string, Function>}
- */
-export const apps: Map<string, Function>;
-/**
- * @type {Record<string, Function>}
- */
-export const actions: Record<string, Function>;
+declare const defaultAppsRegistry: Map<string, () => Promise<any>>;
+export { defaultComponents as components, defaultRenderers as renderers, defaultAppsRegistry as apps };

@@ -13,9 +13,9 @@ export default function Checkbox({ checked = false, onChange, disabled = false, 
 		backgroundColor: '#ffffff',
 		checkedColor: '#0d6efd',
 		cursor: 'pointer',
-		...themeDefaults
+		...themeDefaults,
 	}
-	
+
 	const style = {
 		width: defaults.size,
 		height: defaults.size,
@@ -35,7 +35,7 @@ export default function Checkbox({ checked = false, onChange, disabled = false, 
 		onChange,
 		style,
 		disabled,
-		...props
+		...props,
 	})
 }
 

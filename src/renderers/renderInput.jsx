@@ -4,7 +4,7 @@ import Input from '../components/atoms/Input.jsx'
 
 /**
  * Renderer for Input component
- * 
+ *
  * @param {object} block - Component block definition
  * @returns {JSX.Element} Rendered input
  */

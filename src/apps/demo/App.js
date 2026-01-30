@@ -18,14 +18,7 @@ export default class DemoApp extends AppCore {
 	 * @param {string} [input.uri='index.html']
 	 * @param {string} [input.locale='en']
 	 */
-	constructor({
-		db,
-		theme,
-		setTheme,
-		navigate,
-		uri = 'index.html',
-		locale = 'en'
-	}) {
+	constructor({ db, theme, setTheme, navigate, uri = 'index.html', locale = 'en' }) {
 		super({ db, locale })
 		this.theme = theme
 		this.setTheme = setTheme
@@ -36,28 +29,39 @@ export default class DemoApp extends AppCore {
 		 * @type {Map<string, () => Promise<AppCore>>}
 		 */
 		this.apps = new Map(
-			/** @type {Array<[string, () => Promise<AppCore>]>} */(
+			/** @type {Array<[string, () => Promise<AppCore>]>} */([
 				[
-					['SimpleApp', async () => {
+					'SimpleApp',
+					async () => {
 						const mod = await import('./SimpleApp.js')
 						return mod.default.from({ title: 'Simple', uri: this.uri, db, locale })
-					}],
-					['CustomRendererApp', async () => {
+					},
+				],
+				[
+					'CustomRendererApp',
+					async () => {
 						const mod = await import('./CustomRendererApp.js')
 						return mod.default.from({ title: 'Custom', uri: this.uri, db, locale })
-					}],
-					['NavigationApp', async () => {
+					},
+				],
+				[
+					'NavigationApp',
+					async () => {
 						const mod = await import('../navigation/App.js')
 						const app = mod.default.from({ db, locale })
 						app.title = 'Navigation'
 						app.uri = this.uri
 						return app
-					}],
-					['ThemeSwitcherApp', async () => {
+					},
+				],
+				[
+					'ThemeSwitcherApp',
+					async () => {
 						const mod = await import('../theme-switcher/App.js')
 						return mod.default.from({ title: 'Theme', uri: this.uri, db, locale })
-					}],
-				])
+					},
+				],
+			]),
 		)
 	}
 
@@ -69,7 +73,7 @@ export default class DemoApp extends AppCore {
 		// Register applications within the system
 		this.data = {
 			uri: this.uri,
-			apps: this.apps
+			apps: this.apps,
 		}
 
 		return {
@@ -77,24 +81,24 @@ export default class DemoApp extends AppCore {
 				{
 					div: [
 						{
-							App: "SimpleApp",
+							App: 'SimpleApp',
 							$uri: this.uri,
-							$navigate: "action:navigate"
+							$navigate: 'action:navigate',
 						},
 						{
-							App: "CustomRendererApp",
-							$title: "Interactive Demo",
-							$uri: this.uri
-						}
+							App: 'CustomRendererApp',
+							$title: 'Interactive Demo',
+							$uri: this.uri,
+						},
 					],
-					$style: "display: flex; flex-direction: column; gap: 2rem;"
+					$style: 'display: flex; flex-direction: column; gap: 2rem;',
 				},
 				{
-					Typography: ["Apps Demo: Simple and Interactive"],
-					$variant: "h2",
-					$className: "mb-4"
-				}
-			]
+					Typography: ['Apps Demo: Simple and Interactive'],
+					$variant: 'h2',
+					$className: 'mb-4',
+				},
+			],
 		}
 	}
 
@@ -112,6 +116,15 @@ export default class DemoApp extends AppCore {
 	 */
 	static from(input) {
 		if (input instanceof DemoApp) return input
+
+		// The "right approach": ensure DB instance is valid according to our framework's core
+		if (input.db && !(input.db instanceof DB)) {
+			// If it's not a strict instance (e.g. monorepo issue),
+			// we can try to wrap it or at least log a warning.
+			// But here we try to be compatible.
+			console.warn("DemoApp: db is not an instance of Core's DB. Attempting to use as-is.")
+		}
+
 		return new DemoApp(input)
 	}
 }
