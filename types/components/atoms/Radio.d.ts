@@ -3,13 +3,7 @@ declare function Radio({ checked, onChange, disabled, ...props }: {
     checked?: boolean | undefined;
     onChange: any;
     disabled?: boolean | undefined;
-}): React.DetailedReactHTMLElement<{
-    type: string;
-    checked: boolean;
-    onChange: any;
-    style: any;
-    disabled: boolean;
-}, HTMLElement>;
+}): import("react/jsx-runtime").JSX.Element;
 declare namespace Radio {
     namespace propTypes {
         let checked: PropTypes.Requireable<boolean>;
@@ -19,5 +13,4 @@ declare namespace Radio {
     }
 }
 export default Radio;
-import React from 'react';
 import PropTypes from 'prop-types';

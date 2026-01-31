@@ -35,7 +35,7 @@
 	"scripts": {
 		"build": "tsc && vite build",
 		"dev": "vite",
-		"play": "echo 'Open browser http://localhost:4242/play/\\n' && vite --port 4242",
+		"play": "echo 'Open browser http://localhost:4246/play/\\n' && vite --port 4246",
 		"preview": "vite preview",
 		"test": "npm run test:js && npm run test:jsx",
 		"test:js": "node --test  --test-timeout=6333 --test-reporter=tap \"src/**/*.test.js\"",
@@ -44,6 +44,8 @@
 		"test:debug": "vitest --inspect --no-file-parallelism",
 		"test:status": "nan0test status --hide-name --debug",
 		"test:all": "npm run test && npm run build && npm run knip",
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui",
 		"knip": "knip --production",
 		"precommit": "npm test",
 		"prepush": "npm test",
@@ -63,11 +65,12 @@
 	"license": "ISC",
 	"packageManager": "pnpm@10.11.0",
 	"devDependencies": {
-		"@nan0web/auth-core": "1.0.0",
-		"@nan0web/core": "1.0.1",
-		"@nan0web/db": "1.2.1",
-		"@nan0web/db-browser": "1.0.0",
-		"@nan0web/ui-core": "1.0.0",
+		"@nan0web/auth-core": "workspace:*",
+		"@nan0web/core": "workspace:*",
+		"@nan0web/db": "workspace:*",
+		"@nan0web/db-browser": "workspace:*",
+		"@nan0web/ui-core": "workspace:*",
+		"@playwright/test": "^1.58.1",
 		"@testing-library/jest-dom": "^6.8.0",
 		"@testing-library/react": "^16.3.0",
 		"@vitejs/plugin-react": "^5.0.3",
@@ -90,6 +93,6 @@
 		"react-dom": "^19.0.0"
 	},
 	"dependencies": {
-		"@nan0web/log": "1.1.1"
+		"@nan0web/log": "workspace:*"
 	}
 }

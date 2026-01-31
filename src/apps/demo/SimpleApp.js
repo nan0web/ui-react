@@ -1,15 +1,16 @@
-import AppCore, { AppResult } from '@nan0web/core'
 
-export default class SimpleApp extends AppCore {
-	/**
-	 *
-	 * @returns {Promise<AppResult>}
-	 */
+export default class SimpleApp {
+	constructor(props) {
+		this.title = props.title || 'Simple'
+	}
 	async run() {
-		// Simulate minimal async delay (e.g., real fetch/API) — reduced for faster debugging
-		await new Promise((resolve) => setTimeout(resolve, 10))
-		return new AppResult({
-			content: ['SimpleApp: ' + this.title, 'Standard rendering'],
-		})
+		// Simulate async
+		await new Promise(resolve => setTimeout(resolve, 10))
+		return {
+			content: [
+				{ Typography: ['SimpleApp: ' + this.title], $variant: 'h3' },
+				{ Typography: ['Standard rendering'], $variant: 'body' },
+			],
+		}
 	}
 }

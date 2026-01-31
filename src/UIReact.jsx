@@ -28,7 +28,7 @@ export default function UIReact({
 	console = typeof window !== 'undefined' ? window.console : new LogConsole(),
 }) {
 	const [loading, setLoading] = useState(true)
-	const [error, setError] = useState(/** @type {Error|null} */ (null))
+	const [error, setError] = useState(/** @type {Error|null} */(null))
 	const [document, setDocument] = useState(new Document())
 	const [t, setT] = useState(() => (k) => k)
 
@@ -85,6 +85,7 @@ export default function UIReact({
 		apps: context.apps ?? new Map(),
 		lang: document.$lang ?? 'en',
 		db,
+		uri,
 		t,
 		...context,
 	})

@@ -27,7 +27,7 @@ export default class Document {
 			nav = this.nav,
 			t = this.t,
 		} = input
-		this.$content = Array.from($content)
+		this.$content = Array.isArray($content) ? $content : []
 		this.$lang = String($lang)
 		this.nav = Navigation.from(nav)
 		this.t = new Map(Array.isArray(t) ? t : Object.entries(t))

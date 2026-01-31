@@ -8,10 +8,8 @@ import renderModal from './renderModal.jsx'
 import renderTypography from './renderTypography.jsx'
 import renderInteractive from './renderInteractive.jsx' // Новий рендерер для interactive apps
 
-/**
- * @type {Map<string, Function>}
- */
-export default new Map([
+// @ts-ignore
+const renderersMap = new Map([
 	['table', renderTable],
 	['form', renderForm],
 	['avatar', renderAvatar],
@@ -22,3 +20,5 @@ export default new Map([
 	['typography', renderTypography],
 	['interactive', renderInteractive], // Для app з type: 'interactive'
 ])
+
+export default renderersMap

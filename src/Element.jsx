@@ -144,24 +144,58 @@ function parseFunctionString(str) {
 	return null
 }
 
+class InternalErrorBoundary extends React.Component {
+	constructor(props) {
+		super(props)
+		/** @type {{ hasError: boolean, error: Error | null }} */
+		this.state = { hasError: false, error: null }
+	}
+
+	static getDerivedStateFromError(error) {
+		return { hasError: true, error }
+	}
+
+	componentDidCatch(error, errorInfo) {
+		console.error('UI Render Error:', error, errorInfo)
+	}
+
+	render() {
+		if (this.state.hasError) {
+			return (
+				<Alert variant="danger">
+					<strong>Render Error:</strong> {this.state.error?.message || 'Unknown error'}
+					{this.props.componentName && <div>Component: {this.props.componentName}</div>}
+				</Alert>
+			)
+		}
+		return this.props.children
+	}
+}
+
 export default class ReactElement extends CoreElement {
 	/**
 	 * @param {any} input Input data
 	 * @param {string|number} key Key prop.
 	 * @param {UIContextValue} context
-	 * @returns {JSX.Element | null}
+	 * @returns {React.ReactNode}
 	 */
 	static render(input, key, context) {
 		if (!input) {
 			return <Alert variant="danger">Provide UI input to render</Alert>
 		}
+		if (typeof input === 'string' || typeof input === 'number') {
+			return input
+		}
 		const {
 			renderers = new Map(),
 			components = new Map(),
-			apps = new Map(),
+			apps: globalApps = new Map(),
 			actions = {},
+			data = {},
 			console = window.console,
 		} = context
+		// Merge global apps and local apps from data
+		const apps = new Map([...globalApps, ...(data.apps || [])])
 		// Extract tag and content
 		let type,
 			value,
@@ -240,32 +274,39 @@ export default class ReactElement extends CoreElement {
 								typeof AppComponent === 'function' &&
 								AppComponent.prototype.run
 							) {
-								// Treat as AppCore subclass => create AppRenderer
-								const uri = window.location.pathname
-								const props = {
-									db: context.db.extract('apps/' + name),
-									theme: context.theme || Theme,
-									setTheme: context.setTheme || (() => { }),
-									navigate:
-										context.actions.navigate ||
-										((path) => {
-											window.history.pushState({}, '', path)
-											window.dispatchEvent(new PopStateEvent('popstate'))
-										}),
-									locale: context.lang || 'en',
-									uri,
-									element: input,
-									context,
-									...rawProps,
-								}
-
-								/** @type {AppCore} */
-								const appInstance = AppComponent.from
-									? AppComponent.from(props)
-									: new AppComponent(props)
-
 								// Create AppRenderer to handle state management and async run()
 								const AppRenderer = (rendererProps) => {
+									const { renderKey = 'app', context: rendererContext, ...otherProps } = rendererProps
+
+									// Memoize app instance creation to ensure it updates when critical dependencies change
+									// We use a ref to keep it stable unless we explicitly want to recreate it
+									const appInstance = React.useMemo(() => {
+										const uri = window.location.pathname
+										const initProps = {
+											db: rendererContext.db.extract('apps/' + name),
+											theme: rendererContext.theme || Theme,
+											setTheme: rendererContext.setTheme || (() => { }),
+											navigate:
+												rendererContext.actions.navigate ||
+												((path) => {
+													window.history.pushState({}, '', path)
+													window.dispatchEvent(new PopStateEvent('popstate'))
+												}),
+											locale: rendererContext.lang || 'en',
+											uri,
+											element: input,
+											context: rendererContext,
+											...rawProps, // Props from the Element definition (YAML)
+											...otherProps // Props passed from parent render
+										}
+
+										return AppComponent.from
+											? AppComponent.from(initProps)
+											: new AppComponent(initProps)
+										// Re-create app instance if context parts change significantly
+										// Note: usually we want a stable instance, but for navigation we need fresh URI
+									}, [rendererContext.db, rendererContext.theme, rendererContext.lang, rendererContext.uri])
+
 									const [appState, setAppState] = useState(/** @type {any} */(null))
 									const [loading, setLoading] = useState(true)
 									const [error, setError] = useState(/** @type {any} */(''))
@@ -338,7 +379,7 @@ export default class ReactElement extends CoreElement {
 											<InteractiveRenderer
 												element={appData}
 												context={rendererProps.context}
-												key={rendererProps.key}
+												key={renderKey}
 											/>
 										)
 									} else if (
@@ -350,13 +391,19 @@ export default class ReactElement extends CoreElement {
 									} else {
 										const content = appData.$content || appData.content
 										const contentBlocks = Array.isArray(content) ? content : [appData]
-										return contentBlocks.map((block, index) =>
-											ReactElement.render(block, `${rendererProps.key}-${index}`, {
-												...rendererProps.context,
-												data: appData.data || {},
-												actions: appData.actions,
-												t: appInstance.t,
-											}),
+										return (
+											<div className="app-content" data-testid={`app-${name}`}>
+												{contentBlocks.map((block, index) =>
+													ReactElement.render(block, `${renderKey}-${index}`, {
+														...rendererProps.context,
+														data: appData.data || {},
+														actions: appData.actions,
+														t: appInstance.t,
+														theme: rendererContext.theme,
+														setTheme: rendererContext.setTheme,
+													}),
+												)}
+											</div>
 										)
 									}
 								}
@@ -399,14 +446,36 @@ export default class ReactElement extends CoreElement {
 						</span>
 					}
 				>
-					<AppLoader db={db} context={context} key={key} />
+					<InternalErrorBoundary componentName={name}>
+						<AppLoader db={db} context={context} key={key} renderKey={key} />
+					</InternalErrorBoundary>
 				</Suspense>
 			)
 		}
-		if (renderers.has(type)) {
-			const Renderer = resolveComponent(renderers.get(type))
+		// Extract props (fields starting with $) and resolve actions
+		const props = {}
+		for (const [propName, val] of Object.entries(rawProps)) {
+			let value = val
+			if (propName.startsWith('on') && typeof value === 'string') {
+				const actionName = value.startsWith('action:') ? value.slice(7) : value
+				if (actions[actionName]) {
+					value = actions[actionName]
+				} else {
+					const parsedFn = parseFunctionString(value)
+					if (parsedFn) value = parsedFn
+				}
+			}
+			if (propName === 'data-test') {
+				props['data-testid'] = value
+			} else {
+				props[propName] = value
+			}
+		}
+
+		if (renderers.has(type.toLowerCase())) {
+			const Renderer = resolveComponent(renderers.get(type.toLowerCase()))
 			const RendererComp = /** @type {any} */ (Renderer)
-			return <RendererComp element={input} context={context} key={key} {...rawProps} />
+			return <RendererComp element={input} context={context} key={key} {...props} />
 		}
 		// Determine if it's a void element
 		const isVoidElement = voidElements.has(type.toLowerCase())
@@ -415,34 +484,12 @@ export default class ReactElement extends CoreElement {
 		if (components.has(type)) {
 			const loadable = components.get(type)
 			Component = resolveComponent(loadable)
+		} else if (components.has(type.toLowerCase())) {
+			// Try lowercase for case-insensitive lookup
+			const loadable = components.get(type.toLowerCase())
+			Component = resolveComponent(loadable)
 		} else {
 			Component = type
-		}
-		// Extract props (fields starting with $)
-		const props = {}
-		for (const [propName, value] of Object.entries(rawProps)) {
-			if (propName.startsWith('on')) {
-				if (typeof value === 'string' && actions[value]) {
-					props[propName] = actions[value]
-					continue
-				}
-				if (typeof value === 'function') {
-					props[propName] = value
-					continue
-				}
-				const parsedFn = parseFunctionString(value)
-				if (parsedFn) {
-					props[propName] = parsedFn
-					console.debug(`Parsed on${propName} function from string:`, value)
-					continue
-				}
-				console.warn(`on${propName} is a string but could not be parsed to function:`, value)
-			}
-			if (propName === 'data-test') {
-				props['data-testid'] = value
-			} else {
-				props[propName] = value
-			}
 		}
 		const propsWithKey = { key, ...props }
 		// Handle children only for non-void elements

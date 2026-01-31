@@ -181,8 +181,10 @@ describe('UIRoot', () => {
 		render(<UIRoot />)
 		await waitFor(() => expect(document.__clickHandler).toBeDefined())
 
+		const link = document.createElement('a')
+		link.setAttribute('href', '/internal-page.html')
 		const mockEvent = {
-			target: { closest: () => ({ getAttribute: () => '/internal-page.html' }) },
+			target: link,
 			preventDefault: vi.fn(),
 			stopPropagation: vi.fn(),
 		}

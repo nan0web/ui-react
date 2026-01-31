@@ -8,15 +8,14 @@ import Typography from '../components/atoms/Typography.jsx'
  * @param {object} block - Component block definition
  * @returns {JSX.Element} Rendered typography
  */
-export default function renderTypography(block) {
-	const { type, props = {}, data } = block
-	return <Typography {...props} data={data} />
+export default function renderTypography({ element, ...props }) {
+	// Extract children: either from the 'Typography' key, 'content', or default to empty
+	const children = element.Typography || element.content || []
+
+	// Pass through normalized props (like variant) and children
+	return <Typography {...props}>{children}</Typography>
 }
 
 renderTypography.propTypes = {
-	block: PropTypes.shape({
-		type: PropTypes.string.isRequired,
-		props: PropTypes.object,
-		data: PropTypes.any,
-	}).isRequired,
+	element: PropTypes.object.isRequired,
 }

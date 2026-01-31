@@ -32,12 +32,19 @@ export default class ThemeSwitcherApp extends AppCore {
 
 		this.actions = {
 			themeToggle: () => {
-				this.currentTheme = this.currentTheme === Theme ? NightTheme : Theme
+				const nextTheme = this.currentTheme === Theme ? NightTheme : Theme
+				this.currentTheme = nextTheme
 				this.setTheme(this.currentTheme)
 			},
 		}
 
-		return this.data
+		return {
+			content: [
+				{ Typography: ['Theme Switcher'], $variant: 'h2' },
+				{ Button: ['Toggle Theme'], $onClick: 'action:themeToggle' },
+			],
+			...this.data,
+		}
 	}
 
 	/**

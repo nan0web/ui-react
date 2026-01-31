@@ -1,14 +1,23 @@
 $content:
   - h1: Radio Component
-  - p: Radios allow users to select only one option from a group.
+  - p: Radio buttons allow users to select one option from a group.
   - h2: Unchecked Radio
   - Radio: true
-    $defaultChecked: false
+    $name: demo
+    $checked: false
   - h2: Checked Radio
   - Radio: true
-    $defaultChecked: true
-  - h2: Disabled Radio
+    $name: demo
+    $checked: true
+  - h2: Disabled Unchecked
   - Radio: true
+    $name: demo2
+    $checked: false
+    $disabled: true
+  - h2: Disabled Checked
+  - Radio: true
+    $name: demo2
+    $checked: true
     $disabled: true
   - a: ← All Components
     $href: /play/index.html

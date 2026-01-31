@@ -4,4 +4,12 @@ node_modules/
 /chat/
 /dist/
 /me.md
+/memory.md
 
+
+# Testing Artifacts
+/playwright-report/
+/test-results/
+test_output*.txt
+*_FIXES.md
+*_REPORT*.md

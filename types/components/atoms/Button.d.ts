@@ -1,3 +1,9 @@
+/**
+ * Button component.
+ * Uses theme definition from ui-core if available (theme.atoms.Button),
+ * otherwise falls back to local defaults.
+ * Maps 'variants' to 'solid' and 'outlines' to 'outline' based on ui-core schema.
+ */
 declare function Button({ children, variant, outline, size, ...props }: {
     [x: string]: any;
     children: any;

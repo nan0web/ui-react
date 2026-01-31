@@ -9,8 +9,9 @@ $content:
   - h2: Card with Image
   - Card:
       - img: true
-        $src: /pic.webp
+        $src: /play/sample-image.png
         $alt: Sample image
+        $style: "width: 100%; height: auto; border-radius: 8px 8px 0 0;"
       - p: Card with an image.
   - a: ← All Components
     $href: /play/index.html

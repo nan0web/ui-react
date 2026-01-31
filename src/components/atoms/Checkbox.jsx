@@ -29,14 +29,38 @@ export default function Checkbox({ checked = false, onChange, disabled = false, 
 		...props.style,
 	}
 
-	return React.createElement('input', {
-		type: 'checkbox',
-		checked,
-		onChange,
-		style,
-		disabled,
-		...props,
-	})
+	return (
+		<span style={{ position: 'relative', display: 'inline-block', width: defaults.size, height: defaults.size }}>
+			<input
+				type="checkbox"
+				checked={checked}
+				onChange={onChange}
+				style={style}
+				disabled={disabled}
+				{...props}
+			/>
+			{checked && (
+				<svg
+					viewBox="0 0 24 24"
+					style={{
+						position: 'absolute',
+						top: 0,
+						left: 0,
+						width: '100%',
+						height: '100%',
+						pointerEvents: 'none',
+						fill: 'none',
+						stroke: 'white',
+						strokeWidth: 3,
+						strokeLinecap: 'round',
+						strokeLinejoin: 'round',
+					}}
+				>
+					<polyline points="20 6 9 17 4 12" />
+				</svg>
+			)}
+		</span>
+	)
 }
 
 Checkbox.propTypes = {

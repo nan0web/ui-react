@@ -2,6 +2,12 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useUI } from '../../context/UIContext.jsx'
 
+/**
+ * Button component.
+ * Uses theme definition from ui-core if available (theme.atoms.Button),
+ * otherwise falls back to local defaults.
+ * Maps 'variants' to 'solid' and 'outlines' to 'outline' based on ui-core schema.
+ */
 export default function Button({
 	children,
 	variant = 'primary',
@@ -10,64 +16,105 @@ export default function Button({
 	...props
 }) {
 	const { theme, reducedMotion } = useUI()
-	const baseConfig = {
-		sizes: {
-			sm: { fontSize: '0.875rem', padding: '0.25rem 0.5rem' },
-			md: { fontSize: '1rem', padding: '0.5rem 1rem' },
+
+	// Use theme defaults or fallbacks.
+	// The theme object structure matches @nan0web/ui-core/src/theme/atoms/Button.js
+	// We cast to any to avoid TypeScript errors with schema mismatches in current tooling
+	const config = /** @type {any} */ (theme?.atoms?.Button || {
+		solid: {
+			primary: { backgroundColor: 'var(--color-primary, #0d6efd)', color: '#ffffff', border: 'var(--color-primary, #0d6efd)' },
+			secondary: { backgroundColor: 'var(--color-secondary, #6c757d)', color: '#ffffff', border: 'var(--color-secondary, #6c757d)' },
+			success: { backgroundColor: 'var(--color-success, #198754)', color: '#ffffff', border: 'var(--color-success, #198754)' },
+			warning: { backgroundColor: 'var(--color-warning, #ffc107)', color: '#000000', border: 'var(--color-warning, #ffc107)' },
+			danger: { backgroundColor: 'var(--color-error, #dc3545)', color: '#ffffff', border: 'var(--color-error, #dc3545)' },
+			info: { backgroundColor: '#0dcaf0', color: '#000000', border: '#0dcaf0' },
+			light: { backgroundColor: '#f8f9fa', color: '#212529', border: '#f8f9fa' },
+			dark: { backgroundColor: '#212529', color: '#ffffff', border: '#212529' },
+			link: { backgroundColor: 'transparent', color: 'var(--color-primary, #0d6efd)', border: 'transparent' },
 		},
-		variants: {
-			primary: { backgroundColor: '#0d6efd', color: '#ffffff' },
-			secondary: { backgroundColor: '#6c757d', color: '#ffffff' },
-			success: { backgroundColor: '#198754', color: '#ffffff' },
-			warning: { backgroundColor: '#ffc107', color: '#000000' },
-			danger: { backgroundColor: '#dc3545', color: '#ffffff' },
-			info: { backgroundColor: '#0dcaf0', color: '#000000' },
-			link: { backgroundColor: 'transparent', color: '#0d6efd', textDecoration: 'underline' },
+		outline: {
+			primary: { backgroundColor: 'transparent', color: 'var(--color-primary, #0d6efd)', border: 'var(--color-primary, #0d6efd)' },
+			secondary: { backgroundColor: 'transparent', color: 'var(--color-secondary, #6c757d)', border: 'var(--color-secondary, #6c757d)' },
+			success: { backgroundColor: 'transparent', color: 'var(--color-success, #198754)', border: 'var(--color-success, #198754)' },
+			warning: { backgroundColor: 'transparent', color: 'var(--color-warning, #ffc107)', border: 'var(--color-warning, #ffc107)' },
+			danger: { backgroundColor: 'transparent', color: 'var(--color-error, #dc3545)', border: 'var(--color-error, #dc3545)' },
+			info: { backgroundColor: 'transparent', color: '#0dcaf0', border: '#0dcaf0' },
+			light: { backgroundColor: 'transparent', color: '#aaaaaa', border: '#aaaaaa' },
+			dark: { backgroundColor: 'transparent', color: '#212529', border: '#212529' },
 		},
-		outlines: {
-			primary: { backgroundColor: 'transparent', color: '#0d6efd', border: '1px solid #0d6efd' },
-			secondary: { backgroundColor: 'transparent', color: '#6c757d', border: '1px solid #6c757d' },
-			success: { backgroundColor: 'transparent', color: '#198754', border: '1px solid #198754' },
-			warning: { backgroundColor: 'transparent', color: '#ffc107', border: '1px solid #ffc107' },
-			danger: { backgroundColor: 'transparent', color: '#dc3545', border: '1px solid #dc3545' },
-			info: { backgroundColor: 'transparent', color: '#0dcaf0', border: '1px solid #0dcaf0' },
+		size: {
+			sm: { fontSize: '0.875rem', paddingX: '0.5rem', paddingY: '0.25rem' },
+			md: { fontSize: '1rem', paddingX: '1rem', paddingY: '0.5rem' },
 		},
-		shared: {
-			borderRadius: '0.375rem',
-			fontWeight: '500',
-			cursor: 'pointer',
-			transition: 'all 0.15s ease-in-out',
-			border: 'none',
+		animation: {
+			transition: 'background 0.15s ease, transform 0.1s ease',
+			hoverAdjust: 20,
+			activeAdjust: -30,
+			focusScale: 1.02,
+			activeScale: 0.98,
+			disabledOpacity: 0.65,
 		},
-		disabled: {
-			opacity: 0.65,
-			cursor: 'not-allowed',
-		},
-	}
+		borderRadius: '0.375rem',
+		fontWeight: '500',
+	})
 
 	const isOutline = Boolean(outline)
 	const isLink = variant === 'link'
-	const baseName = variant.toLowerCase()
-	const sizeStyle = baseConfig.sizes[size] ?? baseConfig.sizes.md
-	const variantStyle = isLink
-		? baseConfig.variants.link
-		: isOutline
-			? baseConfig.outlines[baseName]
-			: (baseConfig.variants[baseName] ?? baseConfig.variants.primary)
+
+	// Map variant to solid/outline config
+	const solidStyles = config.solid || {}
+	const outlineStyles = config.outline || {}
+
+	// Determine variants. Note: ui-core puts 'link' inside solid usually.
+	let variantStyle = {}
+	if (isLink) {
+		variantStyle = solidStyles.link || { backgroundColor: 'transparent', color: 'blue' }
+	} else if (isOutline) {
+		variantStyle = outlineStyles[variant] || outlineStyles.primary
+	} else {
+		variantStyle = solidStyles[variant] || solidStyles.primary
+	}
+
+	// Size styles
+	const sizeConfig = (config.size && config.size[size]) || config.size?.md || { paddingX: '1rem', paddingY: '0.5rem', fontSize: '1rem' }
+	const sizeStyle = {
+		fontSize: sizeConfig.fontSize,
+		// Adapt padding: ui-core uses paddingX/Y, locally might need standard padding
+		padding: sizeConfig.padding || `${sizeConfig.paddingY} ${sizeConfig.paddingX}`,
+	}
 
 	const [isHovered, setIsHovered] = useState(false)
 	const [isActive, setIsActive] = useState(false)
 	const [isFocused, setIsFocused] = useState(false)
 
+	// Additional styles
 	const style = {
-		...sizeStyle,
-		...baseConfig.shared,
-		...variantStyle,
-		opacity: props.disabled ? baseConfig.disabled.opacity : 1,
-		cursor: props.disabled ? baseConfig.disabled.cursor : 'pointer',
-		transform: isActive ? 'scale(0.98)' : isFocused ? 'scale(1.02)' : 'scale(1)',
-		transition: reducedMotion ? 'none' : baseConfig.shared.transition,
-		...props.style,
+		borderRadius: config.borderRadius,
+		fontWeight: config.fontWeight || '500',
+		cursor: props.disabled ? 'not-allowed' : 'pointer',
+		...sizeStyle, // applies padding/fontSize
+		backgroundColor: variantStyle.backgroundColor || variantStyle.background || 'transparent',
+		color: variantStyle.color,
+		border: `1px solid ${variantStyle.border || variantStyle.borderColor || 'transparent'}`,
+		textDecoration: isLink ? 'underline' : 'none',
+		opacity: props.disabled ? (config.animation?.disabledOpacity ?? 0.65) : 1,
+		transform: isActive
+			? `scale(${config.animation?.activeScale ?? 0.98})`
+			: isFocused
+				? `scale(${config.animation?.focusScale ?? 1.02})`
+				: 'scale(1)',
+		transition: reducedMotion ? 'none' : (config.animation?.transition ?? 'all 0.15s'),
+		...(props.style || {}),
+	}
+
+	// Hover logic: ui-core theme supports hoverBackground (computed) or just relies on CSS vars?
+	// NightTheme defines hoverBackground.
+	if (isHovered && !props.disabled && !isOutline && !isLink) {
+		// If explicit hoverBackground exists in theme root (atoms.Button), use it
+		// Otherwise we rely on CSS :hover if we were writing CSS, but in React inline styles we need JS.
+		if (config.hoverBackground) {
+			style.backgroundColor = config.hoverBackground
+		}
 	}
 
 	const handleKeyDown = (e) => {
@@ -114,6 +161,8 @@ Button.propTypes = {
 		'warning',
 		'danger',
 		'info',
+		'light',
+		'dark',
 		'link',
 	]),
 	outline: PropTypes.bool,

@@ -79,24 +79,40 @@ export default class DemoApp extends AppCore {
 		return {
 			content: [
 				{
+					header: [
+						{ h1: ['Demo App'] },
+						{
+							nav: [
+								{
+									ul: [
+										{ li: [{ a: ['Home'], $href: '/play/index.html' }] },
+										{ li: [{ a: ['Theme'], $href: '/play/theme.html' }] },
+									],
+									$style: { display: 'flex', gap: '1rem', listStyle: 'none', padding: 0 },
+								},
+							],
+						},
+					],
+					$style: { padding: '1rem', background: '#f5f5f5' },
+				},
+				{
+					p: ['This is a demonstration of the DemoApp component.'],
+					$style: { padding: '1rem' },
+				},
+				{
 					div: [
 						{
 							App: 'SimpleApp',
 							$uri: this.uri,
-							$navigate: 'action:navigate',
-						},
-						{
-							App: 'CustomRendererApp',
-							$title: 'Interactive Demo',
-							$uri: this.uri,
 						},
 					],
-					$style: 'display: flex; flex-direction: column; gap: 2rem;',
+					$style: { padding: '1rem', display: 'flex', flexDirection: 'column', gap: '2rem' },
 				},
 				{
 					Typography: ['Apps Demo: Simple and Interactive'],
 					$variant: 'h2',
 					$className: 'mb-4',
+					$style: { padding: '1rem' },
 				},
 			],
 		}

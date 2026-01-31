@@ -13,7 +13,7 @@ import AppCore from '@nan0web/core'
  * @type {Map<string, () => Promise<any>>}
  */
 const defaultAppsRegistry = new Map(
-	/** @type {Array<[string, () => Promise<any>]>} */ ([
+	/** @type {Array<[string, () => Promise<any>]>} */([
 		['DemoApp', () => import('./apps/demo/App.js')],
 		['NavigationApp', () => import('./apps/navigation/App.js')],
 		['ThemeApp', () => import('./apps/theme-switcher/App.js')],
@@ -54,13 +54,12 @@ export function UIRoot({
 	const [theme, setTheme] = useState(getInitialTheme())
 
 	// Use external console or disable logs in production-like mode
-	const finalConsole = devMode ? externalConsole : createNoOpConsole()
+	const finalConsole = /** @type {any} */ (devMode ? externalConsole : createNoOpConsole())
 
 	finalConsole.debug('UIRoot initialized', { uri, hasDb: !!db })
 
 	// Initialize DB if not provided
-	const opts = { host: window.location.origin }
-	if (devMode) opts.console = finalConsole
+	const opts = { host: window.location.origin, console: finalConsole }
 	const finalDb = db || new DB(opts)
 
 	// Subscribe to browser navigation (back/forward)
@@ -78,9 +77,49 @@ export function UIRoot({
 		setThemeInStorage(theme)
 	}, [theme])
 
+	// Inject theme CSS variables
+	useEffect(() => {
+		const root = document.documentElement
+		const isDark = theme === NightTheme
+		const colors = isDark
+			? {
+				'--color-text': '#ffffff',
+				'--color-background': '#1a1a1a',
+				'--color-primary': '#0d6efd',
+				'--color-secondary': '#6c757d',
+				'--color-success': '#198754',
+				'--color-warning': '#ffc107',
+				'--color-error': '#dc3545',
+				'--color-border': '#2d2d2d',
+				'--color-border-muted': '#1f1f1f',
+			}
+			: {
+				'--color-text': '#212529',
+				'--color-background': '#ffffff',
+				'--color-primary': '#0d6efd',
+				'--color-secondary': '#6c757d',
+				'--color-success': '#198754',
+				'--color-warning': '#ffc107',
+				'--color-error': '#dc3545',
+				'--color-border': '#dee2e6',
+				'--color-border-muted': '#ced4da',
+			}
+
+		for (const [key, value] of Object.entries(colors)) {
+			root.style.setProperty(key, value)
+		}
+
+		// Apply global styles to body to ensure theme is visible
+		document.body.style.backgroundColor = 'var(--color-background)'
+		document.body.style.color = 'var(--color-text)'
+		document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease'
+	}, [theme])
+
 	// Handle internal link clicks to enable SPA navigation
 	useEffect(() => {
+		/** @param {MouseEvent} e */
 		const handleClick = (e) => {
+			if (!(e.target instanceof Element)) return
 			const link = e.target.closest('a[href]')
 			if (!link) return
 			const href = link.getAttribute('href')
@@ -108,12 +147,15 @@ export function UIRoot({
 	}, [])
 
 	// Merge default and custom context values
+	// Pass theme/setTheme here to propagate UIRoot state to children via UIReact
 	const mergedContext = {
 		components: new Map([...defaultComponents, ...overrideComponents]),
 		renderers: new Map([...defaultRenderers, ...overrideRenderers]),
 		apps: new Map([...defaultAppsRegistry, ...overrideApps]),
 		actions: overrideActions,
 		console: finalConsole,
+		theme,
+		setTheme,
 	}
 
 	finalConsole.debug('UIRoot: Merged context', {
@@ -121,11 +163,13 @@ export function UIRoot({
 		renderers: Array.from(mergedContext.renderers.keys()),
 		apps: Array.from(mergedContext.apps.keys()),
 		actions: Object.keys(mergedContext.actions),
+		theme: theme === NightTheme ? 'NightTheme' : 'Theme',
 	})
 
 	return (
 		<div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-			<UIProvider value={{ theme, setTheme, db: finalDb, ...mergedContext }}>
+			{/* We don't need to pass theme/setTheme explicitly to value if they are in mergedContext */}
+			<UIProvider value={{ db: finalDb, ...mergedContext }}>
 				<UIReact db={finalDb} uri={uri} context={mergedContext} console={finalConsole} />
 			</UIProvider>
 		</div>
@@ -170,16 +214,11 @@ function setThemeInStorage(theme) {
 
 /**
  * Create silent console when devMode is off
- * Implements the full shape of Console, including non-standard methods
- * to avoid runtime errors in strict environments or tooling assumptions.
- *
- * @returns {object} No-op console object
  */
 function createNoOpConsole() {
-	const noOp = () => {}
+	const noOp = () => { }
 
 	return {
-		// Standard methods
 		debug: noOp,
 		info: noOp,
 		warn: noOp,
@@ -199,19 +238,10 @@ function createNoOpConsole() {
 		timeEnd: noOp,
 		timeLog: noOp,
 		trace: noOp,
-
-		// Non-standard / devtools-specific (required by some TS merges)
 		timeStamp: noOp,
 		profile: noOp,
 		profileEnd: noOp,
-
-		// This one is tricky: `Console` as property — it’s usually a constructor
-		// But here, we just satisfy shape without side effects
-		Console: undefined, // ← not a function; avoids callability assumptions
-
-		// Optional: if environment expects it as a namespace
-		// But setting to `noOp` causes `Console.Console is not a constructor`
-		// So keep it `undefined` or `{}` if needed.
+		Console: undefined,
 	}
 }
 

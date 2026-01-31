@@ -53,7 +53,10 @@ $content:
   - h2: Disabled Button
   - Button: Cannot click
     $disabled: true
-  - button: DOM Button
+  - h2: Theme Switcher
+  - ThemeSwitcher: Toggle Theme
+  - Button: DOM Button
     $onClick: () => alert('Clicked')
   - a: ← All Components
     $href: /play/index.html
+# Force update

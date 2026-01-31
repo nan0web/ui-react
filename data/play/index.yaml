@@ -5,7 +5,7 @@ $content:
   - h2: Apps
   - ul:
       - a: DemoApp
-        $href: /play/apps/demo.html
+        $href: /play/demo-app.html
   - h2: Components
   - ul:
       - a: Avatar

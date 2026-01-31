@@ -8,15 +8,10 @@ import Input from '../components/atoms/Input.jsx'
  * @param {object} block - Component block definition
  * @returns {JSX.Element} Rendered input
  */
-export default function renderInput(block) {
-	const { type, props = {}, data } = block
-	return <Input {...props} data={data} />
+export default function renderInput({ element, ...props }) {
+	return <Input {...props} />
 }
 
 renderInput.propTypes = {
-	block: PropTypes.shape({
-		type: PropTypes.string.isRequired,
-		props: PropTypes.object,
-		data: PropTypes.any,
-	}).isRequired,
+	element: PropTypes.object.isRequired,
 }

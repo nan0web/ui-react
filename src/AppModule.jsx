@@ -46,8 +46,9 @@ export default class AppModule {
 	}
 
 	/**
-	 *
-	 * @returns {JSX.Element | null}
+	 * @param {string|number} key
+	 * @param {any} context
+	 * @returns {React.ReactNode}
 	 */
 	render(key, context) {
 		return Element.render(this.ui, key, {

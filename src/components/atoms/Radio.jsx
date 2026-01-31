@@ -29,14 +29,33 @@ export default function Radio({ checked = false, onChange, disabled = false, ...
 		...props.style,
 	}
 
-	return React.createElement('input', {
-		type: 'radio',
-		checked,
-		onChange,
-		style,
-		disabled,
-		...props,
-	})
+	return (
+		<span style={{ position: 'relative', display: 'inline-block', width: defaults.size, height: defaults.size }}>
+			<input
+				type="radio"
+				checked={checked}
+				onChange={onChange}
+				style={style}
+				disabled={disabled}
+				{...props}
+			/>
+			{checked && (
+				<span
+					style={{
+						position: 'absolute',
+						top: '50%',
+						left: '50%',
+						transform: 'translate(-50%, -50%)',
+						width: '50%',
+						height: '50%',
+						borderRadius: '50%',
+						backgroundColor: 'white',
+						pointerEvents: 'none',
+					}}
+				/>
+			)}
+		</span>
+	)
 }
 
 Radio.propTypes = {

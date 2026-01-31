@@ -13,12 +13,12 @@ describe('Button', () => {
 
 	// Solid variants tests
 	const solidVariants = [
-		{ variant: 'primary', bg: '#0d6efd', color: '#ffffff' },
-		{ variant: 'secondary', bg: '#6c757d', color: '#ffffff' },
-		{ variant: 'success', bg: '#198754', color: '#ffffff' },
-		{ variant: 'warning', bg: '#ffc107', color: '#000000' },
-		{ variant: 'danger', bg: '#dc3545', color: '#ffffff' },
-		{ variant: 'info', bg: '#0dcaf0', color: '#000000' },
+		{ variant: 'primary', bg: '#0d6efd', color: '#fff' },
+		{ variant: 'secondary', bg: '#6c757d', color: '#fff' },
+		{ variant: 'success', bg: '#198754', color: '#fff' },
+		{ variant: 'warning', bg: '#ffc107', color: '#212529' },
+		{ variant: 'danger', bg: '#dc3545', color: '#fff' },
+		{ variant: 'info', bg: '#0dcaf0', color: '#fff' },
 	]
 
 	solidVariants.forEach(({ variant, bg, color }) => {

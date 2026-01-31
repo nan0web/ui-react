@@ -18,9 +18,10 @@ export default class AppModule {
     run(action: any): Promise<void>;
     convert(value: any, from: any, to: any): Promise<string>;
     /**
-     *
-     * @returns {JSX.Element | null}
+     * @param {string|number} key
+     * @param {any} context
+     * @returns {React.ReactNode}
      */
-    render(key: any, context: any): JSX.Element | null;
+    render(key: string | number, context: any): React.ReactNode;
 }
 import DB from '@nan0web/db-browser';

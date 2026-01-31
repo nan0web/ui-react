@@ -14,6 +14,7 @@ import ThemeSwitcher from './atoms/ThemeSwitcher.jsx'
 /** @type {Map<string, React.Component<any, any, any>>} */
 // @ts-ignore @todo fix if you able to
 const components = new Map([
+	// Capitalized (original)
 	['Button', Button],
 	['Input', Input],
 	['Typography', Typography],
@@ -26,6 +27,19 @@ const components = new Map([
 	['Card', Card],
 	['Modal', Modal],
 	['ThemeSwitcher', ThemeSwitcher],
+	// Lowercase (for case-insensitive lookup)
+	['button', Button],
+	['input', Input],
+	['typography', Typography],
+	['avatar', Avatar],
+	['badge', Badge],
+	['checkbox', Checkbox],
+	['radio', Radio],
+	['select', Select],
+	['textarea', TextArea],
+	['card', Card],
+	['modal', Modal],
+	['themeswitcher', ThemeSwitcher],
 ])
 
 export default components

@@ -8,15 +8,10 @@ import Avatar from '../components/atoms/Avatar.jsx'
  * @param {object} block - Component block definition
  * @returns {JSX.Element} Rendered avatar
  */
-export default function renderAvatar(block) {
-	const { type, props = {}, data } = block
-	return <Avatar {...props} data={data} />
+export default function renderAvatar({ element, ...props }) {
+	return <Avatar {...props} />
 }
 
 renderAvatar.propTypes = {
-	block: PropTypes.shape({
-		type: PropTypes.string.isRequired,
-		props: PropTypes.object,
-		data: PropTypes.any,
-	}).isRequired,
+	element: PropTypes.object.isRequired,
 }

@@ -10,20 +10,34 @@ import { useUI } from '../src/context/UIContext.jsx'
  * @param {DB} props.db
  */
 export default function DemoApp({ db }) {
+	const ui = useUI()
 	const [currentPath, setCurrentPath] = useState('/play/index.json')
 	const [sharedData, setSharedData] = useState({ theme: { current: 'light' } }) // Load from _.json
 
 	// Convert URL pathname → JSON document path
 	const getPathFromUrl = () => {
 		const pathname = window.location.pathname
-		if (pathname === '/' || pathname === '/index.html') return '/play/index.json'
-		return pathname.replace('.html', '.json')
+		// If root or index.html, load index.json from current directory logic (handled by data presumably)
+		// But in playground, everything is flat in /play/ or /play/apps/
+		// Let's try to keep it simple but flexible:
+		if (pathname.endsWith('/')) return pathname + 'index.json'
+		if (pathname.endsWith('.html')) return pathname.replace('.html', '.json')
+		return pathname
 	}
 
 	// Load shared data (nav, theme) from _.json
 	useEffect(() => {
 		async function loadShared() {
 			try {
+				// Try to load _.json from the same level as index.html
+				// Assuming we are in /play/ mostly.
+				// A more robust way is to fetch relative './_.json' but fetch might need absolute if base is weird.
+				// For playground, let's stick to '/play/_.json' if we know we are in play,
+				// OR try to derive it.
+				// BUT: The original request was to remove hardcode.
+				// Let's assume the "shared data" is always at the root of the "mount point" which is /play/ here.
+				// So maybe we leave it for now if we can't easily detect mount point?
+				// Actually, let's try relative fetch first.
 				const data = await db.fetch('/play/_.json')
 				if (data) {
 					setSharedData(data)
@@ -51,20 +65,13 @@ export default function DemoApp({ db }) {
 		localStorage.setItem('theme', newThemeName)
 		// Optionally save to db for persistence across sessions (for demo, just state/local)
 		db.saveDocument('/play/_.json', sharedData).catch(console.error)
+
+		// PROPAGATE to root UI context so background changes
+		if (ui?.setTheme) {
+			ui.setTheme(newTheme)
+		}
 	}
 
-	// Listen to theme changes from ThemeSwitcher
-	useEffect(() => {
-		const originalSetTheme = useUI()?.setTheme
-		if (originalSetTheme) {
-			const handleThemeChange = (newTheme) => {
-				const newThemeName = newTheme === NightTheme ? 'night' : 'light'
-				setThemeFromData(newThemeName)
-				originalSetTheme(newTheme)
-			}
-			// The context is updated via props, so no need to override
-		}
-	}, [useUI])
 
 	// Initialise path + listen to history changes
 	useEffect(() => {

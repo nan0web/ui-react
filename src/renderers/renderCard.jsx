@@ -8,15 +8,11 @@ import Card from '../components/molecules/Card.jsx'
  * @param {object} block - Component block definition
  * @returns {JSX.Element} Rendered card
  */
-export default function renderCard(block) {
-	const { type, props = {}, data } = block
-	return <Card {...props} data={data} />
+export default function renderCard({ element, ...props }) {
+	const children = element.Card || element.content || []
+	return <Card {...props}>{children}</Card>
 }
 
 renderCard.propTypes = {
-	block: PropTypes.shape({
-		type: PropTypes.string.isRequired,
-		props: PropTypes.object,
-		data: PropTypes.any,
-	}).isRequired,
+	element: PropTypes.object.isRequired,
 }

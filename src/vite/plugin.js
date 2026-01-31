@@ -98,18 +98,22 @@ export default function nan0webVitePlugin({ input, output, logger = createLogger
 					logger.error(`Failed to connect to input DB: ${err.message}`, { timestamp: true }),
 				)
 
-			// input.on('change', async (uri) => {
-			// 	try {
-			// 		// Якщо змінено файл даних
-			// 		if (input.isData(uri) && !input.isDirectory(uri)) {
-			// 			await input.dumpFile(uri, output)
-			// 			await output.buildIndexes(input.dirname(uri))
-			// 			logger.info(`Updated: ${uri}`, { timestamp: true })
-			// 		}
-			// 	} catch (error) {
-			// 		logger.error(`Error updating ${uri}: ${error.message}`, { timestamp: true })
-			// 	}
-			// })
+			const inputAny = /** @type {any} */ (input)
+			const outputAny = /** @type {any} */ (output)
+
+			inputAny.on?.('change', async (uri) => {
+				try {
+					// Якщо змінено файл даних
+					if (input.isData(uri) && !inputAny.isDirectory(uri)) {
+						await inputAny.dumpFile(uri, output)
+						await outputAny.buildIndexes(input.dirname(uri))
+						logger.info(`Updated: ${uri}`, { timestamp: true })
+					}
+				} catch (error) {
+					const msg = error instanceof Error ? error.message : String(error)
+					logger.error(`Error updating ${uri}: ${msg}`, { timestamp: true })
+				}
+			})
 
 			await buildSite(input, output, logger)
 
