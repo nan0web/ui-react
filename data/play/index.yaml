@@ -31,6 +31,16 @@ $content:
       - a: Modal
         $href: /play/modals.html
   - h2: Usage
-  - p: This playground uses the standard <code>Document</code> format. Components are rendered via type mapping in <code>Components</code> registry.
+  - p:
+      - "This playground uses the standard "
+      - code: Document
+      - " format. Components are rendered via type mapping in "
+      - code: Components
+      - " registry."
   - p: Navigate using the links above. Each page demonstrates props and variants.
-  - p: Theme is controlled via data in <code>_.json</code> and toggled by <code>ThemeSwitcher</code>.
+  - p:
+      - "Theme is controlled via data in "
+      - code: _.json
+      - " and toggled by "
+      - code: ThemeSwitcher
+      - "."

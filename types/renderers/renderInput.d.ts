@@ -1,17 +1,19 @@
 /**
- * Renderer for Input component
+ * Renderer for Input component with local state support for playground.
  *
- * @param {object} block - Component block definition
+ * @param {object} props
+ * @param {object} props.element - Raw element
+ * @param {any} [props.context] - UI Context
  * @returns {JSX.Element} Rendered input
  */
-declare function renderInput(block: object): JSX.Element;
+declare function renderInput(props: {
+    element: object;
+    context?: any;
+}): JSX.Element;
 declare namespace renderInput {
     namespace propTypes {
-        let block: PropTypes.Validator<NonNullable<PropTypes.InferProps<{
-            type: PropTypes.Validator<string>;
-            props: PropTypes.Requireable<object>;
-            data: PropTypes.Requireable<any>;
-        }>>>;
+        let element: PropTypes.Requireable<object>;
+        let context: PropTypes.Requireable<object>;
     }
 }
 export default renderInput;

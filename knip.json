@@ -8,5 +8,8 @@
 		"src/**/*.test.js",
 		"src/apps/**/playground/**",
 		"src/apps/demo/CustomRendererApp.jsx"
+	],
+	"ignoreDependencies": [
+		"@nan0web/log"
 	]
 }

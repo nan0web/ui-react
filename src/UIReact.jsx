@@ -26,11 +26,27 @@ export default function UIReact({
 	uri = '',
 	context = {},
 	console = typeof window !== 'undefined' ? window.console : new LogConsole(),
+	...rest
 }) {
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState(/** @type {Error|null} */(null))
 	const [document, setDocument] = useState(new Document())
 	const [t, setT] = useState(() => (k) => k)
+
+	// Handle Redirects
+	useEffect(() => {
+		if (document.$redirect) {
+			console.debug('UIReact: redirecting to', document.$redirect)
+			if (typeof window !== 'undefined') {
+				// Use navigate action if available, otherwise fallback to location.replace
+				if (context.actions?.navigate) {
+					context.actions.navigate(document.$redirect)
+				} else {
+					window.location.replace(document.$redirect)
+				}
+			}
+		}
+	}, [document, context.actions])
 
 	// -------------------------------------------------------------------------
 	// Load document + optional language map
@@ -40,28 +56,44 @@ export default function UIReact({
 			try {
 				setLoading(true)
 				setError(null)
+				console.log('UIReact: START LOADING DOCUMENT', uri)
 
-				// Ensure the fetched path ends with `.json`
-				let ext = '.' + uri.split('.').pop()
-				if (!db.Directory.DATA_EXTNAMES.includes(ext)) ext = db.Directory.DATA_EXTNAMES[0]
-				let base = uri.split('.')[0] || uri
-				if (base.endsWith('/')) base += 'index'
-				const norm = base + ext
-				const url = norm || 'index.json'
+				// Improved URL normalization
+				let url = uri || 'index.json'
+				if (url === '/') url = 'index.json'
 
-				console.debug('UIReact: fetching document', url)
+				// Strip .html extension for data fetching
+				if (url.endsWith('.html')) {
+					url = url.slice(0, -5)
+				}
+
+				if (!url.includes('.')) {
+					const ext = (db.Directory?.DATA_EXTNAMES && db.Directory.DATA_EXTNAMES[0]) || '.json'
+					url = (url.endsWith('/') ? url + 'index' : url) + ext
+				}
+
+				console.debug('UIReact: normalized URL', url, 'for URI', uri)
+				console.log('UIReact: START LOADING DOCUMENT FROM URL:', url)
 
 				const data = await db.fetch(url)
+				console.debug('UIReact: received data', JSON.stringify(data).substring(0, 200))
+
 				const doc = Document.from(data)
+				console.debug('UIReact: parsed document', {
+					contentLen: doc.$content.length,
+					title: doc.title,
+					redirect: doc.$redirect
+				})
 				setDocument(doc)
 
 				// Create translation helper using I18nDb
+				let locale = doc.$lang || 'uk'
 				const i18n = new I18nDb({
 					// @ts-ignore
 					db,
-					locale: doc.$lang ?? 'en',
+					locale,
 				})
-				const translationFn = await i18n.createT(doc.$lang ?? 'en', url)
+				const translationFn = await i18n.createT(locale, url)
 				setT(() => translationFn)
 
 				setError(null)
@@ -82,11 +114,13 @@ export default function UIReact({
 		components,
 		renderers,
 		console,
+		document, // Add document to context
 		apps: context.apps ?? new Map(),
 		lang: document.$lang ?? 'en',
 		db,
 		uri,
 		t,
+		...rest,
 		...context,
 	})
 
@@ -109,6 +143,7 @@ export default function UIReact({
 		<StrictMode>
 			<UIContext.Provider value={mergedContext}>
 				<div className="ui-react-root" role="main">
+					{document.title && <h1 className="ui-document-title">{document.title}</h1>}
 					{document.$content.map((block, i) => Element.render(block, i, mergedContext))}
 				</div>
 			</UIContext.Provider>

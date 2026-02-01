@@ -1,3 +1,11 @@
-export default class SimpleApp extends AppCore {
+export default class SimpleApp {
+    static from(input: any): SimpleApp;
+    constructor(props: any);
+    title: any;
+    run(): Promise<{
+        content: {
+            Typography: string[];
+            $variant: string;
+        }[];
+    }>;
 }
-import AppCore from '@nan0web/core';

@@ -63,6 +63,7 @@ export default function nan0webVitePlugin({ input, output, logger = createLogger
 				logger.error(`Error processing ${req.url}: ${error.message}`, { timestamp: true })
 			}
 		}
+
 		next()
 	}
 

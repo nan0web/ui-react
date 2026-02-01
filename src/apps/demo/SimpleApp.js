@@ -13,4 +13,9 @@ export default class SimpleApp {
 			],
 		}
 	}
+
+	static from(input) {
+		if (input instanceof SimpleApp) return input
+		return new SimpleApp(input)
+	}
 }

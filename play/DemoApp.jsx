@@ -103,15 +103,15 @@ export default function DemoApp({ db }) {
 
 	return (
 		<div className="demo-app">
-			<header style={{ padding: '1rem', background: '#f5f5f5' }}>
-				<h1>Demo App</h1>
+			<header style={{ padding: '1rem', background: '#f5f5f5', color: '#1f2937', borderBottom: '1px solid #e5e7eb' }}>
+				<h1>DemoApp</h1>
 				<nav>
 					<ul
 						style={{
 							display: 'flex',
 							flexWrap: 'wrap',
 							listStyle: 'none',
-							gap: '1rem',
+							gap: '0.5rem 1rem',
 							padding: 0,
 							margin: '0.5rem 0',
 						}}
@@ -124,6 +124,7 @@ export default function DemoApp({ db }) {
 									style={{
 										textDecoration: currentPath === link.path ? 'underline' : 'none',
 										fontWeight: currentPath === link.path ? 'bold' : 'normal',
+										color: '#2563eb', // Explicit link color (blue-600)
 										cursor: 'pointer',
 									}}
 								>

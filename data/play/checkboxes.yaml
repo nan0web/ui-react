@@ -1,9 +1,10 @@
 $content:
   - h1: Checkbox Component
   - p: Checkboxes allow users to select one or multiple options from a group.
-  - h2: Unchecked Checkbox
+  - h2: Unchecked Checkbox (with Tooltip)
   - Checkbox: true
     $checked: false
+    $title: Click to enable feature X
   - h2: Checked Checkbox
   - Checkbox: true
     $checked: true

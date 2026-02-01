@@ -1,17 +1,20 @@
 /**
  * Renderer for Card component
  *
- * @param {object} block - Component block definition
+ * @param {object} input
+ * @param {object} input.element - Component block definition
+ * @param {any} input.context - UI Context
+ * @param {any} [input.children] - React children
  * @returns {JSX.Element} Rendered card
  */
-declare function renderCard(block: object): JSX.Element;
+declare function renderCard({ element, context, ...props }: {
+    element: object;
+    context: any;
+    children?: any;
+}): JSX.Element;
 declare namespace renderCard {
     namespace propTypes {
-        let block: PropTypes.Validator<NonNullable<PropTypes.InferProps<{
-            type: PropTypes.Validator<string>;
-            props: PropTypes.Requireable<object>;
-            data: PropTypes.Requireable<any>;
-        }>>>;
+        let element: PropTypes.Validator<object>;
     }
 }
 export default renderCard;

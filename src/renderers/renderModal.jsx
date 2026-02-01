@@ -26,11 +26,17 @@ export default function renderModal(props) {
 	const [isOpen, setIsOpen] = React.useState(initialOpen)
 
 	const handleClose = () => {
+		if (context?.onAction) {
+			context.onAction('Modal Close', { trigger: 'close_button' })
+		}
 		setIsOpen(false)
 		if (onClose) onClose()
 	}
 
 	const handleOpen = () => {
+		if (context?.onAction) {
+			context.onAction('Modal Open', { triggerText })
+		}
 		setIsOpen(true)
 	}
 
@@ -51,8 +57,17 @@ export default function renderModal(props) {
 	}
 
 	// Map content using the Element renderer to support data-driven children
+	// Pass handleClose to context actions so children can use 'action:closeModal'
+	const childContext = {
+		...context,
+		actions: {
+			...context?.actions,
+			closeModal: handleClose,
+		},
+	}
+
 	const content = Array.isArray(rawContent)
-		? rawContent.map((c, i) => ReactElement.render(c, i, context))
+		? rawContent.map((c, i) => ReactElement.render(c, i, childContext))
 		: rawContent
 
 	// Extract triggerText from multiple sources:

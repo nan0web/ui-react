@@ -11,7 +11,12 @@ $content:
       - img: true
         $src: /play/sample-image.png
         $alt: Sample image
-        $style: "width: 100%; height: auto; border-radius: 8px 8px 0 0;"
+        $style:
+          width: 100%
+          maxHeight: 300px
+          height: auto
+          objectFit: contain
+          borderRadius: 8px 8px 0 0
       - p: Card with an image.
   - a: ← All Components
     $href: /play/index.html

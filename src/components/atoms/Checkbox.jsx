@@ -2,8 +2,20 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useUI } from '../../context/UIContext.jsx'
 
-export default function Checkbox({ checked = false, onChange, disabled = false, ...props }) {
+export default function Checkbox({ checked, defaultChecked, onChange, disabled = false, ...props }) {
 	const { theme } = useUI()
+	const [internalChecked, setInternalChecked] = React.useState(checked ?? defaultChecked ?? false)
+
+	React.useEffect(() => {
+		if (checked !== undefined) setInternalChecked(checked)
+	}, [checked])
+
+	const handleChange = (e) => {
+		setInternalChecked(e.target.checked)
+		if (onChange) onChange(e)
+	}
+
+	const isChecked = checked !== undefined ? checked : internalChecked
 	const themeDefaults = theme?.atoms?.Checkbox || {}
 	const defaults = {
 		size: '16px',
@@ -21,7 +33,7 @@ export default function Checkbox({ checked = false, onChange, disabled = false, 
 		height: defaults.size,
 		border: `${defaults.borderWidth} solid ${defaults.borderColor}`,
 		borderRadius: defaults.borderRadius,
-		backgroundColor: checked ? defaults.checkedColor : defaults.backgroundColor,
+		backgroundColor: isChecked ? defaults.checkedColor : defaults.backgroundColor,
 		appearance: 'none',
 		position: 'relative',
 		cursor: disabled ? 'not-allowed' : defaults.cursor,
@@ -33,13 +45,13 @@ export default function Checkbox({ checked = false, onChange, disabled = false, 
 		<span style={{ position: 'relative', display: 'inline-block', width: defaults.size, height: defaults.size }}>
 			<input
 				type="checkbox"
-				checked={checked}
-				onChange={onChange}
+				checked={isChecked}
+				onChange={handleChange}
 				style={style}
 				disabled={disabled}
 				{...props}
 			/>
-			{checked && (
+			{isChecked && (
 				<svg
 					viewBox="0 0 24 24"
 					style={{

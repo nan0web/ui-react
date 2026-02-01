@@ -27,7 +27,17 @@ export default function renderButton(props) {
 		? rawContent.map((c, i) => ReactElement.render(c, i, context))
 		: rawContent
 
-	return <Button {...p}>{content || 'Button'}</Button>
+	const handleClick = (e) => {
+		if (context?.onAction) {
+			context.onAction('Button Click', {
+				label: typeof content === 'string' ? content : 'Button',
+				variant: p.$variant || 'primary'
+			})
+		}
+		if (p.onClick) p.onClick(e)
+	}
+
+	return <Button {...p} onClick={handleClick}>{content || 'Button'}</Button>
 }
 
 renderButton.propTypes = {

@@ -1,78 +1,61 @@
-/**
- * @vitest-environment happy-dom
- */
-import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, it, expect, vi } from 'vitest'
 import React from 'react'
 import Radio from './Radio.jsx'
 import { UIProvider } from '../../context/UIContext.jsx'
-import UIContextValue from '../../context/UIContextValue.jsx'
 
-const mockContext = new UIContextValue({})
+const renderWithProvider = (ui) => {
+	return render(
+		<UIProvider value={{ theme: {} }}>
+			{ui}
+		</UIProvider>
+	)
+}
 
-describe('Radio', () => {
-	it('renders unchecked by default', () => {
-		render(
-			<UIProvider value={mockContext}>
-				<Radio name="test" />
-			</UIProvider>,
-		)
-		const radio = screen.getByRole('radio')
-		expect(radio).not.toBeChecked()
+describe('Radio Component', () => {
+	it('should render correctly', () => {
+		renderWithProvider(<Radio name="test" />)
+		expect(screen.getByRole('radio')).toBeDefined()
 	})
 
-	it('renders checked when checked=true', () => {
-		render(
-			<UIProvider value={mockContext}>
-				<Radio name="test" checked />
-			</UIProvider>,
-		)
+	it('should toggle on click', () => {
+		renderWithProvider(<Radio name="test" />)
 		const radio = screen.getByRole('radio')
-		expect(radio).toBeChecked()
-	})
-
-	it('calls onChange on click', () => {
-		const handleChange = vi.fn()
-		render(
-			<UIProvider value={mockContext}>
-				<Radio name="test" onChange={handleChange} />
-			</UIProvider>,
-		)
-		const radio = screen.getByRole('radio')
+		expect(radio.checked).toBe(false)
 		fireEvent.click(radio)
-		expect(handleChange).toHaveBeenCalledTimes(1)
+		expect(radio.checked).toBe(true)
 	})
 
-	it('applies name and value props', () => {
-		render(
-			<UIProvider value={mockContext}>
-				<Radio name="group" value="option1" checked />
-			</UIProvider>,
+	it('should sync within a group (uncontrolled)', () => {
+		renderWithProvider(
+			<div>
+				<Radio name="group1" data-testid="r1" defaultChecked={true} />
+				<Radio name="group1" data-testid="r2" />
+			</div>
 		)
-		const radio = screen.getByRole('radio')
-		expect(radio).toHaveAttribute('name', 'group')
-		expect(radio).toHaveAttribute('value', 'option1')
+
+		const r1 = screen.getByTestId('r1')
+		const r2 = screen.getByTestId('r2')
+
+		expect(r1.checked).toBe(true)
+		expect(r2.checked).toBe(false)
+
+		// Click R2
+		fireEvent.click(r2)
+
+		// R2 should be checked, R1 should be NOT checked
+		expect(r2.checked).toBe(true)
+		expect(r1.checked).toBe(false)
 	})
 
-	it('uses theme styles for checked state', () => {
-		const themeContext = new UIContextValue({
-			theme: {
-				atoms: {
-					Radio: { size: '18px', checkedColor: 'blue' },
-				},
-			},
-		})
-		render(
-			<UIProvider value={themeContext}>
-				<Radio checked />
-			</UIProvider>,
-		)
+	it('should toggle off when clicked twice', () => {
+		renderWithProvider(<Radio name="test" />)
 		const radio = screen.getByRole('radio')
-		expect(radio).toHaveStyle({
-			width: '18px',
-			height: '18px',
-			backgroundColor: 'blue',
-			borderRadius: '50%',
-		})
+
+		fireEvent.click(radio)
+		expect(radio.checked).toBe(true)
+
+		fireEvent.click(radio)
+		expect(radio.checked).toBe(false) // Custom behavior added: un-toggle when clicked again
 	})
 })

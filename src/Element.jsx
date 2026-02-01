@@ -481,6 +481,7 @@ export default class ReactElement extends CoreElement {
 		const isVoidElement = voidElements.has(type.toLowerCase())
 		// Resolve component – may be a Loadable
 		let Component = null
+		const isCapitalized = /^[A-Z]/.test(type)
 		if (components.has(type)) {
 			const loadable = components.get(type)
 			Component = resolveComponent(loadable)
@@ -488,6 +489,14 @@ export default class ReactElement extends CoreElement {
 			// Try lowercase for case-insensitive lookup
 			const loadable = components.get(type.toLowerCase())
 			Component = resolveComponent(loadable)
+		} else if (isCapitalized) {
+			// Capitalized name not found in components - likely a missing UI library component
+			console.error(`UIReact: Component "${type}" not found in component map.`)
+			return (
+				<Alert variant="warning" key={key}>
+					<strong>Missing Component:</strong> {type}
+				</Alert>
+			)
 		} else {
 			Component = type
 		}

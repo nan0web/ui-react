@@ -1,6 +1,7 @@
-declare function Radio({ checked, onChange, disabled, ...props }: {
+declare function Radio({ checked, defaultChecked, onChange, disabled, ...props }: {
     [x: string]: any;
-    checked?: boolean | undefined;
+    checked: any;
+    defaultChecked: any;
     onChange: any;
     disabled?: boolean | undefined;
 }): import("react/jsx-runtime").JSX.Element;

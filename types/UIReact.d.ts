@@ -5,7 +5,7 @@
  * @param {Partial<UIContextValue>} [props.context] extra context (apps, actions,…)
  * @param {Console|LogConsole} [props.console]      logger (default: window.console)
  */
-export default function UIReact({ db, uri, context, console, }: {
+export default function UIReact({ db, uri, context, console, ...rest }: {
     db: DB;
     uri?: string | undefined;
     context?: Partial<UIContextValue> | undefined;

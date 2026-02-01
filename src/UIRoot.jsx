@@ -1,5 +1,5 @@
 // @nan0web/ui-react/src/UIRoot.jsx
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import DB from '@nan0web/db-browser'
 import { NightTheme, Theme } from '@nan0web/ui-core'
 import UIReact from './UIReact.jsx'
@@ -7,6 +7,7 @@ import { UIProvider } from './context/UIContext.jsx'
 import defaultComponents from './components/index.jsx'
 import defaultRenderers from './renderers/index.jsx'
 import AppCore from '@nan0web/core'
+import ActionLogger from './components/organisms/ActionLogger.jsx'
 
 /**
  * Default registries for components, renderers, and apps.
@@ -54,13 +55,30 @@ export function UIRoot({
 	const [theme, setTheme] = useState(getInitialTheme())
 
 	// Use external console or disable logs in production-like mode
-	const finalConsole = /** @type {any} */ (devMode ? externalConsole : createNoOpConsole())
+	const finalConsole = useMemo(() => /** @type {any} */(devMode ? externalConsole : createNoOpConsole()), [devMode, externalConsole])
+
+	// Action logging state for the playground
+	const [actionsLog, setActionsLog] = useState(/** @type {any[]} */([]))
+
+	const handleAction = useCallback((type, data) => {
+		const newAction = {
+			id: Date.now() + Math.random(),
+			type,
+			data,
+			timestamp: Date.now()
+		}
+		setActionsLog((/** @type {any[]} */ prev) => [newAction, ...prev].slice(0, 50))
+		finalConsole.debug(`[Action] ${type}`, data)
+	}, [finalConsole])
 
 	finalConsole.debug('UIRoot initialized', { uri, hasDb: !!db })
 
 	// Initialize DB if not provided
-	const opts = { host: window.location.origin, console: finalConsole }
-	const finalDb = db || new DB(opts)
+	const finalDb = useMemo(() => {
+		if (db) return db
+		const opts = { host: window.location.origin, console: finalConsole }
+		return new DB(opts)
+	}, [db, finalConsole])
 
 	// Subscribe to browser navigation (back/forward)
 	useEffect(() => {
@@ -148,7 +166,7 @@ export function UIRoot({
 
 	// Merge default and custom context values
 	// Pass theme/setTheme here to propagate UIRoot state to children via UIReact
-	const mergedContext = {
+	const mergedContext = useMemo(() => ({
 		components: new Map([...defaultComponents, ...overrideComponents]),
 		renderers: new Map([...defaultRenderers, ...overrideRenderers]),
 		apps: new Map([...defaultAppsRegistry, ...overrideApps]),
@@ -156,7 +174,8 @@ export function UIRoot({
 		console: finalConsole,
 		theme,
 		setTheme,
-	}
+		onAction: handleAction,
+	}), [overrideComponents, overrideRenderers, overrideApps, overrideActions, finalConsole, theme, setTheme, handleAction])
 
 	finalConsole.debug('UIRoot: Merged context', {
 		components: Array.from(mergedContext.components.keys()),
@@ -171,6 +190,10 @@ export function UIRoot({
 			{/* We don't need to pass theme/setTheme explicitly to value if they are in mergedContext */}
 			<UIProvider value={{ db: finalDb, ...mergedContext }}>
 				<UIReact db={finalDb} uri={uri} context={mergedContext} console={finalConsole} />
+				<ActionLogger
+					actions={actionsLog}
+					onClear={() => setActionsLog([])}
+				/>
 			</UIProvider>
 		</div>
 	)

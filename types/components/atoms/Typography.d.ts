@@ -4,7 +4,7 @@
  * @param {React.ReactNode} props.children
  */
 declare function Typography({ variant, children, ...props }: {
-    variant?: "h3" | "h2" | "small" | "body" | "caption" | "h1" | "h4" | "h5" | "h6" | undefined;
+    variant?: "h3" | "body" | "h2" | "small" | "caption" | "h1" | "h4" | "h5" | "h6" | undefined;
     children: React.ReactNode;
 }): React.ReactElement<{
     style: any;

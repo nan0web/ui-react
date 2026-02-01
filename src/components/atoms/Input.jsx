@@ -13,8 +13,8 @@ export default function Input({ type = 'text', value, defaultValue, ...props }) 
 		paddingX: '1rem',
 		paddingY: '0.75rem',
 		fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-		backgroundColor: 'white',
-		color: 'inherit',
+		backgroundColor: 'var(--color-background, #ffffff)',
+		color: 'var(--color-text, #212529)',
 		...themeDefaults,
 	}
 

@@ -1,9 +1,10 @@
 $content:
   - h1: Button Component
   - p: Buttons trigger actions. Supports different variants and sizes.
-  - h2: Primary Button
+  - h2: Primary Button (with Tooltip)
   - Button: Primary Action
     $variant: primary
+    $title: This is a primary action tooltip
   - h2: Secondary Button
   - Button: Secondary Action
     $variant: secondary
