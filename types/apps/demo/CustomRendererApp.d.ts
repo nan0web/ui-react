@@ -24,6 +24,7 @@ export default class CustomRendererApp extends AppCore {
         uri?: string | undefined;
         locale?: string | undefined;
     });
+    db: import("@nan0web/db-browser").default | import("@nan0web/db").default;
     /**
      * @override
      * @returns {Promise<Object>} — { type: 'interactive', content: базовий, requiresInput: схема, compute: fn }

@@ -143,7 +143,9 @@ export default function UIReact({
 		<StrictMode>
 			<UIContext.Provider value={mergedContext}>
 				<div className="ui-react-root" role="main">
-					{document.title && <h1 className="ui-document-title">{document.title}</h1>}
+					{document.title && !document.$hideTitle && (
+						<h1 className="ui-document-title">{document.title}</h1>
+					)}
 					{document.$content.map((block, i) => Element.render(block, i, mergedContext))}
 				</div>
 			</UIContext.Provider>

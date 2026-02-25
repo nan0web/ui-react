@@ -18,6 +18,7 @@ const variantMap = {
  * @param {Object} props
  * @param {'h1'|'h2'|'h3'|'h4'|'h5'|'h6'|'body'|'small'|'caption'} [props.variant='body']
  * @param {React.ReactNode} props.children
+ * @param {React.CSSProperties} [props.style]
  */
 export default function Typography({ variant = 'body', children, ...props }) {
 	const { theme } = useUI()

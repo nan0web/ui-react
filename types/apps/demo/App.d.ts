@@ -28,6 +28,7 @@ export default class DemoApp extends AppCore {
         uri?: string | undefined;
         locale?: string | undefined;
     });
+    db: DB | import("@nan0web/db").default;
     theme: any;
     setTheme: Function;
     navigate: Function;

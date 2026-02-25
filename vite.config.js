@@ -18,7 +18,7 @@ export default defineConfig({
 	base: '/',
 	globals: true,
 	environment: 'jsdom',
-	// root: './playground',
+	// root: './play',
 	publicDir: 'public',
 	plugins: [
 		react(),
@@ -28,15 +28,10 @@ export default defineConfig({
 		}),
 	],
 	build: {
-		outDir: './dist/',
-		rollupOptions: {
-			input: {
-				main: './index.html',
-			},
-			onwarn: (_, handler) => {
-				process.env.BUILD_COMMAND = 'vite-build'
-				handler()
-			},
+		outDir: '../dist/',
+		onwarn: (_, handler) => {
+			process.env.BUILD_COMMAND = 'vite-build'
+			handler()
 		},
 	},
 })

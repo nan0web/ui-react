@@ -5,15 +5,31 @@ import Typography from '../components/atoms/Typography.jsx'
 /**
  * Renderer for Typography component
  *
- * @param {object} block - Component block definition
+ * @param {object} props - Component block definition
  * @returns {JSX.Element} Rendered typography
  */
-export default function renderTypography({ element, ...props }) {
-	// Extract children: either from the 'Typography' key, 'content', or default to empty
-	const children = element.Typography || element.content || []
+export default function renderTypography(props) {
+	const { element, context, variant: propsVariant } = props
+	const typographyVal =
+		element.Typography ||
+		element.typography ||
+		(element && typeof element === 'object' ? Object.values(element)[0] : element)
+	const isTagObj =
+		typeof typographyVal === 'object' && typographyVal !== null && !Array.isArray(typographyVal)
 
-	// Pass through normalized props (like variant) and children
-	return <Typography {...props}>{children}</Typography>
+	const children =
+		(isTagObj
+			? typographyVal.content || typographyVal.Typography || typographyVal.typography
+			: typographyVal) ||
+		element.content ||
+		[]
+	const variant = (isTagObj ? typographyVal.variant : null) || element.variant || propsVariant
+
+	return (
+		<Typography {...props} variant={variant}>
+			{children}
+		</Typography>
+	)
 }
 
 renderTypography.propTypes = {

@@ -1,10 +1,10 @@
 /**
  * Renderer for Typography component
  *
- * @param {object} block - Component block definition
+ * @param {object} props - Component block definition
  * @returns {JSX.Element} Rendered typography
  */
-declare function renderTypography({ element, ...props }: object): JSX.Element;
+declare function renderTypography(props: object): JSX.Element;
 declare namespace renderTypography {
     namespace propTypes {
         let element: PropTypes.Validator<object>;

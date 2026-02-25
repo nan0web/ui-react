@@ -183,17 +183,31 @@ export default class ReactElement extends CoreElement {
 		if (!input) {
 			return <Alert variant="danger">Provide UI input to render</Alert>
 		}
-		if (typeof input === 'string' || typeof input === 'number') {
-			return input
-		}
+
 		const {
 			renderers = new Map(),
 			components = new Map(),
 			apps: globalApps = new Map(),
 			actions = {},
 			data = {},
-			console = window.console,
+			console = typeof window !== 'undefined'
+				? window.console
+				: { debug: () => {}, log: () => {}, warn: () => {}, error: () => {} },
 		} = context
+
+		if (typeof input === 'string' || typeof input === 'number') {
+			const type = String(input)
+			if (
+				type &&
+				/^[A-Z]/.test(type) &&
+				(components.has(type) || components.has(type.toLowerCase()))
+			) {
+				// Treat string as component name if it's capitalized and registered
+				return ReactElement.render({ [type]: true }, key, context)
+			}
+			return input
+		}
+
 		// Merge global apps and local apps from data
 		const apps = new Map([...globalApps, ...(data.apps || [])])
 		// Extract tag and content
@@ -211,10 +225,21 @@ export default class ReactElement extends CoreElement {
 			type = arr[0]
 			value = arr[1]
 		}
-		if ('App' === type) {
-			const name = input[type] ?? ''
+		if ('App' === type || type.startsWith('App.')) {
+			let name = ''
+			if ('App' === type) {
+				name = input[type] ?? ''
+			} else {
+				// Handle App.Name syntax
+				name = type.split('.')[1]
+			}
+
 			if (!name) {
-				return <Alert variant="danger">App name must be provided [ App: name ]</Alert>
+				return (
+					<Alert variant="danger">
+						App name must be provided [ App: name ] or [ App.Name: true ]
+					</Alert>
+				)
 			}
 			const importFn = apps.get(name)
 			if (!importFn) {
@@ -276,7 +301,11 @@ export default class ReactElement extends CoreElement {
 							) {
 								// Create AppRenderer to handle state management and async run()
 								const AppRenderer = (rendererProps) => {
-									const { renderKey = 'app', context: rendererContext, ...otherProps } = rendererProps
+									const {
+										renderKey = 'app',
+										context: rendererContext,
+										...otherProps
+									} = rendererProps
 
 									// Memoize app instance creation to ensure it updates when critical dependencies change
 									// We use a ref to keep it stable unless we explicitly want to recreate it
@@ -285,7 +314,7 @@ export default class ReactElement extends CoreElement {
 										const initProps = {
 											db: rendererContext.db.extract('apps/' + name),
 											theme: rendererContext.theme || Theme,
-											setTheme: rendererContext.setTheme || (() => { }),
+											setTheme: rendererContext.setTheme || (() => {}),
 											navigate:
 												rendererContext.actions.navigate ||
 												((path) => {
@@ -297,7 +326,7 @@ export default class ReactElement extends CoreElement {
 											element: input,
 											context: rendererContext,
 											...rawProps, // Props from the Element definition (YAML)
-											...otherProps // Props passed from parent render
+											...otherProps, // Props passed from parent render
 										}
 
 										return AppComponent.from
@@ -305,11 +334,16 @@ export default class ReactElement extends CoreElement {
 											: new AppComponent(initProps)
 										// Re-create app instance if context parts change significantly
 										// Note: usually we want a stable instance, but for navigation we need fresh URI
-									}, [rendererContext.db, rendererContext.theme, rendererContext.lang, rendererContext.uri])
+									}, [
+										rendererContext.db,
+										rendererContext.theme,
+										rendererContext.lang,
+										rendererContext.uri,
+									])
 
-									const [appState, setAppState] = useState(/** @type {any} */(null))
+									const [appState, setAppState] = useState(/** @type {any} */ (null))
 									const [loading, setLoading] = useState(true)
-									const [error, setError] = useState(/** @type {any} */(''))
+									const [error, setError] = useState(/** @type {any} */ (''))
 
 									useEffect(() => {
 										const loadApp = async () => {
@@ -337,7 +371,14 @@ export default class ReactElement extends CoreElement {
 										} finally {
 											setLoading(false)
 										}
-									}, [])
+									}, [appInstance])
+
+									// Inject refresh into app instance actions so it can trigger re-runs
+									useEffect(() => {
+										if (appInstance && appInstance.actions) {
+											appInstance.actions.refresh = refresh
+										}
+									}, [appInstance, refresh])
 
 									if (loading) {
 										return (
@@ -477,6 +518,18 @@ export default class ReactElement extends CoreElement {
 			const RendererComp = /** @type {any} */ (Renderer)
 			return <RendererComp element={input} context={context} key={key} {...props} />
 		}
+		// ═══ Dot-notation: Alert.warning.lg → <Alert className="warning lg" /> ═══
+		if (type.includes('.') && !type.startsWith('App.')) {
+			const parts = type.split('.')
+			const baseName = parts[0]
+			if (/^[A-Z]/.test(baseName)) {
+				type = baseName
+				const dotClasses = parts.slice(1).join(' ')
+				// Merge with existing className from $class
+				props.className = props.className ? props.className + ' ' + dotClasses : dotClasses
+			}
+		}
+
 		// Determine if it's a void element
 		const isVoidElement = voidElements.has(type.toLowerCase())
 		// Resolve component – may be a Loadable

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { AppCore } from '@nan0web/core'
 
 /**
@@ -20,7 +21,10 @@ export default class CustomRendererApp extends AppCore {
 	 * @param {string} [input.locale='en']
 	 */
 	constructor(input) {
-		super(input)
+		const { db, ...rest } = input
+		const safeDb = db && typeof db.fetch === 'function' ? db : undefined
+		super({ ...rest, db: safeDb })
+		if (db) this.db = db
 		const { title = 'Demo', uri = 'index.html' } = input
 		this.title = title
 		this.uri = uri

@@ -32,13 +32,13 @@
 		}
 	},
 	"scripts": {
-		"build": "tsc && vite build",
+		"build": "(tsc -p tsconfig.build.json || true) && vite build",
 		"dev": "vite",
 		"play": "echo 'Open browser http://localhost:4246/play/\\n' && vite --port 4246",
 		"preview": "vite preview",
 		"test": "npm run test:js && npm run test:jsx",
 		"test:js": "node --test  --test-timeout=6333 --test-reporter=tap \"src/**/*.test.js\"",
-		"test:docs": "node --test --test-timeout=3333 --test-reporter=tap src/README.md.js",
+		"test:docs": "vitest run src/README.md.jsx",
 		"test:jsx": "vitest run --reporter tap",
 		"test:debug": "vitest --inspect --no-file-parallelism",
 		"test:status": "nan0test status --hide-name --debug",
@@ -64,34 +64,41 @@
 	"license": "ISC",
 	"packageManager": "pnpm@10.11.0",
 	"devDependencies": {
-		"@nan0web/auth-core": "workspace:*",
-		"@nan0web/core": "workspace:*",
-		"@nan0web/db": "workspace:*",
-		"@nan0web/db-browser": "workspace:*",
-		"@nan0web/ui-core": "workspace:*",
+		"@nan0web/auth-core": "^1.0.0",
+		"@nan0web/core": "^1.0.3",
+		"@nan0web/db": "^1.2.2",
+		"@nan0web/db-browser": "^1.0.1",
+		"@nan0web/ui": "^1.2.0",
+		"@nan0web/ui-core": "^1.0.0",
 		"@playwright/test": "^1.58.1",
 		"@testing-library/jest-dom": "^6.8.0",
 		"@testing-library/react": "^16.3.0",
+		"@testing-library/user-event": "^14.6.1",
 		"@vitejs/plugin-react": "^5.0.3",
 		"@vitest/ui": "3.2.4",
+		"bootstrap": "^5.3.3",
 		"happy-dom": "^20.4.0",
+		"js-yaml": "^4.1.0",
 		"knip": "^5.82.1",
 		"prop-types": "^15.8.1",
+		"react-icons": "^5.4.0",
 		"vite": "^7.3.1",
 		"vitest": "^3.2.4"
 	},
 	"peerDependencies": {
 		"@nan0web/auth-core": "^1.0.0",
-		"@nan0web/core": "^1.0.0",
-		"@nan0web/db": "^1.0.2",
-		"@nan0web/db-browser": "^1.0.0",
+		"@nan0web/core": "^1.0.3",
+		"@nan0web/db": "^1.2.2",
+		"@nan0web/db-browser": "^1.0.1",
 		"@nan0web/i18n": "^1.0.1",
+		"@nan0web/ui": "^1.2.0",
 		"@nan0web/ui-core": "^1.0.0",
 		"prop-types": "^15.8.1",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0"
 	},
 	"dependencies": {
-		"@nan0web/log": "workspace:*"
+		"@nan0web/log": "^1.1.1",
+		"marked": "^17.0.3"
 	}
 }

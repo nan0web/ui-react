@@ -1,24 +1,18 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
-import { UIRoot } from '../src/UIRoot.jsx'
+import { UIProvider, components, renderers } from '../src/index.jsx'
+import Playground from './Playground.jsx'
+import DB from '@nan0web/db-browser'
+import 'bootstrap/scss/bootstrap.scss'
 
-import DemoApp from '../src/apps/demo/App.js'
-import SimpleApp from '../src/apps/demo/SimpleApp.js'
-import CustomRendererApp from '../src/apps/demo/CustomRendererApp.js'
+const db = new DB({ host: window.location.origin, console })
+const apps = new Map()
 
-function App() {
-	// Register DemoApp for playground
-	const apps = new Map([
-		['DemoApp', async () => ({ default: DemoApp })],
-		['SimpleApp', async () => ({ default: SimpleApp })],
-		['CustomRendererApp', async () => ({ default: CustomRendererApp })],
-	])
+const container = document.getElementById('root') || document.getElementById('app')
+const root = createRoot(container)
 
-	return <UIRoot apps={apps} />
-}
-
-const container = document.getElementById('root')
-if (container) {
-	const root = createRoot(container)
-	root.render(<App />)
-}
+root.render(
+	<UIProvider value={{ components, renderers, apps }}>
+		<Playground db={db} />
+	</UIProvider>,
+)

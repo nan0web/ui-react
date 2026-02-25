@@ -11,5 +11,10 @@ node_modules/
 /playwright-report/
 /test-results/
 test_output*.txt
+test-output*.txt
 *_FIXES.md
 *_REPORT*.md
+
+# Lockfiles from other package managers (since we use pnpm)
+package-lock.json
+yarn.lock

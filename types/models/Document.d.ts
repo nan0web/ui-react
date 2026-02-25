@@ -37,6 +37,8 @@ export default class Document {
     $redirect: string | null;
     /** @type {string|null} */
     $layout: string | null;
+    /** @type {boolean} */
+    $hideTitle: boolean;
     /** @type {string} */
     title: string;
     /** @type {string} */
