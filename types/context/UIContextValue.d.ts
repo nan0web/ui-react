@@ -40,6 +40,7 @@ declare class UIContextValue {
      * @param {Map<string, Loadable<Function>>} [input.renderers]
      * @param {Map<string, Loadable<typeof AppCore>>} [input.apps]
      * @param {Record<string, Function>} [input.actions] - UI actions
+     * @param {any} [input.document] - The document object
      */
     constructor(input?: {
         theme?: import("@nan0web/ui-core/types/theme/Theme").ThemeConfig | undefined;
@@ -55,10 +56,12 @@ declare class UIContextValue {
         renderers?: Map<string, Function> | undefined;
         apps?: Map<string, Loadable<typeof AppCore>> | undefined;
         actions?: Record<string, Function> | undefined;
+        document?: any;
     });
     theme: import("@nan0web/ui-core/types/theme/Theme").ThemeConfig;
     lang: string;
     db: DB;
+    document: any;
     reducedMotion: boolean;
     setTheme: (...args: any[]) => any;
     console: Console;

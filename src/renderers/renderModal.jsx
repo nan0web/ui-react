@@ -68,7 +68,7 @@ export default function renderModal(props) {
 
 	const content = Array.isArray(rawContent)
 		? rawContent.map((c, i) => ReactElement.render(c, i, childContext))
-		: rawContent
+		: (typeof rawContent === 'object' && rawContent !== null ? ReactElement.render(rawContent, 0, childContext) : rawContent)
 
 	// Extract triggerText from multiple sources:
 	// 1. Direct prop (p.triggerText)

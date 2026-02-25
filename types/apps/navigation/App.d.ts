@@ -18,6 +18,7 @@ export default class NavigationApp extends AppCore {
         currentPath?: string | undefined;
         locale?: string | undefined;
     });
+    db: DB | import("@nan0web/db").default;
     navigate: Function;
     currentPath: string;
     /**
@@ -37,3 +38,4 @@ export type NavigationAppProps = {
     uri: string;
 };
 import { AppCore } from '@nan0web/core';
+import DB from '@nan0web/db-browser';

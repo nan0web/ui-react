@@ -1,7 +1,9 @@
 {
 	"$content": [
 		{
-			"Typography": ["NaN•Web UI React Playground"],
+			"Typography": [
+				"NaN•Web UI React Playground"
+			],
 			"$variant": "h1"
 		},
 		{
@@ -11,36 +13,112 @@
 			"$variant": "p"
 		},
 		{
-			"ThemeSwitcher": [true]
+			"ThemeSwitcher": [
+				true
+			]
 		},
 		{
-			"Typography": ["Apps"],
-			"$variant": "h2"
-		},
-		{
-			"ul": [{ "a": ["DemoApp"], "$href": "/play/apps/demo.html" }]
-		},
-		{
-			"Typography": ["Components"],
+			"Typography": [
+				"Apps"
+			],
 			"$variant": "h2"
 		},
 		{
 			"ul": [
-				{ "a": ["Avatar"], "$href": "/play/avatars.html" },
-				{ "a": ["Badge"], "$href": "/play/badges.html" },
-				{ "a": ["Button"], "$href": "/play/buttons.html" },
-				{ "a": ["Input"], "$href": "/play/inputs.html" },
-				{ "a": ["Checkbox"], "$href": "/play/checkboxes.html" },
-				{ "a": ["Radio"], "$href": "/play/radios.html" },
-				{ "a": ["Select"], "$href": "/play/selects.html" },
-				{ "a": ["TextArea"], "$href": "/play/textareas.html" },
-				{ "a": ["Typography"], "$href": "/play/typography.html" },
-				{ "a": ["Card"], "$href": "/play/cards.html" },
-				{ "a": ["Modal"], "$href": "/play/modals.html" }
+				{
+					"a": [
+						"DemoApp"
+					],
+					"$href": "/apps/demo.html"
+				},
+				{
+					"a": [
+						"Sandbox Showcase"
+					],
+					"$href": "/sandbox.html"
+				}
 			]
 		},
 		{
-			"Typography": ["Usage"],
+			"Typography": [
+				"Components"
+			],
+			"$variant": "h2"
+		},
+		{
+			"ul": [
+				{
+					"a": [
+						"Avatar"
+					],
+					"$href": "/avatars.html"
+				},
+				{
+					"a": [
+						"Badge"
+					],
+					" $href": "/badges.html"
+				},
+				{
+					"a": [
+						"Button"
+					],
+					"$href": "/buttons.html"
+				},
+				{
+					"a": [
+						"Input"
+					],
+					"$href": "/inputs.html"
+				},
+				{
+					"a": [
+						"Checkbox"
+					],
+					"$href": "/checkboxes.html"
+				},
+				{
+					"a": [
+						"Radio"
+					],
+					"$href": "/radios.html"
+				},
+				{
+					"a": [
+						"Select"
+					],
+					"$href": "/selects.html"
+				},
+				{
+					"a": [
+						"TextArea"
+					],
+					"$href": "/textareas.html"
+				},
+				{
+					"a": [
+						"Typography"
+					],
+					"$href": "/typography.html"
+				},
+				{
+					"a": [
+						"Card"
+					],
+					"$href": "/cards.html"
+				},
+				{
+					"a": [
+						"Modal"
+					],
+					"$href": "/modals.html"
+				}
+			]
+		},
+		{
+			"Typography": [
+				"Usage"
+			],
 			"$variant": "h2"
 		},
 		{
@@ -50,11 +128,15 @@
 			"$variant": "p"
 		},
 		{
-			"Typography": ["Navigate using the links above. Each page demonstrates props and variants."],
+			"Typography": [
+				"Navigate using the links above. Each page demonstrates props and variants."
+			],
 			"$variant": "p"
 		},
 		{
-			"Typography": ["Theme is controlled via data in _.yaml and toggled by ThemeSwitcher."],
+			"Typography": [
+				"Theme is controlled via data in _.yaml and toggled by ThemeSwitcher."
+			],
 			"$variant": "p"
 		}
 	]

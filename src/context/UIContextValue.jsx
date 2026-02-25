@@ -38,6 +38,7 @@ class UIContextValue {
 	 * @param {Map<string, Loadable<Function>>} [input.renderers]
 	 * @param {Map<string, Loadable<typeof AppCore>>} [input.apps]
 	 * @param {Record<string, Function>} [input.actions] - UI actions
+	 * @param {any} [input.document] - The document object
 	 */
 	constructor(input = {}) {
 		const {
@@ -45,7 +46,7 @@ class UIContextValue {
 			lang = 'en',
 			db = new DB(),
 			reducedMotion = false,
-			setTheme = () => {},
+			setTheme = () => { },
 			t = (k) => k,
 			data = {},
 			renderFn = () => null,
@@ -54,14 +55,16 @@ class UIContextValue {
 			renderers = new Map(),
 			apps = new Map(),
 			actions = {},
+			document = null,
 			...rest
 		} = input
 
 		this.theme = theme
 		this.lang = lang
 		this.db = db
+		this.document = document
 		this.reducedMotion = Boolean(reducedMotion)
-		this.setTheme = this.#proxy('setTheme', typeof setTheme === 'function' ? setTheme : () => {})
+		this.setTheme = this.#proxy('setTheme', typeof setTheme === 'function' ? setTheme : () => { })
 		this.console = consoleInitial
 		this.t = this.#proxy('t', typeof t === 'function' ? t : (k) => k)
 		this.renderFn = renderFn

@@ -1,3 +1,4 @@
+export { Blocks } from "./Blocks/index.js";
 export default Element;
 import { components } from './UIRoot.jsx';
 import { renderers } from './UIRoot.jsx';
@@ -11,4 +12,6 @@ import UIContextValue from './context/UIContextValue.jsx';
 import { tokens } from './tokens.js';
 import Element from './Element.jsx';
 import Theme from './Theme.js';
-export { components, renderers, UIReact, UIRoot, apps, AppModule, useUI, UIProvider, UIContextValue, tokens, Element, Theme };
+import { UIContext } from './context/UIContext.jsx';
+import useSortableList from './hooks/useSortableList.js';
+export { components, renderers, UIReact, UIRoot, apps, AppModule, useUI, UIProvider, UIContextValue, tokens, Element, Theme, UIContext, useSortableList };

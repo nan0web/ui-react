@@ -19,7 +19,7 @@ import ReactElement from '../Element.jsx'
 export default function renderInteractive({ element, context }) {
 	// State holds user input, result and computing flag.
 	const [inputData, setInputData] = useState({})
-	const [result, setResult] = useState(/** @type {any} */(null))
+	const [result, setResult] = useState(/** @type {any} */ (null))
 	const [isComputing, setIsComputing] = useState(false)
 
 	const appElement = element || {}

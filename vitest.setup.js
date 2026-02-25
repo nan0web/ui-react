@@ -1,7 +1,10 @@
 // vitest.setup.js
 import React from 'react'
 import { vi } from 'vitest'
-import '@testing-library/jest-dom/vitest'
+import * as matchers from '@testing-library/jest-dom/matchers'
+import { expect } from 'vitest'
+
+expect.extend(matchers)
 import { NoConsole, Logger } from '@nan0web/log'
 
 global.logger = new Logger({ console })

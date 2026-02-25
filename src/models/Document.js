@@ -13,6 +13,8 @@ export default class Document {
 	$redirect = null
 	/** @type {string|null} */
 	$layout = null
+	/** @type {boolean} */
+	$hideTitle = false
 	/** @type {string} */
 	title = ""
 	/** @type {string} */
@@ -34,6 +36,7 @@ export default class Document {
 	 * @param {any} [input.t=new Map()]
 	 */
 	constructor(input = {}) {
+		Object.assign(this, input)
 		const {
 			$content = this.$content,
 			$lang = this.$lang,

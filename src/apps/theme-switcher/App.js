@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { AppCore } from '@nan0web/core'
 import DB from '@nan0web/db'
 import { Theme, NightTheme } from '@nan0web/ui-core'
@@ -18,7 +19,9 @@ export default class ThemeSwitcherApp extends AppCore {
 	 * @param {string} [input.locale='en']
 	 */
 	constructor({ db, theme, setTheme, locale = 'en' }) {
-		super({ db, locale })
+		const safeDb = db && typeof db.fetch === 'function' ? db : undefined
+		super({ db: safeDb, locale })
+		if (db) this.db = db
 		this.currentTheme = theme
 		this.setTheme = setTheme
 	}

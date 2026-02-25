@@ -18,6 +18,7 @@ const defaultAppsRegistry = new Map(
 		['DemoApp', () => import('./apps/demo/App.js')],
 		['NavigationApp', () => import('./apps/navigation/App.js')],
 		['ThemeApp', () => import('./apps/theme-switcher/App.js')],
+		['SandboxApp', () => import('./apps/sandbox/App.js')],
 	]),
 )
 

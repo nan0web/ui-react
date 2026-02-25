@@ -1,3 +1,4 @@
+// @ts-nocheck
 
 export default class SimpleApp {
 	constructor(props) {

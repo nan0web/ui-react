@@ -1,318 +1,506 @@
 # @nan0web/ui-react
 
-## Minimal, functional React component library for **nan0web** projects
+> 🇺🇦 [Українська версія](docs/uk/README.md)
 
-- **Zero‑dependency** (except React & PropTypes)
-- Pure JavaScript with **JSDoc** typings – no TypeScript source needed
-- Built‑in **Theme**, **UIContext**, **AppCore** integration, and **renderers** for dynamic UI blocks
+Zero-dependency React UI library for the nan0web ecosystem.
+No `react-bootstrap` — pure HTML + Bootstrap CSS Custom Properties.
 
-> The library is not a UI “framework”. It provides **intent‑driven** building blocks that let you compose _applications_ (apps) and _renderers_ in a declarative, data‑first way.
+<!-- %PACKAGE_STATUS% -->
 
----
+## Description
+
+The React implementation of the Nan0web UI standard.
+Provides highly interactive, themeable components that share the same underlying logic as the CLI.
+
+Key Features:
+
+- **Zero UI Dependencies** — No react-bootstrap. Pure HTML + Bootstrap CSS tokens.
+- **Dot-Notation Syntax** — `Alert.warning.lg` → `<Alert className="warning lg" />`.
+- **Universal Blocks** — Nav, Sidebar, Alert, Markdown, ThemeToggle, LangSelect.
+- **Doc Prop Pattern** — Components accept a `doc` object for dynamic YAML-driven content.
+- **Render-First Architecture** — Powerful unified rendering engine for Markdown, YAML, and Models.
+- **Modern Aesthetics** — Premium look and feel with full accessibility.
 
 ## Installation
 
+How to install with npm?
+```bash
+npm install @nan0web/ui-react
+```
+
+How to install with pnpm?
 ```bash
 pnpm add @nan0web/ui-react
-# peer dependencies
-pnpm add react react-dom @nan0web/db-browser @nan0web/ui-core
 ```
 
----
-
-## Quick start – render a static document
-
-```tsx
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { UIReact } from '@nan0web/ui-react'
-import DB from '@nan0web/db-browser'
-
-const db = new DB({ host: window.location.origin })
-
-ReactDOM.createRoot(document.getElementById('app')).render(
-  <React.StrictMode>
-    <UIReact db={db} uri="/playground/index.json" />
-  </React.StrictMode>,
-)
+How to install with yarn?
+```bash
+yarn add @nan0web/ui-react
 ```
 
-`/playground/index.json` can contain a **document model**:
+## Playground
 
-```json
-{
-  "$content": [
-    {
-      "Typography": ["Hello, world!"],
-      "$variant": "h1"
-    }
+How to start the playground sandbox?
+```bash
+npm run play
+```
+
+## Universal Blocks
+
+Universal Blocks are high-level documentation components that work across all UI adapters.
+
+### Alert
+
+How to render Alert block with Data-Driven Model?
+```yaml
+content:
+  - Alert: "Informational message"
+  - Alert.warning: "Warning message"
+  - Alert.danger.lg: "Critical error message"
+  - Alert.success: "Operation completed"
+```
+
+How to render Alert block with React components?
+```jsx
+import { Alert } from '@nan0web/ui-react/src/Blocks/index.js'
+
+<Alert type="warning">Warning message</Alert>
+<Alert className="danger lg">Via classes</Alert>
+```
+
+### Markdown
+
+How to render Markdown content with Data-Driven Model?
+```yaml
+content:
+  - Markdown: "# Hello World\n\nThis is **bold** text."
+```
+
+How to render Markdown content with React components?
+```jsx
+import { Markdown } from '@nan0web/ui-react/src/Blocks/index.js'
+
+<Markdown content="# Hello World" />
+```
+
+### Nav
+
+How to render Nav with Data-Driven Model?
+```yaml
+$nav:
+  brand: My Site
+nav:
+  - title: Home
+    href: /
+```
+
+How to render Nav with React components?
+```jsx
+import { Nav } from '@nan0web/ui-react/src/Blocks/index.js'
+
+<Nav doc={doc} />
+```
+
+### Sidebar
+
+How to render Sidebar with Data-Driven Model?
+```yaml
+$sidebar:
+  title: Documentation
+sidebar:
+  - title: Getting Started
+    url: /guide
+```
+
+How to render Sidebar with React components?
+```jsx
+import { Sidebar } from '@nan0web/ui-react/src/Blocks/index.js'
+
+<Sidebar doc={doc} />
+```
+
+## Dot-Notation Syntax
+
+The Element renderer supports dot-notation for adding CSS classes to components.
+Each segment after the first dot becomes a CSS class.
+
+```yaml
+content:
+  - Alert.warning: "Watch out!"          # → <Alert className="warning" />
+  - Alert.danger.lg: "Error!"            # → <Alert className="danger lg" />
+  - Button.primary.rounded: "Submit"     # → <Button className="primary rounded" />
+```
+
+Components can inspect `className` to resolve semantic variants (e.g. Alert detects `warning` from className).
+
+## Basic Renderers
+
+### Typography
+
+How to render Typography with Data-Driven Model?
+```js
+/**
+ * Use standard HTML tags in YAML for typography elements (`h1`-`h6`, `p`).
+
+ * ```yaml
+ * content:
+ *   - h1: "Welcome Title"
+ *   - p: "This is a paragraph."
+ * ```
+ */
+```
+
+How to render Typography with React components?
+```jsx
+import { Typography } from '@nan0web/ui-react/src/index.jsx'
+
+<Typography variant="h1">Welcome Title</Typography>
+```
+
+### Button
+
+How to render a Button with Data-Driven Model?
+```js
+/**
+ * Using the capitalized `Button` maps to the React component, allowing dot-notation for classes or explicit props.
+
+ * ```yaml
+ * content:
+ *   - Button.primary.lg: "Get Started"
+ *   - Button: "Click me"
+ *     variant: success
+ * ```
+ */
+```
+
+How to render a Button with React components?
+```jsx
+import { Button } from '@nan0web/ui-react/src/index.jsx'
+
+<Button variant="primary">Click Me</Button>
+```
+
+### Avatar
+
+How to render an Avatar with Data-Driven Model?
+```yaml
+content:
+  - avatar:
+      src: "/avatar.png"
+      alt: "User"
+```
+
+How to render an Avatar with React components?
+```jsx
+import { Avatar } from '@nan0web/ui-react/src/index.jsx'
+
+<Avatar src="/avatar.png" alt="User" />
+```
+
+## Interactive Inputs
+
+### Input
+
+How to render an Input with Data-Driven Model?
+```yaml
+content:
+  - input:
+      $value: "John Doe"
+      $placeholder: "Enter name..."
+```
+
+How to render an Input with React components?
+```jsx
+import { Input } from '@nan0web/ui-react/src/index.jsx'
+
+<Input value="John Doe" placeholder="Enter name..." />
+```
+
+### Select
+
+How to render a Select with Data-Driven Model?
+```yaml
+content:
+  - select:
+      $options:
+        - value: "usd"
+          label: "USD"
+        - value: "eur"
+          label: "EUR"
+```
+
+How to render a Select with React components?
+```jsx
+import { Select } from '@nan0web/ui-react/src/index.jsx'
+
+const options = [{ value: 'usd', label: 'USD' }, { value: 'eur', label: 'EUR' }]
+<Select options={options} />
+```
+
+### Checkbox
+
+How to render a Checkbox with Data-Driven Model?
+```yaml
+content:
+  - checkbox:
+      $checked: true
+      $label: "Accept terms"
+```
+
+How to render a Checkbox with React components?
+```jsx
+import { Checkbox } from '@nan0web/ui-react/src/index.jsx'
+
+<Checkbox checked={true} label="Accept terms" />
+```
+
+### Radio
+
+How to render a Radio with Data-Driven Model?
+```yaml
+content:
+  - radio:
+      $name: "theme"
+      $label: "Dark Mode"
+      $checked: true
+```
+
+How to render a Radio with React components?
+```jsx
+import { Radio } from '@nan0web/ui-react/src/index.jsx'
+
+<Radio name="theme" label="Dark Mode" checked={true} />
+```
+
+### TextArea
+
+How to render a TextArea with Data-Driven Model?
+```yaml
+content:
+  - textarea:
+      $placeholder: "Enter description..."
+      $rows: 5
+```
+
+How to render a TextArea with React components?
+```jsx
+import { TextArea } from '@nan0web/ui-react/src/index.jsx'
+
+<TextArea placeholder="Enter description..." rows={5} />
+```
+
+## Advanced Components
+
+### Card
+
+How to render a Card with Data-Driven Model?
+```yaml
+content:
+  - Card:
+      - img:
+          src: "/card.jpg"
+      - h3: "Card Title"
+      - p: "Description text."
+```
+
+How to render a Card with React components?
+```jsx
+import { Card } from '@nan0web/ui-react/src/index.jsx'
+
+<Card>
+  <img src="/card.jpg" />
+  <h3>Card Title</h3>
+  <p>Description text.</p>
+</Card>
+```
+
+### Table
+
+How to render a Table with Data-Driven Model?
+```yaml
+content:
+  - table:
+      - tr:
+          - td: "Value 1"
+          - td: "Value 2"
+```
+
+How to render a Table with React components?
+```jsx
+import { Table } from '@nan0web/ui-react/src/index.jsx'
+
+<Table>
+  <tbody>
+    <tr>
+      <td>Value 1</td>
+    </tr>
+  </tbody>
+</Table>
+```
+
+### Modal Window
+
+How to render a Modal with Data-Driven Model?
+```yaml
+content:
+  - Modal:
+      $triggerText: "Open Details"
+      $content:
+        h2: "Modal Body Content"
+```
+
+How to render a Modal with React components?
+```jsx
+import { Modal } from '@nan0web/ui-react/src/index.jsx'
+
+<Modal triggerText="Open Details">
+  <h2>Modal Body Content</h2>
+</Modal>
+```
+
+### Form
+
+How to render a Form with Data-Driven Model?
+```yaml
+content:
+  - id: "example-form"
+    form:
+      - label: "User Name"
+        input:
+          $value: "admin"
+```
+
+How to render a Form with React components?
+```jsx
+import { Form } from '@nan0web/ui-react/src/index.jsx'
+
+const config = {
+  id: 'example-form',
+  form: [
+    { label: 'User Name', input: { $value: 'admin' } }
   ]
 }
+<Form element={config} />
 ```
 
-The document is loaded, translated (if a `$lang` file exists) and rendered through the **Element** system.
+### TreeView
 
----
-
-## Register custom components & renderers
-
-You can extend the UI by providing your own components or renderers via `UIRoot` (or directly to `UIReact`).
-
-```tsx
-import React from 'react'
-import { UIRoot } from '@nan0web/ui-react'
-import DB from '@nan0web/db-browser'
-import MyButton from './MyButton.jsx'
-import renderMyBlock from './renderMyBlock.jsx'
-
-const db = new DB({ host: window.location.origin })
-const customComponents = new Map([['MyButton', MyButton]])
-const customRenderers = new Map([['myBlock', renderMyBlock]])
-
-ReactDOM.createRoot(document.getElementById('app')).render(
-  <React.StrictMode>
-    <UIRoot db={db} components={customComponents} renderers={customRenderers} />
-  </React.StrictMode>,
-)
+How to render a TreeView with Data-Driven Model?
+```yaml
+content:
+  - tree:
+      - name: "src"
+        type: "dir"
+        children:
+          - name: "index.js"
+            type: "file"
 ```
 
-`renderMyBlock.jsx` example:
+How to render a TreeView with React components?
+```jsx
+import { TreeView } from '@nan0web/ui-react/src/index.jsx'
 
-```tsx
-import React from 'react'
-import MyButton from './MyButton.jsx'
-
-export default function renderMyBlock({ element, context }) {
-  return <MyButton {...element.props}>Custom block</MyButton>
-}
+const data = [
+  { name: 'src', type: 'dir', children: [ { name: 'index.js', type: 'file' } ] }
+]
+<TreeView data={data} mode="file" />
 ```
 
-Now a document can reference the custom block:
+### Autocomplete
 
-```json
-{
-  "$content": [{ "myBlock": [], "$className": "mt-4" }]
-}
+How to render an Autocomplete with Data-Driven Model?
+```yaml
+content:
+  - autocomplete:
+      $options: ["Apple", "Banana", "Cherry"]
+      $placeholder: "Select fruit..."
 ```
 
----
+How to render an Autocomplete with React components?
+```jsx
+import { Autocomplete } from '@nan0web/ui-react/src/index.jsx'
 
-## Building an **App** (interactive piece)
-
-An _App_ is a class extending `AppCore`. It registers itself in the UI context and can expose a `run()` method that returns UI data.
-
-### Example: `SimpleApp`
-
-```js
-// src/apps/demo/SimpleApp.js
-import { AppCore } from '@nan0web/core'
-
-/**
- * SimpleApp – static content, no renderer.
- */
-export default class SimpleApp extends AppCore {
-  constructor(input) {
-    super(input)
-    const { title = 'Demo', uri = 'index.html' } = input
-    this.title = title
-    this.uri = uri
-  }
-
-  async run() {
-    return {
-      type: 'standard',
-      content: [
-        {
-          Typography: [`Simple App: ${this.title}`],
-          $variant: 'h2',
-        },
-        {
-          Button: ['Click me'],
-          $variant: 'secondary',
-          $onClick: 'action:doSomething',
-        },
-      ],
-    }
-  }
-}
+<Autocomplete options={['Apple', 'Banana', 'Cherry']} placeholder="Select fruit..." />
 ```
 
-### Example: `CustomRendererApp`
+## Data-Driven UI
 
-```js
-// src/apps/demo/CustomRendererApp.jsx
-import React, { useState } from 'react'
-import { AppCore } from '@nan0web/core'
-import Button from '../components/atoms/Button.jsx'
-import Typography from '../components/atoms/Typography.jsx'
+The core architectural pattern of the ecosystem.
+Content is defined in YAML/JSON files, and UI components render it automatically.
 
-export default class CustomRendererApp extends AppCore {
-  constructor(input) {
-    super(input)
-    const { title = 'Demo', uri = 'index.html' } = input
-    this.title = title
-    this.uri = uri
-  }
-
-  async run() {
-    const base = {
-      $content: [
-        { h3: [`Custom Renderer: ${this.title}`] },
-        { p: ['Press the button to increment a counter'] },
-      ],
-    }
-    const Renderer = ({ result, context }) => {
-      const [cnt, setCnt] = useState(0)
-      const { theme } = context || {}
-      return (
-        <div style={{ padding: '1rem', border: '1px solid #ccc' }}>
-          <Typography variant="h4">
-            {result.$title || 'Interactive'} – {cnt}
-          </Typography>
-          <Button onClick={() => setCnt(cnt + 1)}>+1</Button>
-        </div>
-      )
-    }
-    Renderer.displayName = 'CustomRendererAppRenderer'
-    return { ...base, Renderer }
-  }
-}
+```yaml
+# data/index.yaml
+$content:
+  - Content
+content:
+  - h1: "Welcome"
+  - Alert.success: "Ready to go!"
+  - Button.primary: "Get Started"
 ```
 
-### Register apps in a **DemoApp** (registry)
+```jsx
+import { UIReact } from '@nan0web/ui-react/src/index.jsx'
 
-```js
-// src/apps/demo/App.js
-import { AppCore } from '@nan0web/core'
-
-export default class DemoApp extends AppCore {
-  constructor({ db, theme, setTheme, navigate, uri = 'index.html', locale = 'en' }) {
-    super({ db, locale })
-    this.theme = theme
-    this.setTheme = setTheme
-    this.navigate = navigate
-    this.uri = uri
-
-    this.apps = new Map([
-      [
-        'SimpleApp',
-        async () => {
-          const mod = await import('./SimpleApp.js')
-          return mod.default.from({ title: 'Simple', uri: this.uri, db })
-        },
-      ],
-      [
-        'CustomRendererApp',
-        async () => {
-          const mod = await import('./CustomRendererApp.jsx')
-          return mod.default.from({ title: 'Custom', uri: this.uri, db })
-        },
-      ],
-    ])
-  }
-
-  async run() {
-    return {
-      content: [
-        {
-          div: [
-            { App: 'SimpleApp', $uri: this.uri },
-            { App: 'CustomRendererApp', $title: 'Interactive Demo', $uri: this.uri },
-          ],
-          $style: 'display:flex;flex-direction:column;gap:2rem',
-        },
-      ],
-    }
-  }
-}
+<UIReact db={db} uri="index" />
 ```
 
-Now the demo app can be rendered anywhere:
+## API
 
-```tsx
-import DemoApp from './src/apps/demo/App.js'
-;<UIReact
-  db={db}
-  documentPath="/playground/index.json"
-  context={{
-    theme,
-    setTheme,
-    reducedMotion: false,
-  }}
-/>
-```
+### `UIReact`
 
----
+Top-level component that loads a document, resolves translations, and renders content.
 
-## Theme switching
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `db` | `DB` | — | Database instance |
+| `uri` | `string` | `''` | Document URI |
+| `context` | `object` | `{}` | Extra context (apps, actions) |
+| `console` | `Console` | `window.console` | Logger instance |
 
-`ThemeSwitcher` component toggles between **Theme** (light) and **NightTheme** (dark).
+### `UIRoot`
 
-```tsx
-import ThemeSwitcher from '@nan0web/ui-react/src/components/atoms/ThemeSwitcher.jsx'
-;<ThemeSwitcher label="Toggle theme" />
-```
+Complete application shell with routing, theme switching, and document loading.
 
-The component reads `theme` and `setTheme` from the UI context. When the button is clicked it updates the theme and persists the choice in `localStorage`.
+### `renderers`
 
----
+A `Map<string, Component>` of all available renderers:
 
-## Testing
+| Key | Component | Description |
+|-----|-----------|-------------|
+| `typography` | Typography | Semantic text rendering |
+| `button` | Button | Interactive buttons |
+| `input` | Input | Text input fields |
+| `select` | Select | Dropdown menus |
+| `checkbox` | Checkbox | Boolean toggles |
+| `radio` | Radio | Single selection |
+| `textarea` | TextArea | Multi-line text |
+| `avatar` | Avatar | Profile pictures |
+| `card` | Card | Content containers |
+| `table` | Table | Tabular data |
+| `modal` | Modal | Overlay windows |
+| `form` | Form | Schema-generated forms |
+| `tree` | TreeView | Hierarchical data |
+| `autocomplete` | Autocomplete | Searchable selection |
 
-All components, renderers, and apps ship **with tests** written with `node:test` (for pure JS) or `vitest` (for React). Run the full suite with:
+### Universal Blocks
 
-```bash
-npm test          # runs both node:test and vitest
-npm run test:jsx  # only the React tests
-npm run test:js   # only the node:test files
-```
+| Block | Description |
+|-------|-------------|
+| `Nav` | Top navigation bar with doc prop |
+| `Sidebar` | Side navigation with doc prop |
+| `Alert` | Semantic callout with dot-notation |
+| `Markdown` | Markdown rendering via `marked` |
+| `ThemeToggle` | Light/dark theme switcher |
+| `LangSelect` | Language selector |
+| `CodeBlock` | Syntax-highlighted code |
+| `Page` | Full page layout |
 
-Each test lives next to its source (`*.test.jsx` or `*.test.js`). The CI checks for **100 % coverage** of exported functions/classes.
+All the above renderers are covered by `vitest` tests and rendered automatically via YAML data.
 
----
+## Contributing
 
-## Building & preview (Vite)
-
-The package ships a **Vite plugin** (`nan0webVitePlugin`) that:
-
-1. Serves static assets from `public/`.
-2. Builds a **static site** from the DB‑FS sources (`data/` → `dist/`).
-3. Provides a middleware for on‑the‑fly JSON serving.
-
-```bash
-npm run dev      # start Vite dev server with hot reload
-npm run build    # production build (runs the plugin automatically)
-npm run preview  # preview the built site
-```
-
-The Vite config is already preset in `vite.config.js`; you can customize `input` / `output` DB instances if needed.
-
----
-
-## Exported entry points
-
-| Export                 | Description                                                             |
-| ---------------------- | ----------------------------------------------------------------------- |
-| `components`           | Map of built‑in atom, molecule, organism components                     |
-| `renderers`            | Map of default renderers (`table`, `form`, `avatar`, …)                 |
-| `UIReact`              | Top‑level component that loads a document and renders it                |
-| `UIRoot`               | SPA‑ready wrapper that handles navigation, theme, and custom registries |
-| `UIProvider` / `useUI` | React context helpers                                                   |
-| `UIContextValue`       | Immutable value object used by the context                              |
-| `Theme`                | Default light theme (imported from `@nan0web/ui-core`)                  |
-| `tokens`               | Design tokens (spacing, colors, etc.) from `@nan0web/ui-core`           |
-| `Element`              | Core renderer that turns JSON blocks into React elements                |
-
----
+How to contribute? - [check here](../../CONTRIBUTING.md)
 
 ## License
 
-ISC – see the `LICENSE` file in the repository.
-
----
-
-## Contribution
-
-All changes must be covered by **unit tests** and follow the **nan0coding** conventions (tab indentation, JSDoc, no TypeScript source files). See `src/__tests__/` for examples.
-
-Happy building! 🎨🛠️
+How to license? - [ISC LICENSE](./LICENSE) file.

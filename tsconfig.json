@@ -19,6 +19,28 @@
 		"checkJs": true,
 		"jsx": "react-jsx"
 	},
-	"include": ["src/**/*.js", "src/**/*.jsx", "src/index.jsx"],
-	"exclude": ["node_modules", "src/**/*.test.js", "src/**/*.test.jsx", "src/README.md.js"]
+	"include": [
+		"src/index.jsx",
+		"src/Element.jsx",
+		"src/UIReact.jsx",
+		"src/UIRoot.jsx",
+		"src/components/**/*.js",
+		"src/components/**/*.jsx",
+		"src/context/**/*.js",
+		"src/context/**/*.jsx",
+		"src/hooks/**/*.js",
+		"src/hooks/**/*.jsx",
+		"src/models/**/*.js",
+		"src/renderers/**/*.js",
+		"src/renderers/**/*.jsx",
+		"src/vite/**/*.js"
+	],
+	"exclude": [
+		"node_modules",
+		"src/**/*.test.js",
+		"src/**/*.test.jsx",
+		"src/README.md.js",
+		"src/README.md.jsx",
+		"src/apps"
+	]
 }

@@ -11,6 +11,8 @@ import renderRadio from './renderRadio.jsx'
 import renderCard from './renderCard.jsx'
 import renderSelect from './renderSelect.jsx'
 import renderTextArea from './renderTextArea.jsx'
+import renderTreeView from './renderTreeView.jsx'
+import renderAutocomplete from './renderAutocomplete.jsx'
 
 // @ts-ignore
 const renderersMap = new Map([
@@ -27,6 +29,8 @@ const renderersMap = new Map([
 	['card', renderCard],
 	['select', renderSelect],
 	['textarea', renderTextArea],
+	['tree', renderTreeView],
+	['autocomplete', renderAutocomplete],
 ])
 
 export default renderersMap

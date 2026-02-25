@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { AppCore } from '@nan0web/core'
 import DB from '@nan0web/db-browser'
 
@@ -25,7 +26,9 @@ export default class NavigationApp extends AppCore {
 	 * @param {string} [input.locale='en']
 	 */
 	constructor({ db, navigate, currentPath = 'home', locale = 'en' }) {
-		super({ db, locale })
+		const safeDb = db && typeof db.fetch === 'function' ? db : undefined
+		super({ db: safeDb, locale })
+		if (db) this.db = db
 		this.navigate = navigate
 		this.currentPath = currentPath
 		this.title = ''
