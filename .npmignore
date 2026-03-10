@@ -46,3 +46,4 @@ REQUESTS.md
 public/
 bin/
 src/__mocks__/
+.agent/
