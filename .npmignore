@@ -46,4 +46,6 @@ REQUESTS.md
 public/
 bin/
 src/__mocks__/
+types/__mocks__/
+types/README.md.d.ts
 .agent/
