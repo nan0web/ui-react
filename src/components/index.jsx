@@ -9,6 +9,9 @@ import Select from './atoms/Select.jsx'
 import TextArea from './atoms/TextArea.jsx'
 import Card from './molecules/Card.jsx'
 import Modal from './organisms/Modal.jsx'
+import GDPRConsent from './organisms/GDPRConsent.jsx'
+import FeedbackForm from './organisms/FeedbackForm.jsx'
+import NewsPost from './organisms/NewsPost.jsx'
 import ThemeSwitcher from './atoms/ThemeSwitcher.jsx'
 
 /** @type {Map<string, React.Component<any, any, any>>} */
@@ -26,6 +29,9 @@ const components = new Map([
 	['TextArea', TextArea],
 	['Card', Card],
 	['Modal', Modal],
+	['GDPRConsent', GDPRConsent],
+	['FeedbackForm', FeedbackForm],
+	['NewsPost', NewsPost],
 	['ThemeSwitcher', ThemeSwitcher],
 	// Lowercase (for case-insensitive lookup)
 	['button', Button],
@@ -39,6 +45,9 @@ const components = new Map([
 	['textarea', TextArea],
 	['card', Card],
 	['modal', Modal],
+	['gdprconsent', GDPRConsent],
+	['feedbackform', FeedbackForm],
+	['newspost', NewsPost],
 	['themeswitcher', ThemeSwitcher],
 ])
 

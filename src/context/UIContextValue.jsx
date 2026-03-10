@@ -31,7 +31,7 @@ class UIContextValue {
 	 * @param {boolean} [input.reducedMotion]
 	 * @param {object} [input.data]
 	 * @param {Function} [input.setTheme]
-	 * @param {Function} [input.t]
+	 * @param {import('@nan0web/types').TFunction} [input.t]
 	 * @param {Function} [input.renderFn]
 	 * @param {Console} [input.console]
 	 * @param {Map<string, Loadable<React.ComponentType>>} [input.components]
@@ -46,8 +46,8 @@ class UIContextValue {
 			lang = 'en',
 			db = new DB(),
 			reducedMotion = false,
-			setTheme = () => { },
-			t = (k) => k,
+			setTheme = () => {},
+			t = /** @type {any} */ ((k) => k),
 			data = {},
 			renderFn = () => null,
 			console: consoleInitial = console,
@@ -56,17 +56,20 @@ class UIContextValue {
 			apps = new Map(),
 			actions = {},
 			document = null,
+			debug = false,
 			...rest
 		} = input
 
 		this.theme = theme
 		this.lang = lang
 		this.db = db
+		this.debug = Boolean(debug)
 		this.document = document
 		this.reducedMotion = Boolean(reducedMotion)
-		this.setTheme = this.#proxy('setTheme', typeof setTheme === 'function' ? setTheme : () => { })
+		this.setTheme = this.#proxy('setTheme', typeof setTheme === 'function' ? setTheme : () => {})
 		this.console = consoleInitial
-		this.t = this.#proxy('t', typeof t === 'function' ? t : (k) => k)
+		const safeT = typeof t === 'function' ? t : (k) => k
+		this.t = this.debug ? this.#proxy('t', safeT) : safeT
 		this.renderFn = renderFn
 		this.components =
 			components instanceof Map
@@ -108,7 +111,9 @@ class UIContextValue {
 	 * @returns {UIContextValue}
 	 */
 	extend(overrides = {}) {
-		this.console.debug('UIContextValue.extend', overrides)
+		if (this.debug) {
+			this.console.debug('UIContextValue.extend', overrides)
+		}
 		return new UIContextValue({
 			...this,
 			...overrides,

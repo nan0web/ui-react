@@ -20,6 +20,21 @@ export default defineConfig({
 	environment: 'jsdom',
 	// root: './play',
 	publicDir: 'public',
+	css: {
+		preprocessorOptions: {
+			scss: {
+				api: 'modern-compiler',
+				silenceDeprecations: [
+					'import',
+					'global-builtin',
+					'color-functions',
+					'slash-div',
+					'if-function',
+				],
+				quietDeps: true,
+			},
+		},
+	},
 	plugins: [
 		react(),
 		nan0webVitePlugin({

@@ -31,10 +31,10 @@ Exported from `src/Blocks/index.js`.
 
 ---
 
-## Extraction: I-Bank Components
+## ~~Extraction: I-Bank Components~~
 
 **Target**: `src/components/*`
-**Status**: NEW
+**Status**: ✅ DONE
 **Date**: 2026-02-25
 
 **Problem**:
@@ -47,3 +47,14 @@ General-purpose components currently living inside `ibank.ua` should be extracte
 - `NewsPost`: Generic article/post template
 
 **Exclusions (Proprietary)**: Calculators, Banking Lists, Order Forms remain in `ibank.ua`.
+
+---
+
+## ~~🚨 Відключення логування через Proxy (Від credits)~~
+
+**Target**: `src/context/UIContextValue.jsx`
+**Status**: ✅ DONE
+**Date**: 2026-03-10
+
+**Problem**:
+Функція перекладу `t`, яка рекурсивно передається в усі компоненти, обгорнута у `#proxy`, що призводить до тисяч викликів `console.debug()` при кожному рендері інтерфейсу. Просимо ввести окремий `dev-debug` прапорець у конфігурації для `UIContextValue` (або взагалі прибрати proxy для `t`), замість примусового логування, щоб інтерфейс працював оптимально і консоль залишалась чистою.

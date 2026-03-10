@@ -33,7 +33,7 @@ declare class UIContextValue {
      * @param {boolean} [input.reducedMotion]
      * @param {object} [input.data]
      * @param {Function} [input.setTheme]
-     * @param {Function} [input.t]
+     * @param {import('@nan0web/types').TFunction} [input.t]
      * @param {Function} [input.renderFn]
      * @param {Console} [input.console]
      * @param {Map<string, Loadable<React.ComponentType>>} [input.components]
@@ -49,7 +49,7 @@ declare class UIContextValue {
         reducedMotion?: boolean | undefined;
         data?: object;
         setTheme?: Function | undefined;
-        t?: Function | undefined;
+        t?: import("@nan0web/types/types/utils/TFunction").TFunction | undefined;
         renderFn?: Function | undefined;
         console?: Console | undefined;
         components?: Map<string, Loadable<import("react").ComponentType<{}>>> | undefined;
@@ -61,11 +61,12 @@ declare class UIContextValue {
     theme: import("@nan0web/ui-core/types/theme/Theme").ThemeConfig;
     lang: string;
     db: DB;
+    debug: boolean;
     document: any;
     reducedMotion: boolean;
     setTheme: (...args: any[]) => any;
     console: Console;
-    t: (...args: any[]) => any;
+    t: any;
     renderFn: Function;
     components: Map<any, any>;
     renderers: Map<any, any>;
