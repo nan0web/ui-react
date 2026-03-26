@@ -225,7 +225,7 @@ export default class ReactElement extends CoreElement {
 			type = arr[0]
 			value = arr[1]
 		}
-		if ('App' === type || type.startsWith('App.')) {
+		if (('App' === type || type.startsWith('App.')) && !components.has(type)) {
 			let name = ''
 			if ('App' === type) {
 				name = input[type] ?? ''
